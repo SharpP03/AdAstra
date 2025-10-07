@@ -7,37 +7,46 @@ using UnityEngine.InputSystem;
 public class Player_Spaceship : MonoBehaviour
 {
 
-    private Rigidbody rb;
 
+    #region Player Input system vars
     PlayerInput playerInput;
     InputAction moveAction;
     InputAction rollAction;
-    InputAction lookAction;
-
+    InputAction mouseX;
+    InputAction mouseY;
+    #endregion
+    #region movement multipliers
     [SerializeField]
     private float speedMult = 1f;
     [SerializeField]
-    private float speedMultAngle = .05f;
+    private float speedMultAngle = .5f;
     [SerializeField]
     private float speedRollAngle = .05f;
     [SerializeField]
-    private float mouseSensitivity = 100f;
+    private float mouseSensX = 100f;
+    [SerializeField]
+    private float mouseSensY = 100f;
+    #endregion
+
     [SerializeField]
     private Transform mainCamera;
+    private Rigidbody rb;
 
     #region Input Sysytem related functions
     private void OnEnable()
     {
         moveAction.Enable();
         rollAction.Enable();
-        lookAction.Enable();
+        mouseX.Enable();
+        mouseY.Enable();
     }
 
     private void OnDisable()
     {
         moveAction.Disable();
         rollAction.Disable();
-        lookAction.Disable();
+        mouseX.Disable();
+        mouseY.Disable();
     }
     #endregion
 
@@ -49,10 +58,7 @@ public class Player_Spaceship : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        playerInput = GetComponent<PlayerInput>();
-        moveAction = playerInput.actions.FindAction("Move");
-        rollAction = playerInput.actions.FindAction("Roll");
-        lookAction = playerInput.actions.FindAction("Look");
+        SetInputs();
 
         CameraHolder = GetComponentsInChildren<Transform>(false)
                 .FirstOrDefault(t => t.CompareTag("CameraAnchor"));
@@ -67,30 +73,39 @@ public class Player_Spaceship : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
-    }
+    }  
 
+    private float yRotation;
+    private float xRotation;
     void MovePlayer()
     {
-        Vector2 mouseInput = lookAction.ReadValue<Vector2>() * mouseSensitivity * Time.fixedDeltaTime;
+        float mouseInputX = mouseX.ReadValue<float>() * Time.deltaTime * mouseSensX;
+        float mouseInputY = mouseY.ReadValue<float>() * Time.deltaTime * mouseSensY;
+        Debug.Log("X: "+ mouseX.ReadValue<float>() + " Y: "+ mouseY.ReadValue<float>());
+
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
         float rollInput = rollAction.ReadValue<float>();
 
-
-
-        Debug.Log("x: " + mouseInput.x + " y: " + mouseInput.y);
         rb.AddForce(rb.transform.TransformDirection(Vector3.forward)*moveInput.y*speedMult,ForceMode.VelocityChange);
         rb.AddForce(rb.transform.TransformDirection(Vector3.right)*moveInput.x*speedMult,ForceMode.VelocityChange);
 
-        rb.AddTorque(rb.transform.right * mouseInput.y * speedMultAngle * -1,ForceMode.VelocityChange);
-        rb.AddTorque(rb.transform.up * mouseInput.x * speedMultAngle, ForceMode.VelocityChange);
+        rb.AddTorque(rb.transform.right * mouseInputY * speedMultAngle * -1,ForceMode.VelocityChange);
+        rb.AddTorque(rb.transform.up * mouseInputX * speedMultAngle, ForceMode.VelocityChange);
 
-        //rb.AddTorque(rb.transform.forward * rollInput * speedMultAngle,ForceMode.VelocityChange);
-        
+
+        rb.AddTorque(rb.transform.forward * rollInput * speedRollAngle,ForceMode.VelocityChange);
+
+    }
+
+    void SetInputs() {
+        playerInput = GetComponent<PlayerInput>();
+        moveAction = playerInput.actions.FindAction("Move");
+        rollAction = playerInput.actions.FindAction("Roll");
+        mouseX = playerInput.actions.FindAction("MouseX");
+        mouseY = playerInput.actions.FindAction("MouseY");
+
     }
 
     private Transform CameraHolder;
-    void CameraFollow() { 
-        mainCamera.transform.position =  CameraHolder.position;
-        mainCamera.transform.rotation = CameraHolder.rotation;
-    }
+
 }
