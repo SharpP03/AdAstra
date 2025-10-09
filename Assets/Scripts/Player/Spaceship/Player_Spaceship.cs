@@ -67,7 +67,7 @@ public class Player_Spaceship : MonoBehaviour
 
     void Update()
     {
-        //CameraFollow();
+
     }
 
     private void FixedUpdate()
