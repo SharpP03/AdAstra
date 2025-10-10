@@ -35,18 +35,18 @@ public class Player_Spaceship : MonoBehaviour
     #region Input Sysytem related functions
     private void OnEnable()
     {
-        moveAction.Enable();
-        rollAction.Enable();
-        mouseX.Enable();
-        mouseY.Enable();
+        //moveAction.Enable();
+        //rollAction.Enable();
+        //mouseX.Enable();
+        //mouseY.Enable();
     }
 
     private void OnDisable()
     {
-        moveAction.Disable();
-        rollAction.Disable();
-        mouseX.Disable();
-        mouseY.Disable();
+        //moveAction.Disable();
+        //rollAction.Disable();
+        //mouseX.Disable();
+        //mouseY.Disable();
     }
     #endregion
 
@@ -67,7 +67,7 @@ public class Player_Spaceship : MonoBehaviour
 
     void Update()
     {
-        //CameraFollow();
+
     }
 
     private void FixedUpdate()
@@ -81,7 +81,6 @@ public class Player_Spaceship : MonoBehaviour
     {
         float mouseInputX = mouseX.ReadValue<float>() * Time.deltaTime * mouseSensX;
         float mouseInputY = mouseY.ReadValue<float>() * Time.deltaTime * mouseSensY;
-        Debug.Log("X: "+ mouseX.ReadValue<float>() + " Y: "+ mouseY.ReadValue<float>());
 
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
         float rollInput = rollAction.ReadValue<float>();
