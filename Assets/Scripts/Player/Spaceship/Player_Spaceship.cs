@@ -86,8 +86,6 @@ public class Player_Spaceship : MonoBehaviour
         }
     }  
 
-    private float yRotation;
-    private float xRotation;
     private void MovePlayer()
     {
         float mouseInputX = mouseX.ReadValue<float>() * Time.deltaTime * mouseSensX;
