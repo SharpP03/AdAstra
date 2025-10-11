@@ -14,16 +14,10 @@ public class PathTool : MonoBehaviour
 
     private void Start()
     {
-        if (startPoint == null || endPoint == null || cubePrefab == null)
-        {
-            Debug.LogWarning("Missing startPoint, endPoint, or cubePrefab!");
-            return;
-        }
-
-        SpawnScatteredCubes();
+        spawnBetweenPoints();
     }
 
-    private void SpawnScatteredCubes()
+    private void spawnBetweenPoints()
     {
         Vector3 direction = endPoint.position - startPoint.position;
 
@@ -40,7 +34,7 @@ public class PathTool : MonoBehaviour
             // spawn
             GameObject cube = Instantiate(cubePrefab, pos, Random.rotation, transform);
 
-            // random scale (optional)
+            // random scale 
             float randomScale = Random.Range(scaleRange.x, scaleRange.y);
             cube.transform.localScale = Vector3.one * randomScale;
         }
