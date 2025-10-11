@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GraphTool : MonoBehaviour
@@ -66,6 +67,7 @@ public class GraphTool : MonoBehaviour
                 if (!currentNode.connections.Contains(other)) currentNode.connections.Add(other);
                 if (!other.connections.Contains(currentNode)) other.connections.Add(currentNode);
                 SpawnBetweenNodes(currentNode, other, objectToSpawn, objectsBetweenNodes);
+
             }
         }
     }
@@ -93,5 +95,24 @@ public class GraphTool : MonoBehaviour
                 Random.Range(-areaSize / 2, areaSize / 2)
             );
         return pts;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (nodes == null) return;
+
+        Gizmos.color = Color.green;
+        foreach (var node in nodes)
+        {
+            // Draw node
+            Gizmos.DrawSphere(node.position, 1f);
+
+            // Draw connections
+            Gizmos.color = Color.yellow;
+            foreach (var connectedNode in node.connections)
+            {
+                Gizmos.DrawLine(node.position, connectedNode.position);
+            }
+        }
     }
 }

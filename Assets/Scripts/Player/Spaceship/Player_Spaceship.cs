@@ -15,6 +15,7 @@ public class Player_Spaceship : MonoBehaviour
     InputAction mouseX;
     InputAction mouseY;
     #endregion
+
     #region movement multipliers
     [SerializeField]
     private float speedMult = 1f;
@@ -32,33 +33,40 @@ public class Player_Spaceship : MonoBehaviour
     private Transform mainCamera;
     private Rigidbody rb;
 
+    private FuelSystem fuelSystem;
+
     #region Input Sysytem related functions
     private void OnEnable()
     {
-        //moveAction.Enable();
-        //rollAction.Enable();
-        //mouseX.Enable();
-        //mouseY.Enable();
+        moveAction.Enable();
+        rollAction.Enable();
+        mouseX.Enable();
+        mouseY.Enable();
     }
 
     private void OnDisable()
     {
-        //moveAction.Disable();
-        //rollAction.Disable();
-        //mouseX.Disable();
-        //mouseY.Disable();
+        moveAction.Disable();
+        rollAction.Disable();
+        mouseX.Disable();
+        mouseY.Disable();
     }
     #endregion
 
     private void Awake()
     {
+        SetInputs();
+
         rb = GetComponent<Rigidbody>();
+        fuelSystem = GetComponent<FuelSystem>();
+
+        GameManager.Instance.RegisterPlayer(this);
+        fuelSystem.PlayerMovementInit(moveAction);
     }
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        SetInputs();
 
         CameraHolder = GetComponentsInChildren<Transform>(false)
                 .FirstOrDefault(t => t.CompareTag("CameraAnchor"));
@@ -72,12 +80,13 @@ public class Player_Spaceship : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovePlayer();
+        if (fuelSystem.HasFuel)
+        {
+            MovePlayer();
+        }
     }  
 
-    private float yRotation;
-    private float xRotation;
-    void MovePlayer()
+    private void MovePlayer()
     {
         float mouseInputX = mouseX.ReadValue<float>() * Time.deltaTime * mouseSensX;
         float mouseInputY = mouseY.ReadValue<float>() * Time.deltaTime * mouseSensY;
@@ -96,7 +105,11 @@ public class Player_Spaceship : MonoBehaviour
 
     }
 
-    void SetInputs() {
+    private void LookAround() { 
+    
+    }
+
+    private void SetInputs() {
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions.FindAction("Move");
         rollAction = playerInput.actions.FindAction("Roll");
