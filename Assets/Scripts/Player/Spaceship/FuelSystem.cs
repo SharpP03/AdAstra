@@ -7,43 +7,50 @@ public class FuelSystem : MonoBehaviour
     public float maxFuel;
     public float currentFuel { get; private set; }
     [SerializeField]
-    private float fuelUsageAmount;
+    private float fuelUsage;
+    private float fuelSprintUsage;
 
     public bool HasFuel => currentFuel > 0f;
     public float FuelPercent => currentFuel / maxFuel;
 
-    #region Input action
-    private InputAction moveAction;
+    private PlayerState playerState;
 
-    private void OnDisable()
-    {
-        moveAction?.Disable();
-    }
-    #endregion
 
     void Start()
     {
         currentFuel = maxFuel;
+        fuelSprintUsage = fuelUsage * 2;
     }
 
     private void FixedUpdate()
     {
-        ConsumeFuelOnMove(fuelUsageAmount);
+        ConsumeFuel();
     }
 
-    public void ConsumeFuelOnMove(float amount)
+
+    private void ConsumeFuel()
     {
-        if (moveAction.ReadValue<Vector2>().magnitude != 0)
+        //if (playerState == PlayerState.Moving)
+        //{
+        //    currentFuel = Mathf.Max(0, currentFuel - fuelUsage * Time.deltaTime);
+        //}
+
+        switch (playerState)
         {
-            currentFuel = Mathf.Max(0, currentFuel - amount/20);
+            case PlayerState.Moving:
+                currentFuel = Mathf.Max(0, currentFuel - fuelUsage * Time.deltaTime);
+                break;
+            case PlayerState.Sprinting:
+                currentFuel = Mathf.Max(0, currentFuel - fuelSprintUsage * Time.deltaTime);
+                break;
+                default: break;
 
         }
     }
 
-    public void PlayerMovementInit(InputAction newMoveAction)
+    public void UpdatePlayerState(PlayerState newPlayerState)
     {
-        newMoveAction.Enable();
-        moveAction = newMoveAction;
+        playerState = newPlayerState;
     }
 
     public void Refuel(float amount)
