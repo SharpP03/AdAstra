@@ -7,7 +7,7 @@ public struct ParticleStateSettings
     public float emissionRate;
     public float startSpeed;
     public Color startColor;
-    public float startLifetime; // nowa wartoœæ
+    public float velocityZ; 
 }
 
 public class PlayerThrusterFXController : MonoBehaviour
@@ -15,7 +15,7 @@ public class PlayerThrusterFXController : MonoBehaviour
     [Header("Particle Systems attached to the ship")]
     [SerializeField] private List<ParticleSystem> thrusters = new();
 
-    [Header("Particle settings per state")]
+    [Header("Particle settings")]
     [SerializeField] private ParticleStateSettings standstillSettings;
     [SerializeField] private ParticleStateSettings movingSettings;
     [SerializeField] private ParticleStateSettings sprintingSettings;
@@ -28,7 +28,8 @@ public class PlayerThrusterFXController : MonoBehaviour
 
     private void Start()
     {
-        player = GetComponent<Player_Spaceship>();
+        //player = GetComponent<Player_Spaceship>();
+        player = GameManager.Instance.Player;
         if (player == null)
         {
             Debug.LogError("ThrusterFXController: Player_Spaceship not found!");
@@ -56,10 +57,14 @@ public class PlayerThrusterFXController : MonoBehaviour
 
             // --- MAIN ---
             var main = ps.main;
-
             main.startSpeed = Mathf.Lerp(main.startSpeed.constant, targetSettings.startSpeed, Time.deltaTime * transitionSpeed);
-            main.startLifetime = Mathf.Lerp(main.startLifetime.constant, targetSettings.startLifetime, Time.deltaTime * transitionSpeed);
             main.startColor = Color.Lerp(main.startColor.color, targetSettings.startColor, Time.deltaTime * transitionSpeed);
+
+            // --- VELOCITY OVER LIFETIME (Z axis) ---
+            var vel = ps.velocityOverLifetime;
+            vel.enabled = true;
+            float currentVelZ = vel.z.constant;
+            vel.z = Mathf.Lerp(currentVelZ, targetSettings.velocityZ, Time.deltaTime * transitionSpeed);
         }
     }
 
@@ -84,8 +89,11 @@ public class PlayerThrusterFXController : MonoBehaviour
 
             var main = ps.main;
             main.startSpeed = settings.startSpeed;
-            main.startLifetime = settings.startLifetime;
             main.startColor = settings.startColor;
+
+            var vel = ps.velocityOverLifetime;
+            vel.enabled = true;
+            vel.z = settings.velocityZ;
         }
     }
 }

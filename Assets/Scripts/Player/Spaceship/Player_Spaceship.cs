@@ -27,6 +27,7 @@ public class Player_Spaceship : MonoBehaviour
     #endregion
 
     #region movement multipliers
+    [SerializeField] private bool realisticMovementOn = false;
     [SerializeField] private float moveSpeed = 1f;
     [SerializeField] private float sprintMultiplier = 1.5f;
     [SerializeField] private float accelerationRate = 5f; // Jak szybko zmienia siê prêdkoœæ
@@ -36,7 +37,6 @@ public class Player_Spaceship : MonoBehaviour
     [SerializeField] private float mouseSensY = 100f;
     #endregion
 
-    [SerializeField] private Transform mainCamera;
     private Rigidbody rb;
     private FuelSystem fuelSystem;
     private Transform cameraHolder;
@@ -65,6 +65,8 @@ public class Player_Spaceship : MonoBehaviour
         sprintAction?.Disable();
     }
     #endregion
+
+
 
     void Start()
     {
@@ -96,8 +98,8 @@ public class Player_Spaceship : MonoBehaviour
         HandleState();
 
 #if UNITY_EDITOR
-        if (Debug.isDebugBuild)
-            Debug.Log($"Speed: {currentSpeed:F2}, State: {playerCurrentState}");
+        //if (Debug.isDebugBuild)
+        //    Debug.Log($"Speed: {currentSpeed:F2}, State: {playerCurrentState}");
 #endif
     }
 
@@ -123,25 +125,43 @@ public class Player_Spaceship : MonoBehaviour
     {
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
         bool isSprinting = sprintAction.IsPressed();
+        bool isMoving = moveInput.magnitude != 0f;
 
-        if (moveInput.magnitude == 0)
-            playerCurrentState = PlayerState.Standstill;
-        else if (isSprinting)
-            playerCurrentState = PlayerState.Sprinting;
+        // uwzglêdnienie realistic mode
+        bool isMovingHorizontal = moveInput.y != 0f;
+
+        if (realisticMovementOn)
+        {
+            if (isMovingHorizontal && isSprinting)
+                playerCurrentState = PlayerState.Sprinting;
+            else if (isMovingHorizontal)
+                playerCurrentState = PlayerState.Moving;
+            else
+                playerCurrentState = PlayerState.Standstill;
+        }
         else
-            playerCurrentState = PlayerState.Moving;
+        {
+            if (isMoving && isSprinting)
+                playerCurrentState = PlayerState.Sprinting;
+            else if (isMoving)
+                playerCurrentState = PlayerState.Moving;
+            else
+                playerCurrentState = PlayerState.Standstill;
+        }
     }
+
 
     private void MovePlayer()
     {
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
         float rollInput = rollAction.ReadValue<float>();
         float mouseInputX = mouseX.ReadValue<float>() * Time.deltaTime * mouseSensX;
         float mouseInputY = mouseY.ReadValue<float>() * Time.deltaTime * mouseSensY;
 
         // Ruch w jednej AddForce
-        Vector3 moveDirection = rb.transform.TransformDirection(new Vector3(moveInput.x, 0, moveInput.y));
-        rb.AddForce(moveDirection * currentSpeed, ForceMode.Acceleration);
+        if (realisticMovementOn)
+            MovePlayer_Realistic();
+        else
+            MovePlayer_Arcade();
 
         // Obrót myszk¹
         rb.AddTorque(rb.transform.right * -mouseInputY * speedMultAngle, ForceMode.Acceleration);
@@ -151,6 +171,19 @@ public class Player_Spaceship : MonoBehaviour
         rb.AddTorque(rb.transform.forward * rollInput * speedRollAngle, ForceMode.Acceleration);
     }
 
+    private void MovePlayer_Arcade()
+    {
+        Vector2 moveInput = moveAction.ReadValue<Vector2>();
+        Vector3 moveDir = rb.transform.TransformDirection(new Vector3(moveInput.x, 0, moveInput.y));
+        rb.AddForce(moveDir * currentSpeed, ForceMode.Acceleration);
+    }
+
+    private void MovePlayer_Realistic()
+    {
+        Vector2 moveInput = moveAction.ReadValue<Vector2>();
+        Vector3 moveDir = rb.transform.TransformDirection(new Vector3(0, 0, moveInput.y));
+        rb.AddForce(moveDir * currentSpeed, ForceMode.Acceleration);
+    }
     private void SetInputs()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -160,6 +193,8 @@ public class Player_Spaceship : MonoBehaviour
         mouseY = playerInput.actions.FindAction("MouseY");
         sprintAction = playerInput.actions.FindAction("Sprint");
     }
+
+    public Vector2 MoveInput { get; private set; }
     public PlayerState CurrentState => playerCurrentState;
     #region EDUCATION NOTE public getter
     // Równowa¿ne z poni¿szym zapisem
