@@ -962,14 +962,14 @@ MonoBehaviour:
   - {fileID: 851750723}
   standstillSettings:
     emissionRate: 15
-    startSpeed: 2
+    startSpeed: 1
     startColor: {r: 0, g: 0.24008727, b: 1, a: 1}
     velocityZ: 1
   movingSettings:
-    emissionRate: 15
+    emissionRate: 17
     startSpeed: 4
-    startColor: {r: 1, g: 0.9451673, b: 0, a: 1}
-    velocityZ: 3
+    startColor: {r: 0, g: 0.23921569, b: 1, a: 1}
+    velocityZ: 4
   sprintingSettings:
     emissionRate: 20
     startSpeed: 8
@@ -1361,9 +1361,9 @@ MonoBehaviour:
   startPoint: {fileID: 1994149558}
   endPoint: {fileID: 1595096431}
   cubePrefab: {fileID: 7663657804196382583, guid: 78e5ba22295b03c4698f3a31d8f435c7, type: 3}
-  cubeCount: 10
+  cubeCount: 20
   scatterRadius: 10
-  scaleRange: {x: 0.5, y: 2, z: 0.5}
+  scaleRange: {x: 1, y: 3, z: 1}
 --- !u!4 &1939551092
 Transform:
   m_ObjectHideFlags: 0
@@ -1373,7 +1373,7 @@ Transform:
   m_GameObject: {fileID: 1939551090}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.11282, y: 14.700001, z: 9.6}
+  m_LocalPosition: {x: 0.27, y: -5.53, z: 13.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

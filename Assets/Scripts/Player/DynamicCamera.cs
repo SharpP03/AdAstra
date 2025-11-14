@@ -37,7 +37,9 @@ public class DynamicCamera : MonoBehaviour
             return;
         }
 
-        player = target.GetComponent<Player_Spaceship>();
+        //player = target.GetComponent<Player_Spaceship>();
+        player = GameManager.Instance.Player;
+
         cam = GetComponent<Camera>();
         if (cam) baseFOV = cam.fieldOfView;
 
@@ -66,9 +68,17 @@ public class DynamicCamera : MonoBehaviour
         float tiltX = moveInput.y * tiltAmount * 0.3f;
 
         // odczyt roll'a statku (obrót wokó³ osi Z)
-        float shipRoll = target.eulerAngles.z;
-        if (shipRoll > 180) shipRoll -= 360; // normalizacja zakresu [-180, 180]
-        currentRoll = Mathf.Lerp(currentRoll, shipRoll * rollFollowStrength, Time.deltaTime * tiltSmoothness);
+        #region NOTA EDUKACYJNA obrót skoki
+        // taka kalkulacjia powodowa³a nag³e skoki kamery przy pe³nym obrocie 
+        //float shipRoll = target.eulerAngles.z;
+        //if (shipRoll > 180) shipRoll -= 360; // normalizacja zakresu [-180, 180]
+        //currentRoll = Mathf.Lerp(currentRoll, shipRoll * rollFollowStrength, Time.deltaTime * tiltSmoothness);
+        #endregion
+        // p³ynne przejœcie 
+        float targetRoll = target.eulerAngles.z;
+        float smoothRoll = Mathf.DeltaAngle(currentRoll / rollFollowStrength, targetRoll) * rollFollowStrength;
+        currentRoll += smoothRoll * Time.deltaTime * tiltSmoothness;
+
 
         // tworzymy finaln¹ rotacjê kamery (forward statku + tilt + roll)
         Quaternion baseRot = Quaternion.LookRotation(target.forward, Vector3.up);

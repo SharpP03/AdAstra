@@ -66,6 +66,8 @@ public class Player_Spaceship : MonoBehaviour
     }
     #endregion
 
+
+
     void Start()
     {
         SetInputs();
@@ -96,8 +98,8 @@ public class Player_Spaceship : MonoBehaviour
         HandleState();
 
 #if UNITY_EDITOR
-        if (Debug.isDebugBuild)
-            Debug.Log($"Speed: {currentSpeed:F2}, State: {playerCurrentState}");
+        //if (Debug.isDebugBuild)
+        //    Debug.Log($"Speed: {currentSpeed:F2}, State: {playerCurrentState}");
 #endif
     }
 

@@ -28,7 +28,8 @@ public class PlayerThrusterFXController : MonoBehaviour
 
     private void Start()
     {
-        player = GetComponent<Player_Spaceship>();
+        //player = GetComponent<Player_Spaceship>();
+        player = GameManager.Instance.Player;
         if (player == null)
         {
             Debug.LogError("ThrusterFXController: Player_Spaceship not found!");

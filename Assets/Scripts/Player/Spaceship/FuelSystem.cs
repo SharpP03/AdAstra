@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,25 +14,23 @@ public class FuelSystem : MonoBehaviour
     public bool HasFuel => currentFuel > 0f;
     public float FuelPercent => currentFuel / maxFuel;
 
-    private PlayerState playerState;
     private Player_Spaceship player;
 
+    private IEnumerator WaitForPlayer()
+    {
+        while (GameManager.Instance == null || GameManager.Instance.Player == null)
+            yield return null; // czekaj jedn¹ klatkê
 
+        player = GameManager.Instance.Player;
+        currentFuel = maxFuel;
+        fuelSprintUsage = fuelUsage * 2.2f;
+    }
     void Start()
     {
-        currentFuel = maxFuel;
-        fuelSprintUsage = fuelUsage * 2;
-        player = GetComponent<Player_Spaceship>();
-        if (player == null)
-        {
-            Debug.LogError("ThrusterFXController: Player_Spaceship not found!");
-            enabled = false;
-            return;
-        }
-        playerState = player.CurrentState;
+        StartCoroutine(WaitForPlayer());
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         ConsumeFuel();
     }
@@ -39,7 +38,10 @@ public class FuelSystem : MonoBehaviour
 
     private void ConsumeFuel()
     {
-        switch (playerState)
+        if (player == null) return;
+        //Debug.Log(currentFuel);
+
+        switch (player.CurrentState)
         {
             case PlayerState.Moving:
                 currentFuel = Mathf.Max(0, currentFuel - fuelUsage * Time.deltaTime);
