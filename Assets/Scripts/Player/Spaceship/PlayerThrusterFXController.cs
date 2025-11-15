@@ -103,7 +103,7 @@ public class PlayerThrusterFXController : MonoBehaviour
         foreach (var ps in thrusters)
         {
             if (ps == null) continue;
-            Debug.Log("Settings changed");
+            //Debug.Log("Settings changed");
 
             var emission = ps.emission;
             emission.rateOverTime = settings.emissionRate;

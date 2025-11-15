@@ -95,7 +95,9 @@ public class Player_Spaceship : MonoBehaviour
 
     private void Update()
     {
+        Vector2 MoveInput = moveAction.ReadValue<Vector2>();
         HandleState();
+
 
 #if UNITY_EDITOR
         //if (Debug.isDebugBuild)
@@ -116,25 +118,27 @@ public class Player_Spaceship : MonoBehaviour
             _ => 0f
         };
 
-        // P³ynna zmiana prêdkoœci
+        // Smooth velocity change
         targetSpeed = baseSpeed;
         currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * accelerationRate);
     }
 
     private void HandleState()
     {
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
+        Vector2 moveInput = MoveInput;
+
         bool isSprinting = sprintAction.IsPressed();
         bool isMoving = moveInput.magnitude != 0f;
 
-        // uwzglêdnienie realistic mode
-        bool isMovingHorizontal = moveInput.y != 0f;
+        // Realistic mode detection
+        float deadzone = 0.1f; // future deadzone for controllers e.g. joystick 
+        bool isMovingForward = Mathf.Abs(moveInput.y) > deadzone;
 
         if (realisticMovementOn)
         {
-            if (isMovingHorizontal && isSprinting)
+            if (isMovingForward && isSprinting)
                 playerCurrentState = PlayerState.Sprinting;
-            else if (isMovingHorizontal)
+            else if (isMovingForward)
                 playerCurrentState = PlayerState.Moving;
             else
                 playerCurrentState = PlayerState.Standstill;
@@ -173,14 +177,16 @@ public class Player_Spaceship : MonoBehaviour
 
     private void MovePlayer_Arcade()
     {
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
+        Vector2 moveInput = MoveInput;
+
         Vector3 moveDir = rb.transform.TransformDirection(new Vector3(moveInput.x, 0, moveInput.y));
         rb.AddForce(moveDir * currentSpeed, ForceMode.Acceleration);
     }
 
     private void MovePlayer_Realistic()
     {
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
+        Vector2 moveInput = MoveInput;
+
         Vector3 moveDir = rb.transform.TransformDirection(new Vector3(0, 0, moveInput.y));
         rb.AddForce(moveDir * currentSpeed, ForceMode.Acceleration);
     }
