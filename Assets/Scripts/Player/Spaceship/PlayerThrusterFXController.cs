@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public struct ParticleStateSettings
     public float emissionRate;
     public float startSpeed;
     public Color startColor;
-    public float velocityZ; 
+    public float velocityZ;
 }
 
 public class PlayerThrusterFXController : MonoBehaviour
@@ -26,24 +27,42 @@ public class PlayerThrusterFXController : MonoBehaviour
     private Player_Spaceship player;
     private ParticleStateSettings targetSettings;
 
-    private void Start()
+    private bool isPlayerRegistered = false;
+
+    private IEnumerator WaitForPlayer()
     {
-        //player = GetComponent<Player_Spaceship>();
+        while (GameManager.Instance == null || GameManager.Instance.Player == null)
+            yield return null; // wait for single frame
+
         player = GameManager.Instance.Player;
-        if (player == null)
-        {
-            Debug.LogError("ThrusterFXController: Player_Spaceship not found!");
-            enabled = false;
-            return;
-        }
+        isPlayerRegistered = true;
+
 
         targetSettings = GetSettingsForState(player.CurrentState);
         ApplySettingsInstant(targetSettings);
     }
 
+    private void Start()
+    {
+
+        StartCoroutine(WaitForPlayer());
+
+
+    }
+
     private void Update()
     {
-        // aktualny target w zale¿noœci od stanu gracza
+        if (isPlayerRegistered)
+        {
+            ApplySettingsGradually();
+        }
+
+    }
+
+
+    private void ApplySettingsGradually()
+    {
+        // target settings depending on player state
         targetSettings = GetSettingsForState(player.CurrentState);
 
         foreach (var ps in thrusters)
@@ -68,6 +87,7 @@ public class PlayerThrusterFXController : MonoBehaviour
         }
     }
 
+
     private ParticleStateSettings GetSettingsForState(PlayerState state)
     {
         return state switch
@@ -83,6 +103,7 @@ public class PlayerThrusterFXController : MonoBehaviour
         foreach (var ps in thrusters)
         {
             if (ps == null) continue;
+            Debug.Log("Settings changed");
 
             var emission = ps.emission;
             emission.rateOverTime = settings.emissionRate;
