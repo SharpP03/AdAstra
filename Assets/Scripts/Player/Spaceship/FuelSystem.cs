@@ -5,7 +5,8 @@ using UnityEngine.InputSystem;
 public class FuelSystem : MonoBehaviour
 {
     [SerializeField]
-    public float maxFuel;
+    private float maxFuel = 100f;
+    public float MaxFuel => maxFuel; // export maxFuel readonly
     public float currentFuel { get; private set; }
     [SerializeField]
     private float fuelUsage;
@@ -19,7 +20,7 @@ public class FuelSystem : MonoBehaviour
     private IEnumerator WaitForPlayer()
     {
         while (GameManager.Instance == null || GameManager.Instance.Player == null)
-            yield return null; // czekaj jedn¹ klatkê
+            yield return null; // wait for single frame
 
         player = GameManager.Instance.Player;
         currentFuel = maxFuel;
@@ -54,7 +55,7 @@ public class FuelSystem : MonoBehaviour
         }
     }
 
-    public void Refuel(float amount)
+    public void AddFuel(float amount)
     {
         currentFuel = Mathf.Min(maxFuel, currentFuel + amount);
     }
