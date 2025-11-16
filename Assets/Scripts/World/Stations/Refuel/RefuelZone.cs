@@ -33,7 +33,7 @@ public class RefuelZone : MonoBehaviour, IInteractable
 
     public void OnChildTriggerEnter(Collider other)
     {
-        Debug.Log("Collider: " + other);
+        //Debug.Log("Collider: " + other);
         GameObject rootObject = other.transform.root.gameObject;
         if (rootObject.CompareTag("Player"))
         { Interact(rootObject); }

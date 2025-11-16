@@ -87,7 +87,7 @@ public class Enemy : MonoBehaviour
     {
         if (Time.time > nextFireTime)
         {
-            Debug.Log("Enemy fires!");
+            //Debug.Log("Enemy fires!");
             nextFireTime = Time.time + fireRate;
             // Tu mo¿esz dodaæ Instantiate(projectile, ...);
         }
