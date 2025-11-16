@@ -1,16 +1,21 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
+[SelectionBase]
 public class Enemy : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public float detectRange = 100f;
-    public float attackRange = 20f;
-    public float fireRate = 1.5f;
+    public float detectRange = 200f;
+    public float attackRange = 150f;
+    public float fireRate = 1f;
     private float nextFireTime;
 
     private Player_Spaceship player_Spaceship;
     private Transform player;
+
+    public GameObject projectilePrefab;
+    public Transform shootPoint;
+
 
     private IEnumerator WaitForPlayer()
     {
@@ -37,8 +42,9 @@ public class Enemy : MonoBehaviour
 
     bool HasPlayer()
     {
-        if (player != null) { return true; } else
-       { Debug.LogWarning("Player not found ! {AI enemy}"); return false; }
+        if (player != null) { return true; }
+        else
+        { Debug.LogWarning("Player not found ! {AI enemy}"); return false; }
     }
 
     void HandleDetection()
@@ -66,7 +72,8 @@ public class Enemy : MonoBehaviour
         TryShoot();
     }
 
-    void LookAtPlayer(float turnSpeed = 5f, float minDistance = 0.01f)
+    public float turnSpeed = 10f;
+    void LookAtPlayer(float minDistance = 0.01f)
     {
         if (player == null) return;
 
@@ -83,13 +90,43 @@ public class Enemy : MonoBehaviour
 
     }
 
+    // TODO: Przeanalizować system strzelania
     void TryShoot()
     {
         if (Time.time > nextFireTime)
         {
-            //Debug.Log("Enemy fires!");
             nextFireTime = Time.time + fireRate;
-            // Tu mo�esz doda� Instantiate(projectile, ...);
+
+            if (projectilePrefab != null && shootPoint != null)
+            {
+                Rigidbody playerRb = player.GetComponent<Rigidbody>();
+                Vector3 playerPos = player.position;
+
+                Vector3 aimPoint = playerPos;
+
+                if (playerRb != null)
+                {
+                    // 🧠 przewidywanie gdzie gracz będzie
+                    float projectileSpeed = projectilePrefab.GetComponent<EnemyProjectile>().speed;
+                    float distance = Vector3.Distance(shootPoint.position, playerPos);
+                    float timeToHit = distance / projectileSpeed;
+
+                    aimPoint = playerPos + playerRb.linearVelocity * timeToHit;
+                }
+
+                // 🎯 offset, aby nie strzelał pod gracza
+                aimPoint += Vector3.up * 1.5f;
+
+                // 🔥 lekkie niedokładności żeby AI nie było sniperem
+                float spread = 0.05f;
+                aimPoint += Random.insideUnitSphere * spread;
+
+                // 🚀 kierunek strzału
+                Vector3 dir = (aimPoint - shootPoint.position).normalized;
+                Quaternion rot = Quaternion.LookRotation(dir);
+
+                Instantiate(projectilePrefab, shootPoint.position, rot);
+            }
         }
     }
 }
