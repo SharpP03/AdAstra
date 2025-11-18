@@ -19,7 +19,7 @@ public class HealthSystem : MonoBehaviour
 
     }
 
-    public void DamagePlayer(float damageValue)
+    public void PlayerTakeDamage(float damageValue)
     {
         currentHealth = currentHealth - damageValue;
     }
