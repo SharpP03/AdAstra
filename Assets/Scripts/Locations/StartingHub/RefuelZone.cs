@@ -1,13 +1,15 @@
-using System;
 using UnityEngine;
 
 public class RefuelZone : MonoBehaviour, IInteractable
 {
     [SerializeField]
-    private float fuelToAdd = 20f;
+    private ResourceKind resourceKind = ResourceKind.Fuel;
+    [SerializeField]
+    private float amountToAdd = 20f;
     [SerializeField]
     private GameObject zoneObject;
-    public bool addMaxFuel = false;
+    [SerializeField]
+    private bool fillToMax = false;
 
 
     private void Awake()
@@ -20,15 +22,18 @@ public class RefuelZone : MonoBehaviour, IInteractable
 
     public void Interact(GameObject player)
     {
-        FuelSystem fuelSystem = player.GetComponent<FuelSystem>();
+        IRefillable[] refillables = player.GetComponents<IRefillable>();
+        if (refillables == null || refillables.Length == 0) return;
 
-
-        if (fuelSystem)
+        for (int i = 0; i < refillables.Length; i++)
         {
-            fuelSystem.AddFuel(addMaxFuel ? fuelSystem.MaxFuel : fuelToAdd);
+            IRefillable refillable = refillables[i];
+            if (refillable.Kind != resourceKind) continue;
 
+            float amount = fillToMax ? refillable.Max : amountToAdd;
+            refillable.Add(amount);
+            break;
         }
-
     }
 
     public void OnChildTriggerEnter(Collider other)

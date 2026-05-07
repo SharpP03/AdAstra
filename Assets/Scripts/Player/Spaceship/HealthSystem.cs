@@ -24,5 +24,8 @@ public class HealthSystem : MonoBehaviour
         currentHealth = currentHealth - damageValue;
     }
 
-
+    public void AddHealth(float amount)
+    {
+        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+    }
 }
