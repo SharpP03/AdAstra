@@ -1,7 +1,6 @@
 using UnityEngine;
-using System.Collections;
 
-public class HealthSystem : MonoBehaviour
+public class HealthSystem : MonoBehaviour, IDamageable
 {
     [SerializeField]
     private float maxHealth = 300f;
@@ -19,9 +18,14 @@ public class HealthSystem : MonoBehaviour
 
     }
 
-    public void PlayerTakeDamage(float damageValue)
+    public void TakeDamage(float damageValue)
     {
         currentHealth = currentHealth - damageValue;
+    }
+
+    public void PlayerTakeDamage(float damageValue)
+    {
+        TakeDamage(damageValue);
     }
 
     public void AddHealth(float amount)
