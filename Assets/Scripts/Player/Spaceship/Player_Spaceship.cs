@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public enum PlayerState
 {
     #region EDUCATION NOTE 
-    // DO PRACY IN¯. - przesuniêcia bitowem i zarz¹dzanie maskami binarnie.
+    // DO PRACY IN?. - przesuni?cia bitowem i zarz?dzanie maskami binarnie.
     // for more educational value and in case of nedd for complex system use bit operations and flags
     // e.g. 1<<1 1<<2 1<<3, bit shifting and marking as flags e.g. 1010  
     #endregion
@@ -30,7 +30,7 @@ public class Player_Spaceship : MonoBehaviour
     [SerializeField] private bool realisticMovementOn = false;
     [SerializeField] private float moveSpeed = 1f;
     [SerializeField] private float sprintMultiplier = 1.5f;
-    [SerializeField] private float accelerationRate = 5f; // Jak szybko zmienia siê prêdkoœæ
+    [SerializeField] private float accelerationRate = 5f; // Jak szybko zmienia si? pr?dko??
     [SerializeField] private float speedMultAngle = .5f;
     [SerializeField] private float speedRollAngle = .05f;
     [SerializeField] private float mouseSensX = 100f;
@@ -109,14 +109,14 @@ public class Player_Spaceship : MonoBehaviour
         {
             #region EDUCATION NOTE 
             // switch expression VS switch control flow (basic switch)
-            // wyra¿enie switch dostêpne od wersji C# 8.0 - nie pozwala na fallthrough, pokrywa stany, zwraca wartoœæ
+            // wyra?enie switch dost?pne od wersji C# 8.0 - nie pozwala na fallthrough, pokrywa stany, zwraca warto??
             #endregion
             PlayerState.Sprinting => moveSpeed * sprintMultiplier,
             PlayerState.Moving => moveSpeed,
             _ => 0f
         };
 
-        // P³ynna zmiana prêdkoœci
+        // P?ynna zmiana pr?dko?ci
         targetSpeed = baseSpeed;
         currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * accelerationRate);
     }
@@ -127,7 +127,7 @@ public class Player_Spaceship : MonoBehaviour
         bool isSprinting = sprintAction.IsPressed();
         bool isMoving = moveInput.magnitude != 0f;
 
-        // uwzglêdnienie realistic mode
+        // uwzgl?dnienie realistic mode
         bool isMovingHorizontal = moveInput.y != 0f;
 
         if (realisticMovementOn)
@@ -163,7 +163,7 @@ public class Player_Spaceship : MonoBehaviour
         else
             MovePlayer_Arcade();
 
-        // Obrót myszk¹
+        // Obr?t myszk?
         rb.AddTorque(rb.transform.right * -mouseInputY * speedMultAngle, ForceMode.Acceleration);
         rb.AddTorque(rb.transform.up * mouseInputX * speedMultAngle, ForceMode.Acceleration);
 
@@ -197,7 +197,7 @@ public class Player_Spaceship : MonoBehaviour
     public Vector2 MoveInput { get; private set; }
     public PlayerState CurrentState => playerCurrentState;
     #region EDUCATION NOTE public getter
-    // Równowa¿ne z poni¿szym zapisem
+    // R?wnowa?ne z poni?szym zapisem
     //public PlayerState CurrentState
     //{
     //    get { return playerCurrentState; }
