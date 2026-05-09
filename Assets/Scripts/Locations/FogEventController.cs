@@ -3,6 +3,9 @@ using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
 [SelectionBase]
+/// <summary>
+/// Runs periodic fog hazard events while the player is inside the trigger zone.
+/// </summary>
 public class FogEventController : MonoBehaviour
 {
     [Header("Timing")] [SerializeField] private float minIntervalSeconds = 10f;
@@ -85,6 +88,9 @@ public class FogEventController : MonoBehaviour
         ValidateTiming();
     }
 
+    /// <summary>
+    /// Runs hazard checks at random intervals only while a valid player stays inside the zone.
+    /// </summary>
     private IEnumerator EventLoop()
     {
         while (true)
@@ -121,6 +127,9 @@ public class FogEventController : MonoBehaviour
         warningRandomSpreadRadius = Mathf.Max(0f, warningRandomSpreadRadius);
     }
 
+    /// <summary>
+    /// Applies delayed damage only if the same target is still inside the warning radius.
+    /// </summary>
     private IEnumerator ApplyDelayedDamage(GameObject targetRoot, IDamageable damageable, Vector3 warningPoint)
     {
         yield return new WaitForSeconds(damageDelaySeconds);
@@ -180,6 +189,9 @@ public class FogEventController : MonoBehaviour
         return longestLifetime + 0.5f;
     }
 
+    /// <summary>
+    /// Computes a near-target warning point and aligns it to the ground when possible.
+    /// </summary>
     private Vector3 GetWarningPoint(Vector3 targetPosition)
     {
         var maxOffsetFromPlayer = Mathf.Min(warningRandomSpreadRadius, warningSphereRadius * 0.9f);
