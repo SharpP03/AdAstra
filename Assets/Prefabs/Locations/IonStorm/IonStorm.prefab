@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1837006839729704482}
   - component: {fileID: 8015383529286124107}
   m_Layer: 0
-  m_Name: Particle_warning
+  m_Name: Particle_damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 147.34, y: 7.25, z: -591.23}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2986649386489132340}
@@ -1326,8 +1326,8 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 0
-        atime1: 16384
-        atime2: 29491
+        atime1: 10409
+        atime2: 55319
         atime3: 65535
         atime4: 0
         atime5: 0
@@ -14669,7 +14669,7 @@ GameObject:
   - component: {fileID: 8734161090392916206}
   - component: {fileID: 5606565965627652182}
   m_Layer: 0
-  m_Name: Particle_damage
+  m_Name: Particle_warning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14685,7 +14685,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 147.34, y: 7.25, z: -591.23}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7785343292932307716}
@@ -19562,17 +19562,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6a60cb02de048e38aec344ceff2f84a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FogEventController
-  minIntervalSeconds: 1
-  maxIntervalSeconds: 3
-  damageAmount: 100
-  damageDelaySeconds: 1.5
-  warningSphereRadius: 1.5
+  minIntervalSeconds: 3
+  maxIntervalSeconds: 5
+  damageAmount: 50
+  damageDelaySeconds: 1
+  warningSphereRadius: 8
   warningRandomSpreadRadius: 3
-  warningSphereCastHeight: 2
-  warningSphereCastDistance: 4
-  warningSphereMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
   warningParticlePrefab: {fileID: 8405538313911208277}
   damageParticlePrefab: {fileID: 2272428655744241769}
   zoneTrigger: {fileID: 1336525423086077434}
