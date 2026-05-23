@@ -52,3 +52,5 @@ tworząc ruch orbitalny.
 Przy krawędzi pola zwiększa siłę przyciągania oraz tłumi prędkość, żeby obiekty nie uciekały zbyt łatwo z orbity.
 
 (Mechanika działa odwrotnie niż w rezeczywistości - na potrzeby gry)
+
+Skrypty: [GravityAnomallyController.cs](../../Scripts/Locations/GravityAnomaly/GravityAnomallyController.cs)
