@@ -22,7 +22,7 @@ public class RefuelZone : MonoBehaviour, IInteractable
 
     public void Interact(GameObject player)
     {
-        IRefillable[] refillables = player.GetComponents<IRefillable>();
+        IRefillable[] refillables = player.GetComponentsInChildren<IRefillable>(true);
         if (refillables == null || refillables.Length == 0) return;
 
         for (int i = 0; i < refillables.Length; i++)
