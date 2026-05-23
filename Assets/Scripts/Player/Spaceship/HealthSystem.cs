@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class HealthSystem : MonoBehaviour, IDamageable
 {
@@ -15,7 +17,11 @@ public class HealthSystem : MonoBehaviour, IDamageable
 
     void Update()
     {
-
+        // TODO: DELETE - temporary debug input to halve HP
+        if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
+        {
+            TakeDamage(currentHealth * 0.5f);
+        }
     }
 
     public void TakeDamage(float damageValue)

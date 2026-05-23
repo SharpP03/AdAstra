@@ -34,6 +34,13 @@ public class FuelSystem : MonoBehaviour
     private void Update()
     {
         ConsumeFuel();
+
+        // TODO: DELETE - temporary debug input to halve HP
+        if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
+        {
+            currentFuel = maxFuel/2;
+        }
+
     }
 
 

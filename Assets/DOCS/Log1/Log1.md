@@ -25,7 +25,10 @@ Skrypty: [UI_Manager.cs](../../Scripts/Player/UI_Manager.cs), [FuelSystem.cs](..
 
 ![Pole asteroid](gifs/Asteroids.gif)
 
-Generator tworzy losowe pole asteroid z prefabów, nadając im pozycję, skalę, kolizje, `Rigidbody`, początkową siłę oraz rotację. Dzięki temu lokacja nie jest statyczna i od razu stanowi fizyczną przeszkodę dla gracza.
+Generator tworzy losowe pole asteroid z prefabów, nadając im pozycję, skalę, 
+kolizje, `Rigidbody`, początkową siłę oraz rotację. 
+
+Dzięki temu lokacja dodaje trudności w eksploracji.
 
 Skrypt: [AsteroidFieldGenerator.cs](../../Scripts/Locations/AsteroidField_01/AsteroidFieldGenerator.cs)
 
@@ -33,22 +36,19 @@ Skrypt: [AsteroidFieldGenerator.cs](../../Scripts/Locations/AsteroidField_01/Ast
 
 ![Mgła](gifs/FOG.gif)
 
-Strefa mgły działa jako trigger. Po wejściu gracza uruchamia losowe zdarzenia: najpierw pojawia się ostrzeżenie VFX, a po opóźnieniu obrażenia są naliczane tylko wtedy, gdy gracz nadal znajduje się w zagrożonym obszarze.
+Strefa mgły - przeszkoda polegająca na niebezpiecznym obszarze.
+
+Po wejściu gracza uruchamia losowe zdarzenia: najpierw pojawia się ostrzeżenie VFX, a po opóźnieniu obrażenia są naliczane tylko wtedy, gdy gracz nadal znajduje się w zagrożonym obszarze.
 
 Skrypty: [FogEventController.cs](../../Scripts/Locations/IonStorm/FogEventController.cs), [HealthSystem.cs](../../Scripts/Player/Spaceship/HealthSystem.cs)
 
 ## Anomalia grawitacyjna
 
 ![Anomalia grawitacyjna](gifs/Zone1.gif)
-
-Anomalia wyszukuje obiekty z `Rigidbody` w zasięgu, przyciąga je do centrum i dodaje siłę styczną, tworząc ruch orbitalny. Przy krawędzi pola zwiększa siłę przyciągania oraz tłumi prędkość, żeby obiekty nie uciekały zbyt łatwo.
-
-Skrypt: [GravityAnomallyController.cs](../../Scripts/Locations/GravityAnomaly/GravityAnomallyController.cs)
-
-## Strefa uzupełniania zasobów
-
 ![Strefa uzupełniania](gifs/Zone2opt.gif)
 
-Strefa wykrywa wejście gracza przez collider dziecka i wywołuje interakcję uzupełnienia zasobu. Mechanika jest generyczna: ten sam system może dodawać paliwo albo zdrowie, w zależności od ustawionego typu zasobu.
+Anomalia wyszukuje obiekty z `Rigidbody` w zasięgu, przyciąga je do centrum i dodaje siłę styczną, 
+tworząc ruch orbitalny.
+Przy krawędzi pola zwiększa siłę przyciągania oraz tłumi prędkość, żeby obiekty nie uciekały zbyt łatwo z orbity.
 
-Skrypty: [RefuelZone.cs](../../Scripts/Locations/StartingHub/RefuelZone.cs), [RefuelChildCollider.cs](../../Scripts/Locations/StartingHub/RefuelChildCollider.cs), [IRefillable.cs](../../Scripts/Refill/IRefillable.cs), [FuelRefillable.cs](../../Scripts/Refill/FuelRefillable.cs), [HealthRefillable.cs](../../Scripts/Refill/HealthRefillable.cs)
+(Mechanika działa odwrotnie niż w rezeczywistości - na potrzeby gry)
