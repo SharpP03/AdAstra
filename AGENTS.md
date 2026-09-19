@@ -32,6 +32,7 @@
 - Modular scene objects must remain connected prefab instances, not unpacked raw geometry.
 
 ## 5. DOCUMENTATION & LOGS
+- Przed rozpoczęciem prac nad dowolną mechaniką sprawdź wpis w `Assets/DOCS/SYSTEMS.md`, a po zakończeniu prac zaktualizuj jego checklistę oraz status.
 - Architectural additions or changes to core contracts MUST update the documentation in `Assets/DOCS/`.
 - Routine bug fixes and localized tweaks do not require documentation entries.
 - Documentation must accurately describe the physical implementation as-is, never speculative designs.
