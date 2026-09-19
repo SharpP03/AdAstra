@@ -1440,6 +1440,11 @@ MonoBehaviour:
   minIntervalSeconds: 1
   maxIntervalSeconds: 3
   damageAmount: 100
+  damageDelaySeconds: 1.5
+  warningSphereRadius: 1.5
+  warningRandomSpreadRadius: 3
+  warningParticlePrefab: {fileID: 0}
+  damageParticlePrefab: {fileID: 0}
   zoneTrigger: {fileID: 448076681}
 --- !u!1 &460109608
 GameObject:
