@@ -1,2 +1,27 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Git configuration files
+.gitattributes  text eol=lf
+.gitignore      text eol=lf
+
+# Unity text files and source code - enforce LF line endings
+*.cs            text diff=csharp eol=lf
+*.meta          text eol=lf
+*.prefab        text eol=lf
+*.unity         text eol=lf
+*.asset         text eol=lf
+*.mat           text eol=lf
+*.inputactions  text eol=lf
+*.asmdef        text eol=lf
+*.md            text eol=lf
+
+# Binary assets - protect from line-ending conversion
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.hdr           binary
+*.exr           binary
+*.fbx           binary
+*.pdf           binary
+*.unitypackage  binary
