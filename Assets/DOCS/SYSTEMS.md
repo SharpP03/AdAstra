@@ -1,155 +1,179 @@
 # SYSTEMS.MD - AD ASTRA SYSTEM REGISTRY
 
-Rejestr podsystemów projektu AdAstra. Służy jako operacyjna tablica stanu dla inżynierów oraz modeli AI. Każda modyfikacja podsystemu wymaga aktualizacji odpowiedniego wpisu w tym dokumencie.
+Operational subsystem registry for project **AdAstra**. Serves as the single source of truth for implementation status, dependencies, MVP scope, and remaining technical tasks.
 
 ---
 
-## Statusy Podsystemów
+## System Status Legend
 
-| Status | Znaczenie |
+| Status | Definition |
 | :--- | :--- |
-| **`ZAIMPLEMENTOWANY`** | System działa w projekcie, ale może wymagać dopracowania lub optymalizacji. |
-| **`CZĘŚCIOWO ZAIMPLEMENTOWANY`** | Część systemu istnieje w kodzie/scenie, lecz brakuje integracji, występują błędy lub luki w logice. |
-| **`OPISANY / NIEZAIMPLEMENTOWANY`** | Koncepcja jest znana i pożądana, ale fizyczna implementacja nie istnieje w repozytorium (lub została wycięta). |
-| **`NIEOPISANY`** | Element jest niezbędny dla pętli rozgrywki MVP, lecz brak jakichkolwiek reguł i założeń projektowych. |
-| **`DO WERYFIKACJI`** | Otwarta kwestia architektoniczna lub projektowa wymagająca decyzji. |
+| **`IMPLEMENTED`** | Fully functional in the repository; may require minor tuning or optimization. |
+| **`PARTIALLY IMPLEMENTED`** | Partially working in code/scene, but has logic gaps, bugs, or missing integrations. |
+| **`DESCRIBED / UNIMPLEMENTED`** | Concept and requirements defined, but physical code does not yet exist. |
+| **`DEFERRED / OUT OF MVP`** | Postponed; intentionally out of current MVP scope. |
+| **`UNDER REVIEW`** | Open architectural or design question requiring a decision. |
 
 ---
 
-## Rejestr Podsystemów
+## Subsystem Registry
 
-### 1. Sterowanie i Fizyka Statku (Spaceship Controller)
-- **Status:** `CZĘŚCIOWO ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Player/Spaceship/Player_Spaceship.cs`
-- **Opis:** Model lotu 6DoF / Arcade oparty na `Rigidbody` i New Input Systemie. Obsługuje ruch postępowy, zwroty, obrót myszą (pitch/yaw), przechył (roll) oraz tryb sprintu.
-- **Działania do podjęcia:**
-  - [ ] Naprawić błąd logiczny: właściwość `MoveInput` w `Player_Spaceship.cs` nigdy nie jest aktualizowana (wartość `(0, 0)`), co powoduje, że tilt kamery jest martwy.
-  - [ ] Przenieść odczyt wejścia myszy z `FixedUpdate()` do `Update()`, eliminując micro-stuttering i gubienie próbek wejścia.
-  - [ ] Zastąpić wyszukiwanie stringowe akcji (`actions.FindAction("...")`) silnie typowanym wrapperem C#.
-
----
-
-### 2. Zasób: Paliwo (Fuel System)
-- **Status:** `ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Player/Spaceship/FuelSystem.cs`
-- **Opis:** Zarządza limitem i drenażem paliwa. Ruch statku i sprint zużywają paliwo w zróżnicowanym tempie. Wyczerpanie paliwa uniemożliwia sterowanie. Obsługuje uzupełnianie w strefach odnowienia.
-- **Działania do podjęcia:**
-  - [ ] Usunąć coroutine odpytującą `WaitForPlayer()` na rzecz bezpośredniej referencji lub inicjalizacji w `Awake`.
-  - [ ] Usunąć tymczasowy debugowy skrót klawiszowy (`Keyboard.current.digit1Key`).
+### 1. Spaceship Flight & Physics (Spaceship Controller)
+* **Status:** `PARTIALLY IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Player/Spaceship/Player_Spaceship.cs`
+* **Dependencies:** `Rigidbody`, `FuelSystem`, `PlayerInput` (`Assets/playerInput.inputactions`)
+* **Description:** 6DoF/Arcade flight model driven by `Rigidbody` forces and the New Input System. Handles translation, pitch/yaw mouse rotation, roll keys, and sprint boost.
+* **Action Items:**
+  - [ ] Fix logic bug: `MoveInput` property in `Player_Spaceship.cs` is never assigned (remains `(0, 0)`), which disables the camera tilt effect.
+  - [ ] Move mouse input reading from `FixedUpdate()` to `Update()` to eliminate input jitter.
+  - [ ] Replace runtime string lookups (`actions.FindAction(...)`) with strongly typed C# action wrappers.
 
 ---
 
-### 3. Zasób: Zdrowie i System Obrażeń (Health & Damage System)
-- **Status:** `CZĘŚCIOWO ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Player/Spaceship/HealthSystem.cs`, `Assets/Scripts/Interfaces/IDamageable.cs`
-- **Opis:** Obsługuje punkty życia statku gracza przez interfejs `IDamageable`. Odbiera obrażenia z hazardów środowiskowych (np. burza jonowa).
-- **Działania do podjęcia:**
-  - [ ] Wprowadzić dolne clampowanie punktów życia (`Mathf.Max(0, ...)`), aby zdrowie nie spadało poniżej zera.
-  - [ ] Zaimplementować reakcję na śmierć (event zniszczenia statku gracza / wywołanie Game Over).
-  - [ ] Usunąć debugowy skrót klawisza `1` z `Update()`.
+### 2. Resource: Fuel System
+* **Status:** `IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Player/Spaceship/FuelSystem.cs`
+* **Dependencies:** `Player_Spaceship`
+* **Description:** Tracks current and max fuel capacity. Moving and sprinting burn fuel at proportional rates. Zero fuel disables player propulsion.
+* **Action Items:**
+  - [ ] Replace coroutine polling loop (`WaitForPlayer()`) with direct reference or initialization in `Awake()`.
+  - [ ] Expose `event Action<float, float> OnFuelChanged` to allow event-driven HUD updates.
 
 ---
 
-### 4. Kamera Dynamiczna (Dynamic Camera)
-- **Status:** `CZĘŚCIOWO ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Player/DynamicCamera.cs`
-- **Opis:** Kamera TPP śledząca statek za pomocą `SmoothDamp`. Zwiększa FOV i oddala się podczas sprintu, reaguje na obrót w osi Z (roll) oraz nachylenie boczne (tilt).
-- **Działania do podjęcia:**
-  - [ ] Wyeliminować wyścig inicjalizacji w `Start()` (`GameManager.Instance.Player` może być `null` w momencie startu kamery, co całkowicie paraliżuje śledzenie).
-  - [ ] Przywrócić działanie efektu `tilt` po naprawieniu właściwości `MoveInput` w graczu.
+### 3. Resource: Health & Damage System
+* **Status:** `PARTIALLY IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Player/Spaceship/HealthSystem.cs`, `Assets/Scripts/Interfaces/IDamageable.cs`
+* **Dependencies:** None (self-contained, implements `IDamageable`)
+* **Description:** Manages spaceship hull integrity. Implements `IDamageable` to receive environmental damage (e.g. from Ion Storm discharges).
+* **Action Items:**
+  - [ ] Add lower clamping (`Mathf.Max(0, ...)`) to prevent negative health.
+  - [ ] Implement `event Action<float, float> OnHealthChanged` and `event Action OnDied`.
+  - [ ] Connect `OnDied` to trigger the Game Over sequence in `GameManager`.
 
 ---
 
-### 5. Efekty Wizualne Napędu (Thruster FX)
-- **Status:** `ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Player/Spaceship/PlayerThrusterFXController.cs`
-- **Opis:** Płynnie interpoluje emisję, prędkość początkową, kolor oraz prędkość w osi Z cząsteczek napędu zależnie od stanu gracza (`Standstill`, `Moving`, `Sprinting`).
-- **Działania do podjęcia:**
-  - [ ] Usunąć pętlę oczekiwania `WaitForPlayer()` na rzecz bezpośredniej referencji lub rejestracji z poziomu obiektu gracza.
+### 4. Dynamic Chase Camera
+* **Status:** `PARTIALLY IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Player/DynamicCamera.cs`
+* **Dependencies:** `Camera`, `Transform` (Target), `Player_Spaceship`
+* **Description:** TPP camera tracking the spaceship using `SmoothDamp` in `LateUpdate()`. Expands FOV and pulls back during sprint, responds to ship roll and lateral tilt.
+* **Action Items:**
+  - [ ] Eliminate `Start()` initialization race condition (resolve player reference via explicit target injection or serialized field instead of relying on `GameManager.Instance.Player` during `Start`).
+  - [ ] Verify tilt effect functionality after fixing `Player_Spaceship.MoveInput`.
 
 ---
 
-### 6. Interfejs Użytkownika / HUD (UI Manager)
-- **Status:** `ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Player/UI_Manager.cs`
-- **Opis:** Prezentuje poziom paliwa i punktów życia za pomocą suwaków uGUI.
-- **Działania do podjęcia:**
-  - [ ] Zastąpić ciągłe odpytywanie wartości w `Update()` architekturą zdarzeniową (C# events wywoływane tylko przy zmianie wartości zasobu).
-  - [ ] Zaprojektować minimalistyczne ekrany stanu gry (Ekran Końca Gry / Śmierci / Restart).
+### 5. Engine Thruster FX
+* **Status:** `IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Player/Spaceship/PlayerThrusterFXController.cs`
+* **Dependencies:** `ParticleSystem` list, `Player_Spaceship`
+* **Description:** Interpolates particle emission rate, start speed, color, and Z-velocity based on player movement state (`Standstill`, `Moving`, `Sprinting`).
+* **Action Items:**
+  - [ ] Remove `WaitForPlayer()` coroutine loop in favor of explicit `Awake()`/`Start()` reference assignment.
 
 ---
 
-### 7. Stacje i Strefy Odnowienia (Refill Stations)
-- **Status:** `CZĘŚCIOWO ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Locations/StartingHub/`, `Assets/Scripts/Refill/`
-- **Opis:** Komponent `RefuelZone` automatycznie wykrywa gracza przez trigger potomny (`RefuelChildCollider`) i uzupełnia wskazany zasób (`ResourceKind.Fuel` lub `ResourceKind.Health`), komunikując się z interfejsem `IRefillable`.
-- **Działania do podjęcia:**
-  - [ ] **Krytyczne:** Dodać komponenty `FuelRefillable` i `HealthRefillable` do prefabu `Player.prefab` (obecnie istnieją wyłącznie jako unapplied overrides na scenie).
-  - [ ] Połączyć rozpakowaną geometrię stacji na scenie z prefabem `StartingHub.prefab`.
+### 6. User Interface & HUD
+* **Status:** `PARTIALLY IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Player/UI_Manager.cs`
+* **Dependencies:** `FuelSystem`, `HealthSystem`, Unity UI (`Slider`)
+* **Description:** Displays fuel and health bars using uGUI sliders.
+* **Action Items:**
+  - [ ] Replace per-frame `Update()` polling with event subscriptions (`OnFuelChanged`, `OnHealthChanged`) adhering to the C# event standard.
+  - [ ] Add minimal Win / Game Over screens with restart button.
 
 ---
 
-### 8. Zagrożenie: Anomalia Grawitacyjna (Gravity Anomaly)
-- **Status:** `ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Locations/GravityAnomaly/GravityAnomallyController.cs`, `Assets/Prefabs/Locations/GravityAnomaly/GravityAnomaly.prefab`
-- **Opis:** Przyciąga obiekty z `Rigidbody`, nadaje siłę styczną tworząc stabilny ruch orbitalny, stosuje strefę surge na krawędzi oraz tłumi ucieczkę obiektów z orbity.
-- **Działania do podjęcia:**
-  - [ ] Poprawić literówkę w nazwie klasy (`GravityAnomallyController` -> `GravityAnomalyController`).
-  - [ ] Rozważyć optymalizację `Physics.OverlapSphere` (np. bufor alokacji `OverlapSphereNonAlloc` lub trigger sferyczny).
+### 7. Refill & Repair Stations
+* **Status:** `PARTIALLY IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Locations/StartingHub/`, `Assets/Scripts/Refill/`
+* **Dependencies:** `IRefillable`, `Collider` triggers
+* **Description:** `RefuelZone` detects the player via `RefuelChildCollider` and replenishes fuel or health via the `IRefillable` contract.
+* **Action Items:**
+  - [ ] **Critical:** Add `FuelRefillable` and `HealthRefillable` components directly to `Player.prefab` (currently present only as unapplied overrides on the scene instance).
+  - [ ] Reconnect any unpacked station geometry on `SampleScene.unity` to the `StartingHub.prefab` asset.
 
 ---
 
-### 9. Zagrożenie: Burza Jonowa / Mgła (Ion Storm Hazard)
-- **Status:** `ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Locations/IonStorm/FogEventController.cs`, `Assets/Prefabs/Locations/IonStorm/IonStorm.prefab`
-- **Opis:** Obszar triggera uruchamiający cykliczną pętlę zagrożeń: generuje losowe punkty ostrzegawcze VFX, a po określonym opóźnieniu zadaje obrażenia przez `IDamageable`, weryfikując czy cel nie opuścił strefy rażenia.
-- **Działania do podjęcia:**
-  - [ ] Połączyć instancję strefy na scenie z prefabem `IonStorm.prefab`.
+### 8. Hazard: Gravity Anomaly
+* **Status:** `IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Locations/GravityAnomaly/GravityAnomallyController.cs`, `Assets/Prefabs/Locations/GravityAnomaly/GravityAnomaly.prefab`
+* **Dependencies:** `Physics`, `Rigidbody`
+* **Description:** Attracts objects with `Rigidbody`, generates tangential force to form an orbital trajectory, features an outer surge zone, and dampens escaping vessels.
+* **Action Items:**
+  - [ ] Fix class name typo (`GravityAnomallyController` -> `GravityAnomalyController`).
+  - [ ] Profile physics performance in scene context before considering allocation optimizations.
 
 ---
 
-### 10. Generator Pola Asteroid (Asteroid Field Generator)
-- **Status:** `ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Locations/AsteroidField_01/AsteroidFieldGenerator.cs`, `Assets/Prefabs/Locations/AsteroidField/AsteroidField_01.prefab`
-- **Opis:** Generuje w sferze o zadanym promieniu instancje asteroid z tablicy prefabów, nadając im losową skalę, collidery, komponenty `Rigidbody` oraz losowe impulsy siły i prędkości kątowej.
-- **Działania do podjęcia:**
-  - [ ] Ocenić wpływ na wydajność przy dużej liczbie obiektów (brak usuwania oddalonych asteroid, brak poolingu).
-  - [ ] Ustalić rolę generatora w MVP (statyczna dekoracja startowa czy element procedury podróży).
+### 9. Hazard: Ion Storm (Fog Event)
+* **Status:** `IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Locations/IonStorm/FogEventController.cs`, `Assets/Prefabs/Locations/IonStorm/IonStorm.prefab`
+* **Dependencies:** `Collider` trigger, `IDamageable`, Particle VFX prefabs
+* **Description:** Trigger perimeter executing a periodic strike loop: spawns telegraph warning VFX, then inflicts damage via `IDamageable` if the target remains within the zone.
+* **Action Items:**
+  - [ ] Verify prefab connection of the scene instance to `IonStorm.prefab`.
 
 ---
 
-### 11. Walka i Przeciwnicy (Combat & Enemy AI)
-- **Status:** `OPISANY / NIEZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/Enemy/EnemyController.cs`
-- **Opis:** Poprzednia rozbudowana architektura AI została usunięta w commicie `98c75a8`. W projekcie pozostał jedynie pusty plik-szkielet `EnemyController.cs`, niepodpięty pod żaden obiekt.
-- **Działania do podjęcia:**
-  - [ ] W sesji `/grill-me` ustalić minimalistyczne założenia wroga w MVP (np. prosty dron śledzący / taranujący lub stacjonarna wieżyczka).
-  - [ ] Zaimplementować prosty, bezpośredni skrypt bez zbędnych warstw abstrakcji (zgodnie z `AGENTS.md`).
+### 10. Asteroid Field Generator
+* **Status:** `IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Locations/AsteroidField_01/AsteroidFieldGenerator.cs`, `Assets/Prefabs/Locations/AsteroidField/AsteroidField_01.prefab`
+* **Dependencies:** Asteroid prefabs (`Asteroid_no_*.prefab`)
+* **Description:** Instantiates randomized asteroids in a spherical volume, assigning scale variations, colliders, rigidbodies, and random angular velocity impulses.
+* **Action Items:**
+  - [ ] Tune density and boundary parameters for the MVP sector blockout.
 
 ---
 
-### 12. Główna Pętla Gry i Cykl Życia (Game Loop & State Management)
-- **Status:** `CZĘŚCIOWO ZAIMPLEMENTOWANY`
-- **Ścieżka:** `Assets/Scripts/GameManagment/GameManager.cs`, `Assets/Scripts/GameManagment/GameState.cs`
-- **Opis:** `GameManager` to obecnie minimalistyczny singleton z referencją do gracza. Enum `GameState` istnieje, ale nie jest używany. Brak pętli wygranej/przegranej.
-- **Działania do podjęcia:**
-  - [ ] Wdrożyć zarządzanie stanami gry (`MainMenu`, `Playing`, `Paused`, `GameOver`).
-  - [ ] Zaimplementować procedurę restartu / resetu poziomu po zniszczeniu statku lub wyczerpaniu paliwa.
+### 11. Combat & Enemy AI
+* **Status:** `DEFERRED / OUT OF MVP`
+* **Scope:** `POST-MVP`
+* **Path:** *Deferred*
+* **Dependencies:** None
+* **Description:** Combat AI architecture was removed in commit `6277380`. Combat mechanics (hostile ships, turrets, projectile weapons) are officially deferred to focus exclusively on flight traversal, resource tension, and environmental hazards for the initial MVP release.
+* **Action Items:**
+  - [ ] Re-evaluate scope post-MVP if combat encounters are approved.
 
 ---
 
-### 13. Struktura Przestrzeni i Cel Gry (World Flow & Objective)
-- **Status:** `NIEOPISANY`
-- **Ścieżka:** *Brak*
-- **Opis:** Zgodnie z założeniami gra ma być minimalistycznym MVP o eksploracji i dotarciu do „końca”. Nie są ustalone reguły: czym jest „koniec” (lokacja docelowa, portal, punkt w przestrzeni?), jak gracz nawiguje (beacony radiowe, wskaźnik HUD, czy czysta eksploracja wzrokowa?).
-- **Działania do podjęcia:**
-  - [ ] Ustalić w sesji `/grill-me` docelowy warunek zwycięstwa oraz strukturę przestrzeni (jeden otwarty wycinek kosmosu ze stacjami i celem, czy podział na sektory).
+### 12. Game Lifecycle & State Management
+* **Status:** `PARTIALLY IMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/GameManagment/GameManager.cs`, `Assets/Scripts/GameManagment/GameState.cs`
+* **Dependencies:** `Player_Spaceship`, `UI_Manager`
+* **Description:** `GameManager` acts as the Composition Root and high-level state manager. `GameState` enum exists (`MainMenu`, `Playing`, `Paused`, `GameOver`).
+* **Action Items:**
+  - [ ] Implement active state transitions (e.g., `Playing` -> `GameOver` on death/fuel exhaustion, `Playing` -> `Victory` on reaching Warp Gate).
+  - [ ] Add scene reload / run restart function triggered by UI restart button.
 
 ---
 
-### 14. Zapis Stanu i Trwałość Danych (Save / Persistence)
-- **Status:** `DO WERYFIKACJI`
-- **Ścieżka:** *Brak*
-- **Opis:** Brak mechanizmu zapisu stanu. Dla krótkiego MVP (np. 5–10 minutowa sesja eksploracyjna) pełna serializacja stanu może być zbędna.
-- **Działania do podjęcia:**
-  - [ ] Zdecydować w sesji `/grill-me`, czy gra wymaga persystencji stanu, czy opiera się na formule pojedynczej sesji (permadeath / arcade run).
+### 13. World Flow, Objective & Navigation
+* **Status:** `DESCRIBED / UNIMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** Refer to `Assets/DOCS/GAMEPLAY.md`
+* **Dependencies:** `GameManager`, Warp Gate prefab / trigger
+* **Description:** Defined in `Assets/DOCS/GAMEPLAY.md`. The player departs the Starting Hub and must reach an extraction objective (Warp Gate). Navigation guidance method is currently an Open Decision (TBD during sector blockout).
+* **Action Items:**
+  - [ ] Place or block out a Warp Gate extraction trigger at the end of the sector.
+  - [ ] Implement visual in-world beacon at the extraction point.
+
+---
+
+### 14. Persistence / Save System
+* **Status:** `DEFERRED / OUT OF MVP`
+* **Scope:** `POST-MVP`
+* **Path:** *None*
+* **Description:** AdAstra MVP is structured as an arcade/exploration run completed in a single session (5–10 minutes). Full state serialization across sessions is deferred.
