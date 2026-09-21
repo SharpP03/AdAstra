@@ -80,3 +80,4 @@ crashlytics-build.properties
 # Unity crash / auto-recovery scene backups
 /[Aa]ssets/_Recovery/
 /[Aa]ssets/_Recovery.meta
+/.idea/.idea.AdAstra/.idea
