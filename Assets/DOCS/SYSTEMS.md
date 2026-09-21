@@ -177,3 +177,50 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Scope:** `POST-MVP`
 * **Path:** *None*
 * **Description:** AdAstra MVP is structured as an arcade/exploration run completed in a single session (5–10 minutes). Full state serialization across sessions is deferred.
+
+---
+
+### 15. Hazard: Annihilation Wave (Front Anihilacji)
+* **Status:** `DESCRIBED / UNIMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Environment/AnnihilationWave/` (planowane)
+* **Dependencies:** `IDamageable`, `Player_Spaceship`, `UI_Manager`
+* **Description:** Liniowa płaszczyzna energii poruszająca się wzdłuż osi Z z określoną prędkością. Posiada perymetr zakłócający (ostrzeżenia audiowizualne w HUD) oraz bezpośrednią krawędź niszczącą zadającą periodyczne obrażenia kadłubowi.
+* **Action Items:**
+  - [ ] Zaimplementować prosty kontroler przesuwający collider/trigger w osi Z.
+  - [ ] Dodać kalkulację dystansu `Vector3.Dot` do gracza i przekazywać wartość do HUD.
+  - [ ] Zadawać obrażenia za pośrednictwem `IDamageable`.
+
+---
+
+### 16. Collectible: Data Cores (Rdzenie Danych)
+* **Status:** `DESCRIBED / UNIMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Pickups/` (planowane)
+* **Dependencies:** `Collider` trigger, `FuelSystem`, `HealthSystem`, `GameManager`
+* **Description:** Kontenery unoszące się wewnątrz stref niebezpiecznych (burze jonowe, orbity grawitacyjne). Po zebraniu natychmiast uzupełniają część zasobów (paliwo/kadłub) oraz inkrementują licznik zebranych danych na potrzeby podsumowania i meta-progresji.
+* **Action Items:**
+  - [ ] Utworzyć prefab z rotującym modelem i colliderem `isTrigger`.
+  - [ ] Zaimplementować komponent dodający zasoby i rejestrujący zebranie w `GameManager`.
+
+---
+
+### 17. Meta-Progression: Ship Variants (Warianty Statku)
+* **Status:** `DESCRIBED / UNIMPLEMENTED`
+* **Scope:** `MVP`
+* **Path:** `Assets/Scripts/Player/Spaceship/` (planowane ScriptableObject / config)
+* **Dependencies:** `Player_Spaceship`, `FuelSystem`, `HealthSystem`
+* **Description:** Możliwość wyboru jednego z 2–3 predefiniowanych konfiguracji statku w Hubie (np. Lekki Zwiadowca, Ciężki Frachtowiec) różniących się parametrami fizyki (masa, siła ciągu), pojemnością baku i pancerzem.
+* **Action Items:**
+  - [ ] Wyodrębnić parametry statku do `SpaceshipConfigSO` (ScriptableObject).
+  - [ ] Przygotować proste UI wyboru statku na starcie runu.
+
+---
+
+### 18. Emergency Distress Signal (Sygnał SOS)
+* **Status:** `UNDER REVIEW`
+* **Scope:** `POST-MVP`
+* **Path:** *Deferred*
+* **Dependencies:** `FuelSystem`, `UI_Manager`
+* **Description:** Opcjonalna mechanika ratunkowa podczas bezradnego dryfu po wyczerpaniu paliwa. W MVP zastąpiona naturalnym wchłonięciem przez Front Anihilacji.
+
