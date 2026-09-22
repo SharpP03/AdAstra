@@ -95,11 +95,12 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Status:** `PARTIALLY IMPLEMENTED`
 * **Scope:** `MVP`
 * **Path:** `Assets/Scripts/Locations/StartingHub/`, `Assets/Scripts/Refill/`
-* **Dependencies:** `IRefillable`, `Collider` triggers
-* **Description:** `RefuelZone` detects the player via `RefuelChildCollider` and replenishes fuel or health via the `IRefillable` contract.
+* **Dependencies:** `IRefillable`, `Collider` triggers, `Rigidbody`
+* **Description:** Outposts providing fuel or hull restoration. In MVP, stations require a **Dead-Stop Refuel & Docking Magnet** procedure: when the spaceship decelerates below a threshold velocity inside `RefuelZone`, a docking magnet locks the vessel in place while resources replenish progressively over time under the threat of the approaching Annihilation Wave.
 * **Action Items:**
   - [ ] **Critical:** Add `FuelRefillable` and `HealthRefillable` components directly to `Player.prefab` (currently present only as unapplied overrides on the scene instance).
   - [ ] Reconnect any unpacked station geometry on `SampleScene.unity` to the `StartingHub.prefab` asset.
+  - [ ] Upgrade `RefuelZone.cs` from immediate trigger-enter to the Dead-Stop detection and docking magnet lock sequence.
 
 ---
 
@@ -153,9 +154,10 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Scope:** `MVP`
 * **Path:** `Assets/Scripts/GameManagment/GameManager.cs`, `Assets/Scripts/GameManagment/GameState.cs`
 * **Dependencies:** `Player_Spaceship`, `UI_Manager`
-* **Description:** `GameManager` acts as the Composition Root and high-level state manager. `GameState` enum exists (`MainMenu`, `Playing`, `Paused`, `GameOver`).
+* **Description:** `GameManager` acts as the Composition Root and high-level state manager. `GameState` enum tracks states (`MainMenu`, `Playing`, `Paused`, `GameOver`, `Victory`).
 * **Action Items:**
-  - [ ] Implement active state transitions (e.g., `Playing` -> `GameOver` on death/fuel exhaustion, `Playing` -> `Victory` on reaching Warp Gate).
+  - [ ] Handle fuel depletion: `Fuel == 0` initiates **Dead-Stick** flight state (disabling main engine thrust and RCS attitude torque; no immediate GameOver).
+  - [ ] Implement active state transitions: `Playing` -> `GameOver` on hull destruction (`Health <= 0`) or Annihilation Wave consumption; `Playing` -> `Victory` on entering Warp Gate.
   - [ ] Add scene reload / run restart function triggered by UI restart button.
 
 ---
@@ -163,57 +165,61 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 ### 13. World Flow, Objective & Navigation
 * **Status:** `DESCRIBED / UNIMPLEMENTED`
 * **Scope:** `MVP`
-* **Path:** Refer to `Assets/DOCS/GAMEPLAY.md`
-* **Dependencies:** `GameManager`, Warp Gate prefab / trigger
-* **Description:** Defined in `Assets/DOCS/GAMEPLAY.md`. The player departs the Starting Hub and must reach an extraction objective (Warp Gate). Navigation guidance method is currently an Open Decision (TBD during sector blockout).
+* **Path:** `SampleScene.unity`, `Assets/Scripts/UI/`
+* **Dependencies:** `GameManager`, Warp Gate prefab / trigger, `UI_Manager`
+* **Description:** Linear sector corridor test blockout (from $Z=0$ to $Z=4000$) in `SampleScene.unity`. Navigation is guided via screen-space HUD Waypoints showing direction and distance in meters to the active objective (Intermediate Station, then Warp Gate), supplemented by high-intensity diegetic light beacons. Full procedural corridor generation is deferred to POST-MVP.
 * **Action Items:**
-  - [ ] Place or block out a Warp Gate extraction trigger at the end of the sector.
-  - [ ] Implement visual in-world beacon at the extraction point.
+  - [ ] Block out hand-crafted test corridor in `SampleScene.unity`.
+  - [ ] Implement HUD Waypoint directional tracker with distance readout.
+  - [ ] Place Warp Gate extraction trigger at sector terminus ($Z=4000$).
 
 ---
 
-### 14. Persistence / Save System
-* **Status:** `DEFERRED / OUT OF MVP`
-* **Scope:** `POST-MVP`
-* **Path:** *None*
-* **Description:** AdAstra MVP is structured as an arcade/exploration run completed in a single session (5–10 minutes). Full state serialization across sessions is deferred.
+### 14. Persistence / Meta-Progression Storage
+* **Status:** `DESCRIBED / UNIMPLEMENTED`
+* **Scope:** `MVP (LIGHTWEIGHT)`
+* **Path:** `Assets/Scripts/Storage/` (planned)
+* **Dependencies:** `UnityEngine.PlayerPrefs`
+* **Description:** Lightweight persistence using `PlayerPrefs` to store `BankedDataCores` and unlocked ship variant IDs across play sessions. Full world-state and mid-run serialization is deferred to POST-MVP.
+* **Action Items:**
+  - [ ] Implement lightweight `MetaProgressionStorage` helper using `PlayerPrefs`.
 
 ---
 
 ### 15. Hazard: Annihilation Wave (Front Anihilacji)
 * **Status:** `DESCRIBED / UNIMPLEMENTED`
 * **Scope:** `MVP`
-* **Path:** `Assets/Scripts/Environment/AnnihilationWave/` (planowane)
+* **Path:** `Assets/Scripts/Environment/AnnihilationWave/` (planned)
 * **Dependencies:** `IDamageable`, `Player_Spaceship`, `UI_Manager`
-* **Description:** Liniowa płaszczyzna energii poruszająca się wzdłuż osi Z z określoną prędkością. Posiada perymetr zakłócający (ostrzeżenia audiowizualne w HUD) oraz bezpośrednią krawędź niszczącą zadającą periodyczne obrażenia kadłubowi.
+* **Description:** Linear energy plane advancing at constant speed along the Z axis behind the player. Features a warning perimeter (50–100 m) with HUD alarm/tint and proximity meter, and a destructive edge inflicting rapid damage per second (`IDamageable.TakeDamage`, Rapid DPS), permitting desperate last-second sprint escapes.
 * **Action Items:**
-  - [ ] Zaimplementować prosty kontroler przesuwający collider/trigger w osi Z.
-  - [ ] Dodać kalkulację dystansu `Vector3.Dot` do gracza i przekazywać wartość do HUD.
-  - [ ] Zadawać obrażenia za pośrednictwem `IDamageable`.
+  - [ ] Implement constant Z-velocity trigger controller.
+  - [ ] Calculate distance to player via `Vector3.Dot` and feed to HUD.
+  - [ ] Apply periodic Rapid DPS on contact via `IDamageable`.
 
 ---
 
 ### 16. Collectible: Data Cores (Rdzenie Danych)
 * **Status:** `DESCRIBED / UNIMPLEMENTED`
 * **Scope:** `MVP`
-* **Path:** `Assets/Scripts/Pickups/` (planowane)
+* **Path:** `Assets/Scripts/Pickups/` (planned)
 * **Dependencies:** `Collider` trigger, `FuelSystem`, `HealthSystem`, `GameManager`
-* **Description:** Kontenery unoszące się wewnątrz stref niebezpiecznych (burze jonowe, orbity grawitacyjne). Po zebraniu natychmiast uzupełniają część zasobów (paliwo/kadłub) oraz inkrementują licznik zebranych danych na potrzeby podsumowania i meta-progresji.
+* **Description:** Floating salvage containers located in high-risk zones (inside Ion Storms, orbital paths of Gravity Anomalies). Dual-use design: immediately restores resources (+25% fuel or hull repair) upon pickup during a run, and banks as meta-currency upon Warp Gate extraction.
 * **Action Items:**
-  - [ ] Utworzyć prefab z rotującym modelem i colliderem `isTrigger`.
-  - [ ] Zaimplementować komponent dodający zasoby i rejestrujący zebranie w `GameManager`.
+  - [ ] Create pickup prefab with rotating model and trigger collider.
+  - [ ] Implement resource recovery and bank registration with `GameManager`.
 
 ---
 
 ### 17. Meta-Progression: Ship Variants (Warianty Statku)
 * **Status:** `DESCRIBED / UNIMPLEMENTED`
 * **Scope:** `MVP`
-* **Path:** `Assets/Scripts/Player/Spaceship/` (planowane ScriptableObject / config)
-* **Dependencies:** `Player_Spaceship`, `FuelSystem`, `HealthSystem`
-* **Description:** Możliwość wyboru jednego z 2–3 predefiniowanych konfiguracji statku w Hubie (np. Lekki Zwiadowca, Ciężki Frachtowiec) różniących się parametrami fizyki (masa, siła ciągu), pojemnością baku i pancerzem.
+* **Path:** `Assets/Scripts/Player/Spaceship/` (planned ScriptableObject config)
+* **Dependencies:** `Player_Spaceship`, `FuelSystem`, `HealthSystem`, `MetaProgressionStorage`
+* **Description:** Allows selection between predefined ship archetypes in the Starting Hub (e.g. Light Scout, Heavy Freighter) with differing mass, thrust, fuel capacity, and hull integrity. Note: Code implementation of ship variants is deferred until explicitly commanded by the user.
 * **Action Items:**
-  - [ ] Wyodrębnić parametry statku do `SpaceshipConfigSO` (ScriptableObject).
-  - [ ] Przygotować proste UI wyboru statku na starcie runu.
+  - [ ] Extract ship attributes into `SpaceshipConfigSO` (ScriptableObject).
+  - [ ] Create minimal ship selection UI in Starting Hub.
 
 ---
 
@@ -222,5 +228,5 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Scope:** `POST-MVP`
 * **Path:** *Deferred*
 * **Dependencies:** `FuelSystem`, `UI_Manager`
-* **Description:** Opcjonalna mechanika ratunkowa podczas bezradnego dryfu po wyczerpaniu paliwa. W MVP zastąpiona naturalnym wchłonięciem przez Front Anihilacji.
+* **Description:** Optional distress beacon mechanic during powerless inertia drift. In MVP, powerless drift naturally ends in collision or absorption by the Annihilation Wave.
 

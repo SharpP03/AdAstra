@@ -56,7 +56,7 @@ To eliminate initialization race conditions and eradicate coroutine polling loop
 ```
 
 ### 3.1. GameManager Role
-`GameManager` serves as the **Composition Root & High-Level State Orchestrator** (managing states like `Playing`, `Paused`, `GameOver`, and run resets). It is **not** an all-knowing god object or global service locator. Systems manage their own local state.
+`GameManager` serves as the **Composition Root & High-Level State Orchestrator** (managing states like `MainMenu`, `Playing`, `Paused`, `GameOver`, `Victory`, and run resets). It is **not** an all-knowing god object or global service locator. Systems manage their own local state.
 
 ### 3.2. Dependency Resolution Rules
 * Prefer explicit `[SerializeField]` references wired on prefabs.
@@ -83,7 +83,9 @@ To eliminate initialization race conditions and eradicate coroutine polling loop
 * **Force Integration Rule:**
   * When using `ForceMode.Force` or `ForceMode.Acceleration`, **DO NOT** multiply the force vector by `Time.fixedDeltaTime` (Unity's physics integrator automatically multiplies by the physics delta time).
   * Use `Time.fixedDeltaTime` only when manually integrating custom positions or calculating manual damping inside `FixedUpdate`.
-* **Resource Bounds:** All mutating operations on resources (Fuel, Health) must explicitly clamp values (`Mathf.Clamp`, `Mathf.Max(0, ...)`).
+* **Resource Bounds & Dead-Stick State:**
+  * All mutating operations on resources (Fuel, Health) must explicitly clamp values (`Mathf.Clamp`, `Mathf.Max(0, ...)`).
+  * When Fuel reaches zero, active engine translation (`AddForce`) and RCS attitude torques (`AddTorque`) must be suppressed (**Dead-Stick** state), preserving natural inertia and responding only to environmental forces and collisions until destruction or rescue.
 
 ---
 
