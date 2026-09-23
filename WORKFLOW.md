@@ -1,101 +1,114 @@
-# WORKFLOW.MD - PROCEDURY OPERACYJNE I PRZEPŁYW PRACY
+# WORKFLOW.MD - PROCEDURA WSPÓŁPRACY Z GITHUB
 
-Niniejszy dokument definiuje gotowe, techniczne procedury deweloperskie obowiązujące w projekcie **AdAstra**. Każdy workflow stanowi powtarzalny schemat działania gwarantujący spójność historii Gita, czystość architektury oraz pełną synchronizację z dokumentacją.
+Niniejszy dokument definiuje procedurę postępowania przy realizacji nowych zadań (features / fixes) w projekcie **AdAstra** z wykorzystaniem serwisu GitHub oraz GitHub Projects.
 
 ---
 
-## 1. STANDARDOWY CYKL REALIZACJI ZADANIA (ISSUE -> PR)
+## 1. Procedura: Nowy Feature / Zadanie
 
-Podstawowy przepływ pracy dla każdej nowej mechaniki, poprawki błędu, zmian w dokumentacji lub konfiguracji środowiska/CI.
+### Krok 1: Trigger inicjujący (Pytanie do Użytkownika)
+Przed rozpoczęciem prac nad nowym zadaniem zapytaj użytkownika:
+> **„Czy chcesz utworzyć nowy branch i task na GitHub Projects?”**
 
-### Krok 1: Definicja Taska (GitHub Issue)
-Każda praca rozpoczyna się od utworzenia zadania w GitHub Issues.
-- **Tytuł:** Krótki, precyzyjny, jednoznacznie określający cel zadania z prefiksem typu (`feat:`, `fix:`, `docs:`, `ci:`, `refactor:`).
-- **Opis:** Zwięzłe nakreślenie kontekstu, celów oraz techniczna checklista podzadań (`- [ ]`).
+* **Jeśli odpowiedź brzmi NIE:**
+  * Zignoruj całą procedurę opisaną poniżej w krokach 2–6.
+  * Realizuj pracę bezpośrednio na bieżącej gałęzi lub według bieżących ustaleń na czacie.
 
-**Szablon Issue:**
-```markdown
-## Cel
-Krótkie wyjaśnienie (1-2 zdania), co ma zostać osiągnięte i dlaczego.
+* **Jeśli odpowiedź brzmi TAK:**
+  * Przejdź do realizacji poniższych kroków (Kroki 2–6).
 
-## Zakres prac
-- [ ] Analiza istniejących skryptów/prefabów powiązanych z mechaniką
-- [ ] Implementacja logiki w odrębnym module/asmdef
-- [ ] Aktualizacja dokumentacji w Assets/DOCS/SYSTEMS.md
-- [ ] Weryfikacja w Unity (0 błędów, 0 ostrzeżeń)
-```
+---
+
+### Krok 2: Utworzenie taska w GitHub Projects
+Utwórz nowy element (item) w projekcie za pomocą GitHub CLI:
+* **Lokalizacja:** `https://github.com/users/SharpP03/projects/3/views/1`
+* **Tytuł:** Krótki i zwięzły, jednoznacznie opisujący cel zadania.
+* **Opis:** Jeśli zadanie wymaga doprecyzowania, dodaj szczegółowy opis zakresu prac.
+* **Stopka (wymagana):** Na końcu opisu zadania umieść notatkę:
+  ```text
+  Created by <Model Name> on <GitHub Username>'s behalf
+  ```
+  *(np. `Created by Gemini 3.8 Flash on SharpP03's behalf`)*
 
 **Komenda CLI:**
 ```powershell
-gh issue create --title "feat: system chłodzenia reaktora" --body-file issue_template.md
+gh project item-create 3 --owner SharpP03 --title "<Tytuł>" --body "<Opis>`n`nCreated by <Model Name> on SharpP03's behalf"
 ```
-
----
-
-### Krok 2: Zaplanowanie pracy przed implementacją
-Przed edycją kodu lub sceny należy przeprowadzić analizę:
-1. **Zależności:** Sprawdź `Assets/DOCS/SYSTEMS.md` oraz powiązane pliki `.asmdef`.
-2. **KISS & YAGNI:** Ustal minimalny zakres kodu spełniający zadanie bez nadmiarowych abstrakcji.
-3. **Plan commitów:** Podziel pracę na logiczne, niezależne kroki (np. 1. Model danych / SO $\rightarrow$ 2. Logika fizyki/MonoBehaviour $\rightarrow$ 3. Wiring w prefabie $\rightarrow$ 4. Docs).
 
 ---
 
 ### Krok 3: Utworzenie dedykowanego brancha
-Nigdy nie commitujemy bezpośrednio do `main`. Branch tworzony jest z najświeższego stanu gałęzi głównej.
-- **Konwencja nazw:** `<kategoria>/<opis-kebab-case>`, np.:
-  - `feat/reactor-cooling-system`
-  - `fix/ship-drift-fixedupdate`
-  - `docs/update-architecture`
-  - `ci/auto-weekly-tag`
+Utwórz nowy branch z najnowszego stanu `main` o nazwie zgodnej z konwencją i przełącz się na niego:
+* `feat/<opis-kebab-case>` – dla nowych mechanik / funkcjonalności
+* `fix/<opis-kebab-case>` – dla poprawek błędów
+* `refactor/<opis-kebab-case>` – dla refaktoryzacji kodu
+* `docs/<opis-kebab-case>` – dla zmian w dokumentacji
 
 **Komendy CLI:**
 ```powershell
 git checkout main
 git pull
-git checkout -b feat/reactor-cooling-system
+git checkout -b <kategoria>/<opis-kebab-case>
 ```
 
 ---
 
-### Krok 4: Wprowadzenie zmian w atomowych commitach
-Zmiany dzielimy na małe, sensowne commity skupione wokół jednej odpowiedzialności.
-- Każdy commit musi utrzymywać projekt w stanie kompilowalnym (0 błędów kompilacji).
-- Stosuj konwencję **Conventional Commits**:
-  - `feat: add CoolantTank ScriptableObject definition`
-  - `feat: implement heat dissipation calculation in ReactorController`
-  - `chore: update Player.prefab with CoolantTank serialized reference`
-  - `docs: update SYSTEMS.md checklist for reactor cooling`
-- **Zakaz śmieciowych plików:** Przed `git add` upewnij się, że pliki tymczasowe edytora są ignorowane przez `.gitignore`.
-
-**Komendy CLI:**
-```powershell
-git add Assets/Scripts/Reactor/
-git commit -m "feat: implement heat dissipation calculation in ReactorController"
-```
+### Krok 4: Realizacja prac i weryfikacja (Definition of Done)
+1. Wykonuj zaplanowane prace na utworzonym branchu zgodnie z przebiegiem konwersacji i ustaleniami z użytkownikiem.
+2. Twórz atomowe commity z czytelnymi komunikatami zgodnymi z Conventional Commits:
+   ```powershell
+   git add <ścieżki do zmodyfikowanych plików>
+   git commit -m "feat: opis zrealizowanej części zadania"
+   ```
+3. **Weryfikacja jakości (Definition of Done) przed otwarciem PR:**
+   * Kod musi kompilować się bez błędów w Unity 6 (`6000.2.6f2`).
+   * Brak ostrzeżeń i błędów w konsoli Unity wywołanych zmianami.
+   * Wszystkie zmodyfikowane prefaby i sceny mają kompletne referencje (brak `Missing (MonoBehaviour)` / null GUID).
+   * Zaktualizowano checklistę i status mechaniki w `Assets/DOCS/SYSTEMS.md`.
+   * Przejrzano `git diff` przed wysłaniem, upewniając się, że nie ma plików śmieciowych ani przypadkowych zmian.
 
 ---
 
 ### Krok 5: Otwarcie Pull Requesta (PR)
-Gdy implementacja jest gotowa i spełnia założenia checklisty z Issue:
-1. Wypchnij branch na zdalne repozytorium (`origin`).
-2. Otwórz PR powiązany z numerem zadania za pomocą słowa kluczowego `Closes #<ID>` (automatyczne zamykanie zadania przy scaleniu).
-3. Dołącz zwięzłe podsumowanie zmian dla celów przeglądu.
+Po pomyślnej weryfikacji wypchnij branch i otwórz Pull Request:
+1. **Wypchnięcie gałęzi na serwer:**
+   ```powershell
+   git push -u origin <nazwa-brancha>
+   ```
+2. **Utworzenie PR:**
+   * **Tytuł PR:** Zgodny z wprowadzonymi zmianami (np. `feat: implement docking magnet mechanism`).
+   * **Opis PR:** Zawiera referencję do taska (`ref: <link>`) bez słów kluczowych automatycznego zamykania oraz sekcję `## Podsumowanie zmian` z 2–3 zwięzłymi punktami:
+     ```text
+     ref: <link do utworzonego wcześniej taska>
 
-**Komenda CLI:**
-```powershell
-git push -u origin feat/reactor-cooling-system
-gh pr create --title "feat: reactor cooling system" --body "Implements reactor heat dissipation loop.`n`nCloses #12"
-```
+     ## Podsumowanie zmian
+     - <zwięzły punkt 1>
+     - <zwięzły punkt 2>
+     ```
+     **Komenda CLI:**
+     ```powershell
+     gh pr create --title "<Tytuł PR>" --body "ref: <link do taska>`n`n## Podsumowanie zmian`n- <opis zmiany 1>`n- <opis zmiany 2>"
+     ```
+3. **Powiadomienie użytkownika:** Poinformuj użytkownika na czacie o tytule utworzonego PR-a oraz przekaż link.
 
 ---
 
-### Krok 6: Weryfikacja (Definition of Done) i Merge
-Przed scaleniem PR-a upewnij się, że:
-1. Zmiany kompilują się bez błędów w Unity 6 (`6000.2.6f2`).
-2. Prefaby posiadają kompletne referencje (brak `Missing (MonoBehaviour)`).
-3. Wszelkie uwagi do pracy inżynierskiej (`DO PRACY INŻ.`) zostały zachowane.
-4. Zaktualizowano checklistę w `Assets/DOCS/SYSTEMS.md`.
-5. Po weryfikacji następuje scalenie do `main` (Merge commit lub Squash and merge):
-   ```powershell
-   gh pr merge --merge --delete-branch
-   ```
+### Krok 6: Zakończenie prac i Squash Merge
+Po wspólnym ustaleniu z użytkownikiem, że zadanie zostało w pełni ukończone:
+1. Zapytaj użytkownika:
+   > **„Czy chcesz wykonać squash merge do gałęzi main?”**
+2. Jeśli użytkownik odpowie **TAK**:
+   * Wykonaj operację **Squash and Merge**:
+     ```powershell
+     gh pr merge --squash
+     ```
+3. Po poprawnym scaleniu zapytaj użytkownika:
+   > **„Czy chcesz usunąć gałąź roboczą <nazwa-brancha> (lokalnie i zdalnie)?”**
+4. Jeśli użytkownik odpowie **TAK**:
+   * Przełącz się na `main`, zaktualizuj stan repozytorium i usuń gałąź:
+     ```powershell
+     git checkout main
+     git pull
+     git branch -d <nazwa-brancha>
+     git push origin --delete <nazwa-brancha>
+     ```
