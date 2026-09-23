@@ -23,60 +23,30 @@ jobs:
         run: |
           set -euo pipefail
 
-          # 1. Wyznaczenie i walidacja bieżącego tygodnia ISO
-          CURRENT_WEEK=$(date +'%Y-W%V')
-          if [[ ! "$CURRENT_WEEK" =~ ^[0-9]{4}-W[0-9]{2}$ ]]; then
-            echo "::error::Niepoprawny format taga tygodnia: '$CURRENT_WEEK'"
-            exit 1
-          fi
+          # 1. Wyznaczenie taga tygodnia (np. 2026-W39) i upewnienie się, że etykieta istnieje
+          WEEK_TAG=$(date +'%Y-W%V')
+          gh label create "$WEEK_TAG" --color "0E8A16" --description "Auto-generated weekly tag" --force
 
-          # 2. Upewnienie się, że etykieta istnieje w repozytorium
-          gh label create "$CURRENT_WEEK" --color "0E8A16" --description "Auto-generated weekly tag" --force
-
-          # 3. Ustalenie listy numerów issue do przetworzenia z walidacją wejścia
-          declare -a TARGET_ISSUES=()
-
+          # 2. Wybór zgłoszeń do otagowania (z walidacją wejścia)
           if [[ "$EVENT_NAME" == "issues" ]]; then
-            # Ścisła walidacja publicznego wejścia (tylko dodatnie liczby całkowite)
-            if [[ ! "$RAW_ISSUE_NUMBER" =~ ^[1-9][0-9]*$ ]]; then
-              echo "::error::Otrzymano nieprawidłowy numer issue: '$RAW_ISSUE_NUMBER'"
-              exit 1
-            fi
-            TARGET_ISSUES=("$RAW_ISSUE_NUMBER")
+            # Bezpieczeństwo: sprawdzamy, czy numer issue to wyłącznie cyfry
+            [[ "$RAW_ISSUE_NUMBER" =~ ^[0-9]+$ ]] || { echo "Nieprawidłowy numer issue: $RAW_ISSUE_NUMBER"; exit 1; }
+            ISSUES="$RAW_ISSUE_NUMBER"
           else
-            # Dla harmonogramu lub ręcznego wywołania pobieramy otwarte issues
-            OPEN_ISSUES=$(gh issue list --state open --limit 200 --json number --jq '.[].number')
-            while IFS= read -r num; do
-              [[ -n "$num" ]] && TARGET_ISSUES+=("$num")
-            done <<< "$OPEN_ISSUES"
+            # W poniedziałki pobieramy wszystkie otwarte zgłoszenia
+            ISSUES=$(gh issue list --state open --limit 200 --json number -q '.[].number')
           fi
 
-          if [[ ${#TARGET_ISSUES[@]} -eq 0 ]]; then
-            echo "Brak zgłoszeń do przetworzenia."
-            exit 0
-          fi
+          # 3. Aktualizacja etykiet dla każdego zgłoszenia
+          for issue in $ISSUES; do
+            echo "Aktualizacja issue #$issue..."
 
-          # 4. Przetworzenie zgłoszeń (usunięcie starych tagów tygodniowych i dodanie bieżącego)
-          for issue in "${TARGET_ISSUES[@]}"; do
-            echo "Przetwarzanie issue #$issue..."
+            # Znajdź stare tagi tygodnia (np. 2026-W38) i je usuń
+            OLD_TAGS=$(gh issue view "$issue" --json labels -q '.labels[].name' | grep -E '^[0-9]{4}-W[0-9]{2}$' | grep -v "^$WEEK_TAG$" || true)
+            for old in $OLD_TAGS; do
+              gh issue edit "$issue" --remove-label "$old"
+            done
 
-            # Pobieramy etykiety i bezpiecznie wyciągamy tylko stare tagi tygodnia za pomocą jq
-            OLD_LABELS=$(gh issue view "$issue" --json labels --jq \
-              --arg current "$CURRENT_WEEK" \
-              '.labels[] | select(.name | test("^[0-9]{4}-W[0-9]{2}$")) | select(.name != $current) | .name')
-
-            # Budujemy listę argumentów do usunięcia starych etykiet
-            REMOVE_ARGS=()
-            while IFS= read -r lbl; do
-              if [[ -n "$lbl" ]]; then
-                REMOVE_ARGS+=(--remove-label "$lbl")
-              fi
-            done <<< "$OLD_LABELS"
-
-            # Aktualizujemy etykiety jednym wywołaniem
-            if [[ ${#REMOVE_ARGS[@]} -gt 0 ]]; then
-              gh issue edit "$issue" --add-label "$CURRENT_WEEK" "${REMOVE_ARGS[@]}"
-            else
-              gh issue edit "$issue" --add-label "$CURRENT_WEEK"
-            fi
+            # Dodaj bieżący tag tygodnia
+            gh issue edit "$issue" --add-label "$WEEK_TAG"
           done
