@@ -44,3 +44,7 @@
 - Check that modified scenes and prefabs serialize correctly without missing script references (`GUID` nulls).
 - Verify affected asmdefs and namespace references compile cleanly.
 - Inspect `git diff` before reporting completion to ensure no unintended files or formatting changes were introduced.
+
+## 7. AGENT SKILLS & ARCHITECTURE
+- Przed rozpoczęciem prac nad zadaniem gamedevowym skorzystaj ze skilla `router`, aby dobrać i przeczytać odpowiednie skille dopasowane do bieżącej mechaniki.
+- Przy projektowaniu granic modułów, klas i interfejsów stosuj zasady ze skilla `codebase-design`.
