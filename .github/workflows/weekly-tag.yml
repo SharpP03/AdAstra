@@ -18,6 +18,7 @@ jobs:
       - name: Apply Weekly Tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           EVENT_NAME: ${{ github.event_name }}
           RAW_ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
