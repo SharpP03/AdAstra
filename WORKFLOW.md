@@ -23,7 +23,7 @@ Przed rozpoczęciem prac nad nowym zadaniem zapytaj użytkownika:
 Utwórz nowy element (item) w projekcie za pomocą GitHub CLI:
 * **Lokalizacja:** `https://github.com/users/SharpP03/projects/3/views/1`
 * **Tytuł:** Krótki i zwięzły, jednoznacznie opisujący cel zadania.
-* **Opis:** Jeśli zadanie wymaga doprecyzowania, dodaj szczegółowy opis zakresu prac.
+* **Opis:** Szczegółowy opis zakresu prac, kontekst, cele i kryteria akceptacji zadania (cały opis merytoryczny zadania znajduje się bezpośrednio w tasku na boardzie).
 * **Stopka (wymagana):** Na końcu opisu zadania umieść notatkę:
   ```text
   Created by <Model Name> on <GitHub Username>'s behalf
@@ -77,17 +77,13 @@ Po pomyślnej weryfikacji wypchnij branch i otwórz Pull Request:
    ```
 2. **Utworzenie PR:**
    * **Tytuł PR:** Zgodny z wprowadzonymi zmianami (np. `feat: implement docking magnet mechanism`).
-   * **Opis PR:** Zawiera referencję do taska (`ref: <link>`) bez słów kluczowych automatycznego zamykania oraz sekcję `## Podsumowanie zmian` z 2–3 zwięzłymi punktami:
+   * **Opis PR:** Zawiera wyłącznie referencję do powiązanego taska na boardzie (`ref: <link do taska>`). Nie powielamy szczegółowego opisu ani podsumowania zmian w PR – cała dokumentacja i opis zadania żyją w tasku na GitHub Projects:
      ```text
      ref: <link do utworzonego wcześniej taska>
-
-     ## Podsumowanie zmian
-     - <zwięzły punkt 1>
-     - <zwięzły punkt 2>
      ```
      **Komenda CLI:**
      ```powershell
-     gh pr create --title "<Tytuł PR>" --body "ref: <link do taska>`n`n## Podsumowanie zmian`n- <opis zmiany 1>`n- <opis zmiany 2>"
+     gh pr create --title "<Tytuł PR>" --body "ref: <link do taska>"
      ```
 3. **Powiadomienie użytkownika:** Poinformuj użytkownika na czacie o tytule utworzonego PR-a oraz przekaż link.
 
