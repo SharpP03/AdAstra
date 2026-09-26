@@ -1,9 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class DynamicCamera : MonoBehaviour
 {
     [Header("Target to follow")]
-    [SerializeField] private Transform target;
+    [SerializeField] private Player_Spaceship player;
+    [Tooltip("Optional custom anchor to follow. If null, player.transform will be used.")]
+    [SerializeField] private Transform followAnchor;
 
     [Header("Camera positioning")]
     [SerializeField] private Vector3 baseOffset = new Vector3(0, 2, -6);
@@ -18,9 +20,9 @@ public class DynamicCamera : MonoBehaviour
     [Header("Tilt and roll following")]
     [SerializeField] private float tiltAmount = 5f;
     [SerializeField] private float tiltSmoothness = 5f;
-    [SerializeField] private float rollFollowStrength = 0.5f; // Jak mocno kamera pod¹¿a za roll'em statku (0–1)
+    [SerializeField] private float rollFollowStrength = 0.5f; // Jak mocno kamera podÄ…Å¼a za roll'em statku (0-1)
 
-    private Player_Spaceship player;
+    private Transform target;
     private Vector3 currentVelocity;
     private Vector3 currentOffset;
     private Camera cam;
@@ -28,22 +30,41 @@ public class DynamicCamera : MonoBehaviour
 
     private float currentRoll; // przechowywany roll kamery
 
+    private void Awake()
+    {
+        ResolveTarget();
+    }
+
     private void Start()
     {
-        if (target == null)
+        if (player == null)
         {
-            Debug.LogError("DynamicCamera: No target assigned!");
+            Debug.LogError("DynamicCamera: No Player_Spaceship assigned!");
             enabled = false;
             return;
         }
-
-        //player = target.GetComponent<Player_Spaceship>();
-        player = GameManager.Instance.Player;
 
         cam = GetComponent<Camera>();
         if (cam) baseFOV = cam.fieldOfView;
 
         currentOffset = baseOffset;
+    }
+
+    private void OnValidate()
+    {
+        ResolveTarget();
+    }
+
+    private void ResolveTarget()
+    {
+        if (followAnchor != null)
+        {
+            target = followAnchor;
+        }
+        else if (player != null)
+        {
+            target = player.transform;
+        }
     }
 
     private void LateUpdate()
@@ -67,20 +88,20 @@ public class DynamicCamera : MonoBehaviour
         float tiltZ = -moveInput.x * tiltAmount;
         float tiltX = moveInput.y * tiltAmount * 0.3f;
 
-        // odczyt roll'a statku (obrót wokó³ osi Z)
-        #region NOTA EDUKACYJNA obrót skoki
-        // taka kalkulacjia powodowa³a nag³e skoki kamery przy pe³nym obrocie 
+        // odczyt roll'a statku (obrÃ³t wokÃ³Å‚ osi Z)
+        #region NOTA EDUKACYJNA obrÃ³t skoki
+        // taka kalkulacja powodowaÅ‚a nagÅ‚e skoki kamery przy peÅ‚nym obrocie 
         //float shipRoll = target.eulerAngles.z;
         //if (shipRoll > 180) shipRoll -= 360; // normalizacja zakresu [-180, 180]
         //currentRoll = Mathf.Lerp(currentRoll, shipRoll * rollFollowStrength, Time.deltaTime * tiltSmoothness);
         #endregion
-        // p³ynne przejœcie 
+        // pÅ‚ynne przejÅ›cie 
         float targetRoll = target.eulerAngles.z;
         float smoothRoll = Mathf.DeltaAngle(currentRoll / rollFollowStrength, targetRoll) * rollFollowStrength;
         currentRoll += smoothRoll * Time.deltaTime * tiltSmoothness;
 
 
-        // tworzymy finaln¹ rotacjê kamery (forward statku + tilt + roll)
+        // tworzymy finalnÄ… rotacjÄ™ kamery (forward statku + tilt + roll)
         Quaternion baseRot = Quaternion.LookRotation(target.forward, Vector3.up);
         Quaternion tiltRot = Quaternion.Euler(tiltX, 0, tiltZ + currentRoll);
         Quaternion finalRot = baseRot * tiltRot;

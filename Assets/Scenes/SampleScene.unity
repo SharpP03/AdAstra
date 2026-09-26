@@ -1373,7 +1373,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f21bec19c8c07a44a53b80164137260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DynamicCamera
-  target: {fileID: 1031435179}
+  player: {fileID: 1170839918}
+  followAnchor: {fileID: 0}
   baseOffset: {x: 0, y: 2.4, z: -7}
   followSmoothness: 15
   rotationSmoothness: 10
@@ -2391,11 +2392,6 @@ Transform:
   - {fileID: 317455743}
   m_Father: {fileID: 1023816276}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1031435179 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2259196045957799821, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
-  m_PrefabInstance: {fileID: 900936248}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1121665728
 GameObject:
   m_ObjectHideFlags: 0
@@ -2648,11 +2644,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1127422582}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1170839910 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8056483462393365249, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
+--- !u!114 &1170839918 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6227859367301747758, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
   m_PrefabInstance: {fileID: 900936248}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f69c1618f1f6e7b4db72e73085152ee3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player_Spaceship
 --- !u!1 &1241355387
 GameObject:
   m_ObjectHideFlags: 0
