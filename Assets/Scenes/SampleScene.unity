@@ -2096,11 +2096,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6227859367301747758, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
       propertyPath: mouseSensX
-      value: 5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6227859367301747758, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
       propertyPath: mouseSensY
-      value: 5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6227859367301747758, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
       propertyPath: speedMultAngle
@@ -2120,7 +2120,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6227859367301747758, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
       propertyPath: realisticMovementOn
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6728449555875856777, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
       propertyPath: m_Color.b
