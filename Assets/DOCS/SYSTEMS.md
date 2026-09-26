@@ -25,8 +25,8 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Dependencies:** `Rigidbody`, `FuelSystem`, `PlayerInput` (`Assets/playerInput.inputactions`)
 * **Description:** 6DoF/Arcade flight model driven by `Rigidbody` forces and the New Input System. Handles translation, pitch/yaw mouse rotation, roll keys, and sprint boost.
 * **Action Items:**
-  - [ ] Fix logic bug: `MoveInput` property in `Player_Spaceship.cs` is never assigned (remains `(0, 0)`), which disables the camera tilt effect.
-  - [ ] Move mouse input reading from `FixedUpdate()` to `Update()` to eliminate input jitter.
+  - [x] Fix logic bug: `MoveInput` property in `Player_Spaceship.cs` is never assigned (remains `(0, 0)`), which disables the camera tilt effect.
+  - [x] Move mouse input reading from `FixedUpdate()` to `Update()` to eliminate input jitter.
   - [ ] Replace runtime string lookups (`actions.FindAction(...)`) with strongly typed C# action wrappers.
 
 ---
@@ -38,7 +38,7 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Dependencies:** `Player_Spaceship`
 * **Description:** Tracks current and max fuel capacity. Moving and sprinting burn fuel at proportional rates. Zero fuel disables player propulsion.
 * **Action Items:**
-  - [ ] Replace coroutine polling loop (`WaitForPlayer()`) with direct reference or initialization in `Awake()`.
+  - [x] Replace coroutine polling loop (`WaitForPlayer()`) with direct reference or initialization in `Awake()`.
   - [ ] Expose `event Action<float, float> OnFuelChanged` to allow event-driven HUD updates.
 
 ---
@@ -50,21 +50,21 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Dependencies:** None (self-contained, implements `IDamageable`)
 * **Description:** Manages spaceship hull integrity. Implements `IDamageable` to receive environmental damage (e.g. from Ion Storm discharges).
 * **Action Items:**
-  - [ ] Add lower clamping (`Mathf.Max(0, ...)`) to prevent negative health.
-  - [ ] Implement `event Action<float, float> OnHealthChanged` and `event Action OnDied`.
+  - [x] Add lower clamping (`Mathf.Max(0, ...)`) to prevent negative health.
+  - [x] Implement `event Action<float, float> OnHealthChanged` and `event Action OnDied`.
   - [ ] Connect `OnDied` to trigger the Game Over sequence in `GameManager`.
 
 ---
 
 ### 4. Dynamic Chase Camera
-* **Status:** `PARTIALLY IMPLEMENTED`
+* **Status:** `IMPLEMENTED`
 * **Scope:** `MVP`
 * **Path:** `Assets/Scripts/Player/DynamicCamera.cs`
 * **Dependencies:** `Camera`, `Transform` (Target), `Player_Spaceship`
 * **Description:** TPP camera tracking the spaceship using `SmoothDamp` in `LateUpdate()`. Expands FOV and pulls back during sprint, responds to ship roll and lateral tilt.
 * **Action Items:**
-  - [ ] Eliminate `Start()` initialization race condition (resolve player reference via explicit target injection or serialized field instead of relying on `GameManager.Instance.Player` during `Start`).
-  - [ ] Verify tilt effect functionality after fixing `Player_Spaceship.MoveInput`.
+  - [x] Eliminate `Start()` initialization race condition (resolve player reference via explicit target injection or serialized field instead of relying on `GameManager.Instance.Player` during `Start`).
+  - [x] Verify tilt effect functionality after fixing `Player_Spaceship.MoveInput`.
 
 ---
 
@@ -75,7 +75,7 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Dependencies:** `ParticleSystem` list, `Player_Spaceship`
 * **Description:** Interpolates particle emission rate, start speed, color, and Z-velocity based on player movement state (`Standstill`, `Moving`, `Sprinting`).
 * **Action Items:**
-  - [ ] Remove `WaitForPlayer()` coroutine loop in favor of explicit `Awake()`/`Start()` reference assignment.
+  - [x] Remove `WaitForPlayer()` coroutine loop in favor of explicit `Awake()`/`Start()` reference assignment.
 
 ---
 
@@ -98,7 +98,7 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Dependencies:** `IRefillable`, `Collider` triggers, `Rigidbody`
 * **Description:** Outposts providing fuel or hull restoration. In MVP, stations require a **Dead-Stop Refuel & Docking Magnet** procedure: when the spaceship decelerates below a threshold velocity inside `RefuelZone`, a docking magnet locks the vessel in place while resources replenish progressively over time under the threat of the approaching Annihilation Wave.
 * **Action Items:**
-  - [ ] **Critical:** Add `FuelRefillable` and `HealthRefillable` components directly to `Player.prefab` (currently present only as unapplied overrides on the scene instance).
+  - [x] **Critical:** Add `FuelRefillable` and `HealthRefillable` components directly to `Player.prefab` (currently present only as unapplied overrides on the scene instance).
   - [ ] Reconnect any unpacked station geometry on `SampleScene.unity` to the `StartingHub.prefab` asset.
   - [ ] Upgrade `RefuelZone.cs` from immediate trigger-enter to the Dead-Stop detection and docking magnet lock sequence.
 
