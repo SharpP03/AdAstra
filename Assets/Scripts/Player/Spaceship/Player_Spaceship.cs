@@ -46,6 +46,10 @@ public class Player_Spaceship : MonoBehaviour
     private float currentSpeed;
     private float targetSpeed;
 
+    private Vector2 bufferedMouseDelta;
+    private float bufferedRollInput;
+    private bool isSprintingInput;
+
     #region Input system lifecycle
     private void OnEnable()
     {
@@ -95,12 +99,22 @@ public class Player_Spaceship : MonoBehaviour
 
     private void Update()
     {
+        HandleInput();
         HandleState();
 
 #if UNITY_EDITOR
         //if (Debug.isDebugBuild)
         //    Debug.Log($"Speed: {currentSpeed:F2}, State: {playerCurrentState}");
 #endif
+    }
+
+    private void HandleInput()
+    {
+        MoveInput = Vector2.ClampMagnitude(moveAction.ReadValue<Vector2>(), 1f);
+        bufferedRollInput = rollAction.ReadValue<float>();
+        bufferedMouseDelta.x += mouseX.ReadValue<float>() * mouseSensX;
+        bufferedMouseDelta.y += mouseY.ReadValue<float>() * mouseSensY;
+        isSprintingInput = sprintAction.IsPressed();
     }
 
     private void HandlePlayerSpeed()
@@ -118,17 +132,17 @@ public class Player_Spaceship : MonoBehaviour
 
         // P?ynna zmiana pr?dko?ci
         targetSpeed = baseSpeed;
-        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * accelerationRate);
+        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.fixedDeltaTime * accelerationRate);
     }
 
     private void HandleState()
     {
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
-        bool isSprinting = sprintAction.IsPressed();
-        bool isMoving = moveInput.magnitude != 0f;
+        Vector2 moveInput = MoveInput;
+        bool isSprinting = isSprintingInput;
+        bool isMoving = moveInput.sqrMagnitude > 0.0001f;
 
         // uwzgl?dnienie realistic mode
-        bool isMovingHorizontal = moveInput.y != 0f;
+        bool isMovingHorizontal = Mathf.Abs(moveInput.y) > 0.0001f;
 
         if (realisticMovementOn)
         {
@@ -153,9 +167,9 @@ public class Player_Spaceship : MonoBehaviour
 
     private void MovePlayer()
     {
-        float rollInput = rollAction.ReadValue<float>();
-        float mouseInputX = mouseX.ReadValue<float>() * Time.deltaTime * mouseSensX;
-        float mouseInputY = mouseY.ReadValue<float>() * Time.deltaTime * mouseSensY;
+        float rollInput = bufferedRollInput;
+        Vector2 mouseDelta = bufferedMouseDelta;
+        bufferedMouseDelta = Vector2.zero;
 
         // Ruch w jednej AddForce
         if (realisticMovementOn)
@@ -164,8 +178,8 @@ public class Player_Spaceship : MonoBehaviour
             MovePlayer_Arcade();
 
         // Obr?t myszk?
-        rb.AddTorque(rb.transform.right * -mouseInputY * speedMultAngle, ForceMode.Acceleration);
-        rb.AddTorque(rb.transform.up * mouseInputX * speedMultAngle, ForceMode.Acceleration);
+        rb.AddTorque(rb.transform.right * -mouseDelta.y * speedMultAngle, ForceMode.Acceleration);
+        rb.AddTorque(rb.transform.up * mouseDelta.x * speedMultAngle, ForceMode.Acceleration);
 
         // Roll
         rb.AddTorque(rb.transform.forward * rollInput * speedRollAngle, ForceMode.Acceleration);
@@ -173,14 +187,14 @@ public class Player_Spaceship : MonoBehaviour
 
     private void MovePlayer_Arcade()
     {
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
+        Vector2 moveInput = MoveInput;
         Vector3 moveDir = rb.transform.TransformDirection(new Vector3(moveInput.x, 0, moveInput.y));
         rb.AddForce(moveDir * currentSpeed, ForceMode.Acceleration);
     }
 
     private void MovePlayer_Realistic()
     {
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
+        Vector2 moveInput = MoveInput;
         Vector3 moveDir = rb.transform.TransformDirection(new Vector3(0, 0, moveInput.y));
         rb.AddForce(moveDir * currentSpeed, ForceMode.Acceleration);
     }
