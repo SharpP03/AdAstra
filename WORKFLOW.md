@@ -20,10 +20,31 @@ Przed rozpoczęciem prac nad nowym zadaniem zapytaj użytkownika:
 ---
 
 ### Krok 2: Utworzenie taska w GitHub Projects
-Utwórz nowy element (item) w projekcie za pomocą GitHub CLI:
-* **Lokalizacja:** `https://github.com/users/SharpP03/projects/3/views/1`
-* **Tytuł:** Krótki i zwięzły, jednoznacznie opisujący cel zadania.
-* **Opis:** Szczegółowy opis zakresu prac, kontekst, cele i kryteria akceptacji zadania (cały opis merytoryczny zadania znajduje się bezpośrednio w tasku na boardzie).
+Utwórz nowy element (task / item) na tablicy projektowej za pomocą GitHub CLI, przestrzegając poniższych reguł architektonicznych i organizacyjnych:
+
+* **Lokalizacja boarda:** `https://github.com/users/SharpP03/projects/3/views/1` ("AdAstra Kanban")
+* **Granularność i grupowanie zmian (Task Granularity):**
+  * Task powinien reprezentować jedną spójną funkcjonalność, poprawkę błędu lub zmianę podsystemu, którą można niezależnie wdrożyć, przetestować i zrecenzować.
+  * **Unikaj mikro-tasków (Do not prefer micro-tasks):** Nie twórz sztucznie rozdrobnionych zadań (np. 1 linijka kodu = 1 task, osobny task na pojedynczy plik lub funkcję), chyba że jest to w pełni uzasadnione (np. izolowany, pilny hotfix pojedynczego błędu lub niezależna zmiana konfiguracyjna).
+  * **Zakaz "monster-tasków":** Nie łącz wielu niezależnych od siebie podsystemów w jedno wielkie zadanie (np. nie łącz dokowania, walki i udźwiękowienia w jeden task).
+  * **Logiczne łączenie:** Łącz powiązane technicznie i domenowo elementy w spójne zadania (np. *Player flight controls and dynamic camera* zamiast 5 osobnych tasków na input, siły, damping, normalizację i kamerę).
+* **Język (Language):**
+  * Tytuł oraz cała treść opisu zadania (w tym nagłówki `## Objective`, `## Scope` itp.) muszą być formułowane w **języku angielskim** (English).
+* **Tytuł taska (Title):**
+  * Tytuł musi być **zwięzły, konkretny i domenowy** (krótki nagłówek określający cel zadania w języku angielskim).
+  * **BEZWZGLĘDNY ZAKAZ** wpisywania całego opisu, changeloga lub listy plików w tytule taska.
+* **Struktura i treść opisu (Body):**
+  * Opis musi zawierać wyłącznie niezbędne, techniczne i realne informacje o zakresie zmian w języku angielskim.
+  * Punkty w `## Scope` powinny być weryfikowalne i zorientowane na zachowania funkcjonalne oraz cele mechaniki (konkretne nazwy plików lub komponentów traktuj pomocniczo, a nie jako sztywny wymóg).
+  * Stosuj przejrzystą, ustandaryzowaną strukturę (KISS):
+    ```markdown
+    ## Objective
+    <Concise summary of the problem, design intention, or bug fix>
+
+    ## Scope
+    - [ ] <Verifiable functional behavior / deliverable 1>
+    - [ ] <Verifiable functional behavior / deliverable 2>
+    ```
 * **Stopka (wymagana):** Na końcu opisu zadania umieść notatkę:
   ```text
   Created by <Model Name> on <GitHub Username>'s behalf
@@ -32,7 +53,7 @@ Utwórz nowy element (item) w projekcie za pomocą GitHub CLI:
 
 **Komenda CLI:**
 ```powershell
-gh project item-create 3 --owner SharpP03 --title "<Tytuł>" --body "<Opis>`n`nCreated by <Model Name> on SharpP03's behalf"
+gh project item-create 3 --owner SharpP03 --title "<Concise English Title>" --body "## Objective`n...`n`n## Scope`n- [ ] ...`n`nCreated by <Model Name> on SharpP03's behalf"
 ```
 
 ---
