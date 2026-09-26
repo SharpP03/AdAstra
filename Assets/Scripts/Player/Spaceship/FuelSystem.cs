@@ -17,18 +17,11 @@ public class FuelSystem : MonoBehaviour
 
     private Player_Spaceship player;
 
-    private IEnumerator WaitForPlayer()
+    private void Awake()
     {
-        while (GameManager.Instance == null || GameManager.Instance.Player == null)
-            yield return null; // wait for single frame
-
-        player = GameManager.Instance.Player;
+        player = GetComponent<Player_Spaceship>();
         currentFuel = maxFuel;
         fuelSprintUsage = fuelUsage * 2.2f;
-    }
-    void Start()
-    {
-        StartCoroutine(WaitForPlayer());
     }
 
     private void Update()

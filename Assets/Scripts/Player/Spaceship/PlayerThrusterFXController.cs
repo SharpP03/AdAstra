@@ -29,25 +29,19 @@ public class PlayerThrusterFXController : MonoBehaviour
 
     private bool isPlayerRegistered = false;
 
-    private IEnumerator WaitForPlayer()
+    private void Awake()
     {
-        while (GameManager.Instance == null || GameManager.Instance.Player == null)
-            yield return null; // wait for single frame
-
-        player = GameManager.Instance.Player;
-        isPlayerRegistered = true;
-
-
-        targetSettings = GetSettingsForState(player.CurrentState);
-        ApplySettingsInstant(targetSettings);
+        player = GetComponent<Player_Spaceship>();
     }
 
     private void Start()
     {
-
-        StartCoroutine(WaitForPlayer());
-
-
+        if (player != null)
+        {
+            isPlayerRegistered = true;
+            targetSettings = GetSettingsForState(player.CurrentState);
+            ApplySettingsInstant(targetSettings);
+        }
     }
 
     private void Update()

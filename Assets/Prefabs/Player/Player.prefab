@@ -20326,6 +20326,8 @@ GameObject:
   - component: {fileID: 9007019723547892498}
   - component: {fileID: 8984824206888303891}
   - component: {fileID: 8461401941012817975}
+  - component: {fileID: 6071541103761480627}
+  - component: {fileID: 581496042373847135}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -20505,6 +20507,30 @@ MonoBehaviour:
     startColor: {r: 1, g: 0, b: 0, a: 1}
     velocityZ: 10
   transitionSpeed: 50
+--- !u!114 &6071541103761480627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8056483462393365249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99c0044c6294463ba8887197bca96f83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthRefillable
+--- !u!114 &581496042373847135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8056483462393365249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c697810b108e48ffb29229cf73cfce93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FuelRefillable
 --- !u!1 &8481978545605755591
 GameObject:
   m_ObjectHideFlags: 0
