@@ -54,12 +54,14 @@ git checkout -b <kategoria>/<opis-kebab-case>
 ---
 
 ### Krok 4: Realizacja prac i weryfikacja (Definition of Done)
-1. Wykonuj zaplanowane prace na utworzonym branchu zgodnie z przebiegiem konwersacji i ustaleniami z użytkownikiem.
-2. Twórz atomowe commity z czytelnymi komunikatami zgodnymi z Conventional Commits:
-   ```powershell
-   git add <ścieżki do zmodyfikowanych plików>
-   git commit -m "feat: opis zrealizowanej części zadania"
-   ```
+1. **Iteracyjny tryb krok-po-kroku (Step-by-step Review):**
+   * Realizuj zaplanowane prace iteracyjnie w spójnych, logicznych porcjach.
+   * Po wykonaniu danej części zmian agent ma obowiązek przedstawić raport o strukturze:
+     * **Co zmieniono:** lista zmodyfikowanych plików, klas i metod/pól.
+     * **Dlaczego:** przyczyna zmiany (eliminacja błędu, timing fizyki, reguła z AGENTS.md / codebase-design).
+     * **W jaki sposób:** techniczny mechanizm rozwiązania.
+   * **Pauza decyzyjna i Commit Message:** Agent zatrzymuje się, przedstawia proponowaną treść commita (zgodną z Conventional Commits), zachęca użytkownika do weryfikacji `git diff` i **czeka na potwierdzenie** przed zatwierdzeniem zmian i przejściem do kolejnego etapu.
+2. **Kompilacja i integralność:** Każdy prezentowany etap musi pozostawiać projekt w stanie kompilującym się w Unity bez błędów (0 compilation errors).
 3. **Weryfikacja jakości (Definition of Done) przed otwarciem PR:**
    * Kod musi kompilować się bez błędów w Unity 6 (`6000.2.6f2`).
    * Brak ostrzeżeń i błędów w konsoli Unity wywołanych zmianami.
