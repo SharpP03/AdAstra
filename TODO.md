@@ -10,14 +10,19 @@ Operational roadmap of core gameplay mechanics to transition AdAstra from a flig
 ## 🚀 PRIORITY 1: Core Tension & Escape (Heart of Gameplay)
 
 ### 1. Front Anihilacji / The Annihilation Wave
-* **Status:** `DESCRIBED / READY FOR IMPLEMENTATION`
+* **Status:** `IMPLEMENTED`
 * **Path:** `Assets/Scripts/Hazards/AnnihilationWave/`
 * **Concept:** A linear energy boundary moving forward along the Z-axis (from $Z = -200$ to $Z = 4000$) at constant speed.
 * **Scope:**
-  - [ ] Implement `AnnihilationWaveController.cs` (advances along Z at configurable base speed).
-  - [ ] **Warning Zone (50-100m ahead):** Screen edge alert (red tint or HUD warning) and distance readout to the wave in meters.
-  - [ ] **Kill/Damage Zone:** Rapid damage over time (`IDamageable.TakeDamage`) when engulfed by the wave.
-  - [ ] Visual representation: A large transparent/emissive quad or volumetric fog plane advancing through space.
+  - [x] Implement `AnnihilationWaveController.cs` (advances along Z at configurable base speed).
+  - [x] **Warning Zone (50-100m ahead):** Threat states (`Safe`, `Warning`, `Critical`, `Engulfed`), distance calculation and event channel for HUD.
+  - [x] **Kill/Damage Zone:** Rapid damage over time (`IDamageable.TakeDamage`) when engulfed by the wave.
+  - [x] Visual representation: Transparent/emissive double-sided URP plane and reusable prefab advancing through space.
+* **Future Polish / Creative Concepts (Post-MVP / Polish):**
+  - *Cosmic Crescent / Funnel:* Curved bowl/funnel mesh surrounding player's rear & flanks to eliminate flat planar look.
+  - *Skybox Bleed / Space Tear:* Rear skybox shader dissolution/blackout representing cosmic collapse.
+  - *Ionized Corridor:* Side radiation boundaries enforcing a diegetic flight corridor.
+  - *Singularity Drag:* Magnetic drift/RCS interference on extreme lateral deviation.
 
 ---
 

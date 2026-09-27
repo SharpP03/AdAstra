@@ -10,8 +10,8 @@ public enum WaveThreatState
 }
 
 /// <summary>
-/// Controls the movement, distance tracking, and destructive damage of the Annihilation Wave hazard.
-/// Advances forward along the local forward/Z-axis in FixedUpdate.
+/// Controls the movement, distance tracking, visual centering, and destructive damage of the Annihilation Wave.
+/// Features dynamic player X/Y visual centering and proximity particle surge.
 /// </summary>
 [SelectionBase]
 [RequireComponent(typeof(Rigidbody))]
@@ -37,6 +37,20 @@ public class AnnihilationWaveController : MonoBehaviour
 
     [Tooltip("If true, also inflicts damage to the target player whenever their position is behind the wave front plane.")]
     [SerializeField] private bool planeBoundaryDamage = true;
+
+    [Header("Visual Centering (Infinite Horizon)")]
+    [Tooltip("Transform of the visual container/plane to center on the player in X/Y coordinates.")]
+    [SerializeField] private Transform visualRoot;
+
+    [Tooltip("If true, keeps visualRoot centered on the player's X and Y coordinates so the wave appears infinite.")]
+    [SerializeField] private bool followPlayerXY = true;
+
+    [Header("Proximity Particle Surge")]
+    [Tooltip("Particle system emitting energetic sparks/plasma towards the player when threatened.")]
+    [SerializeField] private ParticleSystem proximityParticles;
+
+    [Tooltip("Maximum emission rate when player is engulfed or at critical proximity.")]
+    [SerializeField] private float maxParticleEmissionRate = 60f;
 
     [Header("Target Tracking")]
     [Tooltip("Target transform to track (usually the player's spaceship). If null, resolves from GameManager.")]
@@ -77,6 +91,25 @@ public class AnnihilationWaveController : MonoBehaviour
         {
             waveTrigger.isTrigger = true;
         }
+
+        if (visualRoot == null)
+        {
+            var follower = transform.Find("Visual_Follower");
+            if (follower != null)
+            {
+                visualRoot = follower;
+            }
+            else
+            {
+                var child = transform.Find("Visual_Plane");
+                if (child != null) visualRoot = child;
+            }
+        }
+
+        if (proximityParticles == null)
+        {
+            proximityParticles = GetComponentInChildren<ParticleSystem>();
+        }
     }
 
     private void Start()
@@ -100,6 +133,12 @@ public class AnnihilationWaveController : MonoBehaviour
         HandlePlaneBoundaryDamage();
     }
 
+    private void LateUpdate()
+    {
+        UpdateVisualCentering();
+        UpdateParticleSurge();
+    }
+
     /// <summary>
     /// Advances the wave forward using Rigidbody kinematic movement.
     /// </summary>
@@ -113,6 +152,51 @@ public class AnnihilationWaveController : MonoBehaviour
         else
         {
             transform.position += delta;
+        }
+    }
+
+    /// <summary>
+    /// Centers the visual plane and particle source on the player's X and Y coordinates.
+    /// Eliminates visible side edges and prevents flying around the visual boundary in open 3D space.
+    /// </summary>
+    private void UpdateVisualCentering()
+    {
+        if (!followPlayerXY || targetPlayer == null || visualRoot == null) return;
+
+        // Visual plane moves with the wave along Z, but matches the player's X and Y
+        Vector3 targetPos = new Vector3(targetPlayer.position.x, targetPlayer.position.y, transform.position.z);
+        visualRoot.position = targetPos;
+    }
+
+    /// <summary>
+    /// Modulates proximity particle intensity according to distance to player.
+    /// </summary>
+    private void UpdateParticleSurge()
+    {
+        if (proximityParticles == null) return;
+
+        float targetRate = 0f;
+
+        if (CurrentThreatState == WaveThreatState.Engulfed)
+        {
+            targetRate = maxParticleEmissionRate * 1.5f;
+        }
+        else if (CurrentThreatState == WaveThreatState.Critical || CurrentThreatState == WaveThreatState.Warning)
+        {
+            float factor = 1f - Mathf.Clamp01(CurrentDistanceToPlayer / warningDistance);
+            targetRate = factor * maxParticleEmissionRate;
+        }
+
+        var emission = proximityParticles.emission;
+        emission.rateOverTime = targetRate;
+
+        if (targetRate > 0.01f && !proximityParticles.isPlaying)
+        {
+            proximityParticles.Play();
+        }
+        else if (targetRate <= 0.01f && proximityParticles.isPlaying && proximityParticles.particleCount == 0)
+        {
+            proximityParticles.Stop();
         }
     }
 
