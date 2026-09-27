@@ -41,6 +41,7 @@
 - Verify affected namespace references and scripts compile cleanly.
 - Inspect `git diff` before reporting completion to ensure no unintended files or formatting changes were introduced.
 
-## 7. AGENT SKILLS & ARCHITECTURE
+## 7. AGENT SKILLS & TOOLING
 - Przed rozpoczęciem prac nad zadaniem gamedevowym skorzystaj ze skilla `router`, aby dobrać i przeczytać odpowiednie skille dopasowane do bieżącej mechaniki.
 - Przy projektowaniu granic modułów, klas i interfejsów stosuj zasady ze skilla `codebase-design`.
+- **Unity MCP:** Podczas zadań wymagających bezpośredniej interakcji z edytorem Unity (weryfikacja obiektów w scenie, konfiguracja prefabów, odczyt logów z konsoli Unity, uruchamianie testów), korzystaj z narzędzi `unityMCP`. Jeśli narzędzia MCP są niedostępne lub Unity Editor jest wyłączony, a bezpośrednia inspekcja/edycja jest kluczowa dla zadania, **poinformuj o tym użytkownika** zamiast zgadywać lub ryzykownie modyfikować pliki YAML scen/prefabów.
