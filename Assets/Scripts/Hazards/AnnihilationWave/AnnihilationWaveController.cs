@@ -78,6 +78,15 @@ public class AnnihilationWaveController : MonoBehaviour
     [Tooltip("Prefabs of electric storm lightning discharges spawned randomly across the wave front.")]
     [SerializeField] private GameObject[] stormDischargePrefabs;
 
+    [Tooltip("If true, only a single lightning strike occurs at a time, ensuring isolated majestic flashes.")]
+    [SerializeField] private bool singleDischargeOnly = true;
+
+    [Tooltip("Playback speed multiplier for lightning particles. Lower values slow down the lightning arc and flash.")]
+    [SerializeField] private float lightningSimulationSpeed = 0.5f;
+
+    [Tooltip("How long in seconds each lightning flash stays active before deactivating.")]
+    [SerializeField] private float dischargeLifetime = 2.0f;
+
     [Tooltip("Width of the discharge spawn area across the wave front (X axis).")]
     [SerializeField] private float dischargeFrontWidth = 420f;
 
@@ -85,10 +94,10 @@ public class AnnihilationWaveController : MonoBehaviour
     [SerializeField] private float dischargeFrontHeight = 350f;
 
     [Tooltip("Minimum time interval in seconds between lightning discharges.")]
-    [SerializeField] private float minDischargeInterval = 0.2f;
+    [SerializeField] private float minDischargeInterval = 2.5f;
 
     [Tooltip("Maximum time interval in seconds between lightning discharges.")]
-    [SerializeField] private float maxDischargeInterval = 0.55f;
+    [SerializeField] private float maxDischargeInterval = 5.5f;
 
     [Tooltip("Scale range for spawned lightning discharges.")]
     [SerializeField] private Vector2 dischargeScaleRange = new Vector2(25f, 50f);
@@ -379,6 +388,17 @@ public class AnnihilationWaveController : MonoBehaviour
         float y = UnityEngine.Random.Range(-halfH, halfH);
         float z = UnityEngine.Random.Range(-1f, 1f);
 
+        if (singleDischargeOnly)
+        {
+            for (int i = 0; i < dischargePool.Count; i++)
+            {
+                if (dischargePool[i] != null && dischargePool[i].activeSelf)
+                {
+                    dischargePool[i].SetActive(false);
+                }
+            }
+        }
+
         instance.transform.localPosition = new Vector3(x, y, z);
         instance.transform.localRotation = Quaternion.Euler(0f, 0f, UnityEngine.Random.Range(0f, 360f));
         float scale = UnityEngine.Random.Range(dischargeScaleRange.x, dischargeScaleRange.y);
@@ -390,11 +410,13 @@ public class AnnihilationWaveController : MonoBehaviour
         ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>();
         for (int i = 0; i < particleSystems.Length; i++)
         {
+            var main = particleSystems[i].main;
+            main.simulationSpeed = lightningSimulationSpeed;
             particleSystems[i].Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             particleSystems[i].Play(true);
         }
 
-        StartCoroutine(DeactivateDischargeAfterDelay(instance, 1.2f));
+        StartCoroutine(DeactivateDischargeAfterDelay(instance, dischargeLifetime));
     }
 
     private IEnumerator DeactivateDischargeAfterDelay(GameObject instance, float delay)
@@ -542,6 +564,9 @@ public class AnnihilationWaveController : MonoBehaviour
         damagePerSecond = config.damagePerSecond;
         dischargeFrontWidth = config.dischargeFrontWidth;
         dischargeFrontHeight = config.dischargeFrontHeight;
+        singleDischargeOnly = config.singleDischargeOnly;
+        lightningSimulationSpeed = config.lightningSimulationSpeed;
+        dischargeLifetime = config.dischargeLifetime;
         minDischargeInterval = config.minDischargeInterval;
         maxDischargeInterval = config.maxDischargeInterval;
         dischargeScaleRange = config.dischargeScaleRange;

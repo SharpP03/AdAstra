@@ -26,7 +26,18 @@ public class AnnihilationWaveConfigSO : ScriptableObject
     [Range(0f, 200f)]
     public float damagePerSecond = 50f;
 
-    [Header("Storm Lightning Discharges (Obszar i Częstotliwość Wyładowań)")]
+    [Header("Storm Lightning Discharges (Obszar, Prędkość i Częstotliwość Piorunów)")]
+    [Tooltip("If true, only one single lightning strike occurs at a time, ensuring majestic isolated flashes.")]
+    public bool singleDischargeOnly = true;
+
+    [Tooltip("Playback speed multiplier for lightning particles. Lower values (e.g. 0.3 - 0.6) slow down the lightning arc and flash.")]
+    [Range(0.1f, 2f)]
+    public float lightningSimulationSpeed = 0.5f;
+
+    [Tooltip("How long in seconds each lightning flash stays active before deactivating.")]
+    [Range(0.5f, 5f)]
+    public float dischargeLifetime = 2.0f;
+
     [Tooltip("Width of the discharge spawn area across the wave front (X axis in meters).")]
     [Range(100f, 1000f)]
     public float dischargeFrontWidth = 420f;
@@ -35,13 +46,13 @@ public class AnnihilationWaveConfigSO : ScriptableObject
     [Range(100f, 800f)]
     public float dischargeFrontHeight = 350f;
 
-    [Tooltip("Minimum time interval in seconds between lightning strikes.")]
-    [Range(0.05f, 2f)]
-    public float minDischargeInterval = 0.2f;
+    [Tooltip("Minimum time interval in seconds between lightning strikes (np. 2.5s).")]
+    [Range(0.5f, 15f)]
+    public float minDischargeInterval = 2.5f;
 
-    [Tooltip("Maximum time interval in seconds between lightning strikes.")]
-    [Range(0.1f, 3f)]
-    public float maxDischargeInterval = 0.55f;
+    [Tooltip("Maximum time interval in seconds between lightning strikes (np. 5.5s).")]
+    [Range(1f, 25f)]
+    public float maxDischargeInterval = 5.5f;
 
     [Tooltip("Scale range (min, max) for spawned lightning discharge effects.")]
     public Vector2 dischargeScaleRange = new Vector2(25f, 50f);
