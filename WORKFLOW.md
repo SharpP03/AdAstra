@@ -4,6 +4,13 @@ Niniejszy dokument definiuje procedurę postępowania przy realizacji nowych zad
 
 ---
 
+## 0. Bezpośrednie commity do gałęzi main
+* **Bezwzględny wymóg zgody:** Przed wykonaniem jakiegokolwiek bezpośredniego commita lub pusha do gałęzi `main` (nawet dla drobnych zmian w dokumentacji, konfiguracji czy plikach workflow) agent **ma bezwzględny obowiązek zapytać użytkownika o zgodę**:
+  > **„Czy wyrażasz zgodę na bezpośredni commit i push tych zmian do gałęzi main?”**
+* Bez wyraźnego potwierdzenia użytkownika zakazane jest modyfikowanie gałęzi `main` z pominięciem procedury Pull Request.
+
+---
+
 ## 1. Procedura: Nowy Feature / Zadanie
 
 ### Krok 1: Trigger inicjujący (Pytanie do Użytkownika)
@@ -12,7 +19,7 @@ Przed rozpoczęciem prac nad nowym zadaniem zapytaj użytkownika:
 
 * **Jeśli odpowiedź brzmi NIE:**
   * Zignoruj całą procedurę opisaną poniżej w krokach 2–6.
-  * Realizuj pracę bezpośrednio na bieżącej gałęzi lub według bieżących ustaleń na czacie.
+  * Realizuj pracę bezpośrednio na bieżącej gałęzi lub według bieżących ustaleń na czacie (pamiętając o zasadzie z Sekcji 0 w przypadku pracy bezpośrednio na `main`).
 
 * **Jeśli odpowiedź brzmi TAK:**
   * Przejdź do realizacji poniższych kroków (Kroki 2–6).
@@ -121,13 +128,15 @@ Po wspólnym ustaleniu z użytkownikiem, że zadanie zostało w pełni ukończon
      ```powershell
      gh pr merge --squash
      ```
-3. Po poprawnym scaleniu zapytaj użytkownika:
-   > **„Czy chcesz usunąć gałąź roboczą <nazwa-brancha> (lokalnie i zdalnie)?”**
-4. Jeśli użytkownik odpowie **TAK**:
-   * Przełącz się na `main`, zaktualizuj stan repozytorium i usuń gałąź:
+   * Przełącz się na gałąź `main` i zaktualizuj lokalny stan repozytorium:
      ```powershell
      git checkout main
      git pull
-     git branch -d <nazwa-brancha>
-     git push origin --delete <nazwa-brancha>
      ```
+   * **Aktualizacja i zamknięcie tasków (GitHub Projects & Issues):**
+     * Zamknij wszystkie powiązane z zadaniem Issues / taski wraz z komentarzem odwołującym się do scalonego PR (zamknięcie Issue w GitHub automatycznie przenosi powiązaną kartę w GitHub Projects do kolumny **Done**):
+       ```powershell
+       gh issue close <numer-issue> --comment "Resolved and merged in PR #<numer-PR>"
+       ```
+     * Jeśli zadanie na boardzie było draft itemem bez numeru Issue, zaktualizuj jego status na `Done` za pomocą CLI (`gh project item-edit`) lub przesuń kartę ręcznie na boardzie.
+     * Poinformuj użytkownika o zakończeniu merge'a i zamknięciu powiązanych zadań.
