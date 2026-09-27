@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum WaveThreatState
@@ -17,6 +19,13 @@ public enum WaveThreatState
 [RequireComponent(typeof(Rigidbody))]
 public class AnnihilationWaveController : MonoBehaviour
 {
+    [Header("Configuration Asset (Optional)")]
+    [Tooltip("ScriptableObject configuration asset holding key balance and tuning parameters. If assigned, values from this asset override local defaults.")]
+    [SerializeField] private AnnihilationWaveConfigSO config;
+
+    [Tooltip("Material of the energy curtain. If null, resolved automatically from visualRoot/Energy_Curtain.")]
+    [SerializeField] private Material frontMaterial;
+
     [Header("Movement")]
     [Tooltip("Movement speed along the forward axis in meters per second.")]
     [SerializeField] private float speed = 12f;
@@ -65,6 +74,32 @@ public class AnnihilationWaveController : MonoBehaviour
     [Tooltip("Flicker frequency for the pulsating light.")]
     [SerializeField] private float lightFlickerFrequency = 3.5f;
 
+    [Header("Storm Discharges")]
+    [Tooltip("Prefabs of electric storm lightning discharges spawned randomly across the wave front.")]
+    [SerializeField] private GameObject[] stormDischargePrefabs;
+
+    [Tooltip("Width of the discharge spawn area across the wave front (X axis).")]
+    [SerializeField] private float dischargeFrontWidth = 420f;
+
+    [Tooltip("Height of the discharge spawn area across the wave front (Y axis).")]
+    [SerializeField] private float dischargeFrontHeight = 350f;
+
+    [Tooltip("Minimum time interval in seconds between lightning discharges.")]
+    [SerializeField] private float minDischargeInterval = 0.2f;
+
+    [Tooltip("Maximum time interval in seconds between lightning discharges.")]
+    [SerializeField] private float maxDischargeInterval = 0.55f;
+
+    [Tooltip("Scale range for spawned lightning discharges.")]
+    [SerializeField] private Vector2 dischargeScaleRange = new Vector2(25f, 50f);
+
+    [Tooltip("Number of pooled lightning effect instances to avoid runtime allocations.")]
+    [SerializeField] private int dischargePoolSize = 12;
+
+    private readonly List<GameObject> dischargePool = new List<GameObject>();
+    private int dischargePoolIndex = 0;
+    private Coroutine dischargeCoroutine;
+
     [Header("Target Tracking")]
     [Tooltip("Target transform to track (usually the player's spaceship). If null, resolves from GameManager.")]
     [SerializeField] private Transform targetPlayer;
@@ -74,6 +109,7 @@ public class AnnihilationWaveController : MonoBehaviour
     [SerializeField] private Collider waveTrigger;
 
     // Public properties (Deep Module interface)
+    public AnnihilationWaveConfigSO Config => config;
     public float Speed => speed;
     public bool IsActive { get; private set; }
     public float CurrentDistanceToPlayer { get; private set; } = float.MaxValue;
@@ -128,11 +164,46 @@ public class AnnihilationWaveController : MonoBehaviour
         {
             threatLight = GetComponentInChildren<Light>();
         }
+
+        ApplyConfiguration();
+    }
+
+    private void OnEnable()
+    {
+        if (config != null)
+        {
+            config.OnConfigChanged += ApplyConfiguration;
+        }
+
+        if (dischargeCoroutine == null && stormDischargePrefabs != null && stormDischargePrefabs.Length > 0)
+        {
+            dischargeCoroutine = StartCoroutine(StormDischargeLoop());
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (config != null)
+        {
+            config.OnConfigChanged -= ApplyConfiguration;
+        }
+
+        if (dischargeCoroutine != null)
+        {
+            StopCoroutine(dischargeCoroutine);
+            dischargeCoroutine = null;
+        }
     }
 
     private void Start()
     {
         ResolveTargetPlayer();
+        InitializeStormDischargePool();
+
+        if (dischargeCoroutine == null && stormDischargePrefabs != null && stormDischargePrefabs.Length > 0)
+        {
+            dischargeCoroutine = StartCoroutine(StormDischargeLoop());
+        }
 
         if (autoStart)
         {
@@ -234,6 +305,105 @@ public class AnnihilationWaveController : MonoBehaviour
                       + Mathf.Cos(Time.time * (lightFlickerFrequency * 1.6f)) * 0.15f;
 
         threatLight.intensity = Mathf.Max(0.5f, baseLightIntensity + (proximity * maxLightIntensityBoost) + (flicker * (1f + proximity)));
+    }
+
+    /// <summary>
+    /// Pre-instantiates a pool of lightning discharge effects under visualRoot to avoid runtime GC spikes.
+    /// </summary>
+    private void InitializeStormDischargePool()
+    {
+        if (stormDischargePrefabs == null || stormDischargePrefabs.Length == 0) return;
+
+        Transform parentTransform = visualRoot != null ? visualRoot : transform;
+        Transform poolContainer = parentTransform.Find("Storm_Discharges");
+        if (poolContainer == null)
+        {
+            var go = new GameObject("Storm_Discharges");
+            go.transform.SetParent(parentTransform, false);
+            poolContainer = go.transform;
+        }
+
+        dischargePool.Clear();
+        for (int i = 0; i < dischargePoolSize; i++)
+        {
+            GameObject prefab = stormDischargePrefabs[i % stormDischargePrefabs.Length];
+            if (prefab == null) continue;
+
+            GameObject instance = Instantiate(prefab, poolContainer);
+            instance.name = $"Discharge_Pooled_{i}";
+            instance.SetActive(false);
+            dischargePool.Add(instance);
+        }
+    }
+
+    /// <summary>
+    /// Sequencer loop triggering random storm lightning strikes across the wave front.
+    /// Frequency escalates as the player enters warning and critical perimeters.
+    /// </summary>
+    private IEnumerator StormDischargeLoop()
+    {
+        while (true)
+        {
+            float threatMultiplier = 1f;
+            if (CurrentThreatState == WaveThreatState.Warning)
+            {
+                threatMultiplier = 0.65f;
+            }
+            else if (CurrentThreatState == WaveThreatState.Critical || CurrentThreatState == WaveThreatState.Engulfed)
+            {
+                threatMultiplier = 0.35f;
+            }
+
+            float waitTime = UnityEngine.Random.Range(minDischargeInterval, maxDischargeInterval) * threatMultiplier;
+            yield return new WaitForSeconds(waitTime);
+
+            TriggerRandomDischarge();
+        }
+    }
+
+    /// <summary>
+    /// Activates a pooled lightning effect at a randomized position across the front of the wave.
+    /// </summary>
+    private void TriggerRandomDischarge()
+    {
+        if (dischargePool.Count == 0) return;
+
+        GameObject instance = dischargePool[dischargePoolIndex];
+        dischargePoolIndex = (dischargePoolIndex + 1) % dischargePool.Count;
+
+        if (instance == null) return;
+
+        float halfW = dischargeFrontWidth * 0.5f;
+        float halfH = dischargeFrontHeight * 0.5f;
+        float x = UnityEngine.Random.Range(-halfW, halfW);
+        float y = UnityEngine.Random.Range(-halfH, halfH);
+        float z = UnityEngine.Random.Range(-1f, 1f);
+
+        instance.transform.localPosition = new Vector3(x, y, z);
+        instance.transform.localRotation = Quaternion.Euler(0f, 0f, UnityEngine.Random.Range(0f, 360f));
+        float scale = UnityEngine.Random.Range(dischargeScaleRange.x, dischargeScaleRange.y);
+        instance.transform.localScale = Vector3.one * scale;
+
+        instance.SetActive(false);
+        instance.SetActive(true);
+
+        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>();
+        for (int i = 0; i < particleSystems.Length; i++)
+        {
+            particleSystems[i].Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            particleSystems[i].Play(true);
+        }
+
+        StartCoroutine(DeactivateDischargeAfterDelay(instance, 1.2f));
+    }
+
+    private IEnumerator DeactivateDischargeAfterDelay(GameObject instance, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (instance != null)
+        {
+            instance.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -354,6 +524,65 @@ public class AnnihilationWaveController : MonoBehaviour
         warningDistance = Mathf.Max(0f, warningDistance);
         criticalDistance = Mathf.Clamp(criticalDistance, 0f, warningDistance);
         damagePerSecond = Mathf.Max(0f, damagePerSecond);
+
+        ApplyConfiguration();
+    }
+
+    /// <summary>
+    /// Synchronizes values from the assigned AnnihilationWaveConfigSO asset to runtime fields,
+    /// child particle systems, and the front shader material.
+    /// </summary>
+    public void ApplyConfiguration()
+    {
+        if (config == null) return;
+
+        speed = config.speed;
+        warningDistance = config.warningDistance;
+        criticalDistance = config.criticalDistance;
+        damagePerSecond = config.damagePerSecond;
+        dischargeFrontWidth = config.dischargeFrontWidth;
+        dischargeFrontHeight = config.dischargeFrontHeight;
+        minDischargeInterval = config.minDischargeInterval;
+        maxDischargeInterval = config.maxDischargeInterval;
+        dischargeScaleRange = config.dischargeScaleRange;
+        maxParticleEmissionRate = config.maxParticleEmissionRate;
+
+        if (proximityParticles == null && visualRoot != null)
+        {
+            var pChild = visualRoot.Find("Proximity_Particles");
+            if (pChild != null) proximityParticles = pChild.GetComponent<ParticleSystem>();
+        }
+
+        if (proximityParticles != null)
+        {
+            var shape = proximityParticles.shape;
+            if (shape.shapeType == ParticleSystemShapeType.Box)
+            {
+                shape.scale = new Vector3(config.sparkEmitterSize.x, config.sparkEmitterSize.y, shape.scale.z);
+            }
+        }
+
+        if (frontMaterial == null && visualRoot != null)
+        {
+            var curtain = visualRoot.Find("Energy_Curtain");
+            if (curtain != null)
+            {
+                var mr = curtain.GetComponent<MeshRenderer>();
+                if (mr != null) frontMaterial = mr.sharedMaterial;
+            }
+        }
+
+        if (frontMaterial != null)
+        {
+            Vector4 baseSpeed1 = new Vector4(0.006f, 0.012f, 0f, 0f) * config.shaderSpeedMultiplier;
+            Vector4 baseSpeed2 = new Vector4(-0.009f, 0.007f, 0f, 0f) * config.shaderSpeedMultiplier;
+            frontMaterial.SetVector("_Speed1", baseSpeed1);
+            frontMaterial.SetVector("_Speed2", baseSpeed2);
+            frontMaterial.SetFloat("_PulseSpeed", config.pulseSpeed);
+            frontMaterial.SetFloat("_VoronoiScale", config.filamentWebScale);
+            frontMaterial.SetFloat("_VoronoiPower", config.filamentSharpness);
+            frontMaterial.SetFloat("_EdgeNoiseDistortion", config.edgeRaggedness);
+        }
     }
 
     private void OnDrawGizmosSelected()

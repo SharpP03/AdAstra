@@ -189,7 +189,7 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 ### 15. Hazard: Annihilation Wave (Front Anihilacji)
 * **Status:** `IMPLEMENTED`
 * **Scope:** `MVP`
-* **Path:** `Assets/Scripts/Hazards/AnnihilationWave/AnnihilationWaveController.cs`, `Assets/Prefabs/Hazards/AnnihilationWave/AnnihilationWave.prefab`
+* **Path:** `Assets/Scripts/Hazards/AnnihilationWave/AnnihilationWaveController.cs`, `Assets/Scripts/Hazards/AnnihilationWave/AnnihilationWaveConfigSO.cs`, `Assets/Prefabs/Hazards/AnnihilationWave/AnnihilationWave.prefab`
 * **Dependencies:** `IDamageable`, `Rigidbody`, `Player_Spaceship`
 * **Description:** Linear energy plane advancing at constant speed along the Z axis behind the player. Features a warning perimeter (100 m) and critical zone (30 m) with threat state events and proximity tracking, plus a destructive front inflicting continuous rapid damage per second (`IDamageable.TakeDamage`, Rapid DPS), permitting desperate last-second sprint escapes.
 * **Action Items:**

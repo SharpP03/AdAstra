@@ -11,11 +11,11 @@ Shader "Custom/AnnihilationWave_Front"
         [Header(Noise and Fluid Turbulence)]
         _NoiseScale ("Noise Frequency Scale", Float) = 2.5
         _DistortionStrength ("Turbulence Distortion", Range(0.0, 2.0)) = 0.65
-        _Speed1 ("Primary Drift Speed (XY)", Vector) = (0.02, 0.04, 0, 0)
-        _Speed2 ("Secondary Drift Speed (XY)", Vector) = (-0.03, 0.02, 0, 0)
-        _VoronoiScale ("Filament Web Scale", Float) = 2.8
-        _VoronoiPower ("Filament Sharpness", Range(1.0, 8.0)) = 3.2
-        _PulseSpeed ("Global Pulse Frequency", Float) = 1.6
+        _Speed1 ("Primary Drift Speed (XY)", Vector) = (0.006, 0.012, 0, 0)
+        _Speed2 ("Secondary Drift Speed (XY)", Vector) = (-0.009, 0.007, 0, 0)
+        _VoronoiScale ("Filament Web Scale", Float) = 5.5
+        _VoronoiPower ("Filament Sharpness", Range(1.0, 8.0)) = 3.5
+        _PulseSpeed ("Global Pulse Frequency", Float) = 0.6
         _PulseIntensity ("Global Pulse Intensity", Range(0.0, 1.0)) = 0.2
 
         [Header(Soft Intersections and Organic Edges)]
@@ -27,7 +27,7 @@ Shader "Custom/AnnihilationWave_Front"
 
         [Header(Vertex Undulation)]
         _WaveAmplitude ("3D Mesh Undulation Amplitude", Float) = 2.5
-        _WaveFrequency ("3D Mesh Undulation Speed", Float) = 0.4
+        _WaveFrequency ("3D Mesh Undulation Speed", Float) = 0.15
 
         [Header(Blending)]
         [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Src Blend", Float) = 5 // SrcAlpha
@@ -150,7 +150,7 @@ Shader "Custom/AnnihilationWave_Front"
                     {
                         float2 neighbor = float2(x, y);
                         float2 p = hash2(i + neighbor);
-                        p = 0.5 + 0.5 * sin(_Time.y * 1.5 + 6.2831 * p);
+                        p = 0.5 + 0.5 * sin(_Time.y * 0.35 + 6.2831 * p);
                         float2 diff = neighbor + p - f;
                         float d = length(diff);
                         if (d < d1)
