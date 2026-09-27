@@ -60,7 +60,7 @@ Utwórz nowy element (task / item) na tablicy projektowej za pomocą GitHub CLI,
 
 **Komenda CLI:**
 ```powershell
-gh project item-create 3 --owner SharpP03 --title "<Concise English Title>" --body "## Objective`n...`n`n## Scope`n- [ ] ...`n`nCreated by <Model Name> on SharpP03's behalf"
+gh issue create --title "<Concise English Title>" --body "## Objective`n...`n`n## Scope`n- [ ] ...`n`nCreated by <Model Name> on SharpP03's behalf" --project "AdAstra Kanban" --assignee "@me"
 ```
 
 ---
