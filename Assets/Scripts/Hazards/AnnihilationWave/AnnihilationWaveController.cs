@@ -52,6 +52,19 @@ public class AnnihilationWaveController : MonoBehaviour
     [Tooltip("Maximum emission rate when player is engulfed or at critical proximity.")]
     [SerializeField] private float maxParticleEmissionRate = 60f;
 
+    [Header("Dynamic Threat Lighting")]
+    [Tooltip("Point/Spot light on the wave front casting ominous illumination on the player ship and surroundings.")]
+    [SerializeField] private Light threatLight;
+
+    [Tooltip("Base intensity for the threat light.")]
+    [SerializeField] private float baseLightIntensity = 2.5f;
+
+    [Tooltip("Extra light intensity boost when player is in proximity of the wave.")]
+    [SerializeField] private float maxLightIntensityBoost = 5f;
+
+    [Tooltip("Flicker frequency for the pulsating light.")]
+    [SerializeField] private float lightFlickerFrequency = 3.5f;
+
     [Header("Target Tracking")]
     [Tooltip("Target transform to track (usually the player's spaceship). If null, resolves from GameManager.")]
     [SerializeField] private Transform targetPlayer;
@@ -110,6 +123,11 @@ public class AnnihilationWaveController : MonoBehaviour
         {
             proximityParticles = GetComponentInChildren<ParticleSystem>();
         }
+
+        if (threatLight == null)
+        {
+            threatLight = GetComponentInChildren<Light>();
+        }
     }
 
     private void Start()
@@ -137,6 +155,7 @@ public class AnnihilationWaveController : MonoBehaviour
     {
         UpdateVisualCentering();
         UpdateParticleSurge();
+        UpdateThreatLight();
     }
 
     /// <summary>
@@ -198,6 +217,23 @@ public class AnnihilationWaveController : MonoBehaviour
         {
             proximityParticles.Stop();
         }
+    }
+
+    /// <summary>
+    /// Modulates ominous threat light intensity and subtle flickering as the wave approaches the player.
+    /// </summary>
+    private void UpdateThreatLight()
+    {
+        if (threatLight == null) return;
+
+        float proximity = (CurrentDistanceToPlayer <= warningDistance && CurrentDistanceToPlayer >= 0f)
+            ? (1f - (CurrentDistanceToPlayer / warningDistance))
+            : (CurrentThreatState == WaveThreatState.Engulfed ? 1.5f : 0.1f);
+
+        float flicker = Mathf.Sin(Time.time * lightFlickerFrequency) * 0.3f
+                      + Mathf.Cos(Time.time * (lightFlickerFrequency * 1.6f)) * 0.15f;
+
+        threatLight.intensity = Mathf.Max(0.5f, baseLightIntensity + (proximity * maxLightIntensityBoost) + (flicker * (1f + proximity)));
     }
 
     /// <summary>
