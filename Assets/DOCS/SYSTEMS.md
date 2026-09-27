@@ -19,7 +19,7 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 ## Subsystem Registry
 
 ### 1. Spaceship Flight & Physics (Spaceship Controller)
-* **Status:** `PARTIALLY IMPLEMENTED`
+* **Status:** `IMPLEMENTED`
 * **Scope:** `MVP`
 * **Path:** `Assets/Scripts/Player/Spaceship/Player_Spaceship.cs`
 * **Dependencies:** `Rigidbody`, `FuelSystem`, `PlayerInput` (`Assets/playerInput.inputactions`)
@@ -27,7 +27,7 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
 * **Action Items:**
   - [x] Fix logic bug: `MoveInput` property in `Player_Spaceship.cs` is never assigned (remains `(0, 0)`), which disables the camera tilt effect.
   - [x] Move mouse input reading from `FixedUpdate()` to `Update()` to eliminate input jitter.
-  - [ ] Replace runtime string lookups (`actions.FindAction(...)`) with strongly typed C# action wrappers.
+  - [x] Cache `InputAction` references during initialization in `Start()` to eliminate runtime string lookups in `Update()`.
 
 ---
 
