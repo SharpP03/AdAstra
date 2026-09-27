@@ -196,7 +196,7 @@ Operational subsystem registry for project **AdAstra**. Serves as the single sou
   - [x] Implement constant Z-velocity kinematic Rigidbody controller (`AnnihilationWaveController.cs`).
   - [x] Calculate signed distance to player via `Vector3.Dot` and feed to HUD/systems via `OnDistanceChanged` and `OnThreatStateChanged`.
   - [x] Apply continuous Rapid DPS on contact via `IDamageable.TakeDamage` with hybrid plane boundary and trigger volume support.
-  - [x] Create connected `AnnihilationWave.prefab` with double-sided emissive URP transparent material and place instance in `SampleScene.unity`.
+  - [x] Create connected `AnnihilationWave.prefab` with custom URP HLSL plasma shader (`AnnihilationWave_Front.shader`), multi-layered particle wall/emitters, and dynamic threat lighting in `SampleScene.unity`. *(Poglądowy raport techniczny dla twórcy: `Assets/DOCS/raports/annihilation_wave_shader_report.md`)*.
   - [ ] Connect HUD threat alert visualizer / proximity meter once HUD subsystem is updated.
 
 ---

@@ -34,6 +34,7 @@
 - Architectural additions or changes to core contracts MUST update the documentation in `Assets/DOCS/`.
 - Routine bug fixes and localized tweaks do not require documentation entries.
 - Documentation must accurately describe the physical implementation as-is, never speculative designs.
+- Dokumenty i raporty w katalogu `Assets/DOCS/raports/` służą wyłącznie celom edukacyjnym i podglądowym dla użytkownika (do pracy inżynierskiej). Agenci NIE powinni ich analizować, traktować jako wytycznych projektowych ani ich egzekwować.
 
 ## 6. VALIDATION & DEFINITION OF DONE
 - A task is not complete until modified code compiles with 0 errors in Unity.

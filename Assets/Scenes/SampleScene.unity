@@ -8794,6 +8794,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AnnihilationWave
       objectReference: {fileID: 0}
+    - target: {fileID: 5993847360141218346, guid: e77624f658c66f84eb88e42807d52070, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7097178334016233944, guid: e77624f658c66f84eb88e42807d52070, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
