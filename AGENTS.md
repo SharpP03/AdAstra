@@ -7,6 +7,7 @@
 
 ## 1. SOURCE OF TRUTH & ARCHITECTURE
 - Physical project files are the source of truth for the current implementation; use Git history for architectural context. Disregard legacy claims in `README.md`.
+- Taski i Issues (GitHub Projects) służą wyłącznie do wglądu i orientacji użytkownika – nie są źródłem prawdy ani sztywnym wyznacznikiem. Bieżący zakres i decyzje ustalamy bezpośrednio w konwersacji na czacie.
 - Engine: Unity 6 (6000.2.6f2) URP, New Input System exclusively (`activeInputHandler: 1`).
 - Use ScriptableObjects for shared balance data, configurations, and reusable definitions. Keep instance-specific state and local tweaks directly on MonoBehaviours.
 
