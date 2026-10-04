@@ -16,15 +16,15 @@ MonoBehaviour:
   warningDistance: 100
   criticalDistance: 30
   damagePerSecond: 50
-  singleDischargeOnly: 1
-  lightningSimulationSpeed: 0.45
-  dischargeLifetime: 1.8
+  singleDischargeOnly: 0
+  lightningSimulationSpeed: 0.1
+  dischargeLifetime: 3
   dischargeFrontWidth: 800
   dischargeFrontHeight: 450
   minDischargeInterval: 2.5
   maxDischargeInterval: 5
   dischargeScaleRange: {x: 30, y: 100}
-  sparkEmitterSize: {x: 150, y: 150}
+  sparkEmitterSize: {x: 150, y: 150, z: 20}
   maxParticleEmissionRate: 180
   shaderSpeedMultiplier: 1
   pulseSpeed: 0.6

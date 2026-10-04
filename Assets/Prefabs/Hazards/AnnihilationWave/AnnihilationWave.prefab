@@ -115,13 +115,13 @@ MonoBehaviour:
   - {fileID: 2705533495200665743, guid: e84c40719cee66744925cce01bef28fc, type: 3}
   - {fileID: 3958596659431381315, guid: c50f9e2c685970e4c8ebcd5fc8c7b3e4, type: 3}
   - {fileID: 7834434380170384362, guid: 68101499d07aced4aa0ded4acb624942, type: 3}
-  singleDischargeOnly: 1
-  lightningSimulationSpeed: 0.5
-  dischargeLifetime: 2
+  singleDischargeOnly: 0
+  lightningSimulationSpeed: 0.1
+  dischargeLifetime: 3
   dischargeFrontWidth: 800
   dischargeFrontHeight: 450
-  minDischargeInterval: 0.05
-  maxDischargeInterval: 0.15
+  minDischargeInterval: 2.5
+  maxDischargeInterval: 5
   dischargeScaleRange: {x: 30, y: 100}
   dischargePoolSize: 12
   targetPlayer: {fileID: 0}
@@ -4972,6 +4972,7 @@ GameObject:
   m_Component:
   - component: {fileID: 117158762596701870}
   - component: {fileID: 1984115744819097145}
+  - component: {fileID: 5070361173691870796}
   m_Layer: 0
   m_Name: Threat_Light
   m_TagString: Untagged
@@ -5059,6 +5060,35 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!114 &5070361173691870796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5767489033539377177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &5993847360141218346
 GameObject:
   m_ObjectHideFlags: 0

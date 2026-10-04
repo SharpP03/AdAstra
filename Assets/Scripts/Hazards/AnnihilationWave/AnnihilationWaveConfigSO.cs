@@ -58,8 +58,8 @@ public class AnnihilationWaveConfigSO : ScriptableObject
     public Vector2 dischargeScaleRange = new Vector2(25f, 50f);
 
     [Header("Proximity Sparks (Iskry Bliskości)")]
-    [Tooltip("Width and height of the spark emitter box (X and Y in meters).")]
-    public Vector2 sparkEmitterSize = new Vector2(140f, 140f);
+    [Tooltip("Width, height and depth of the spark emitter box (X, Y and Z in meters).")]
+    public Vector3 sparkEmitterSize = new Vector3(140f, 140f, 20f);
 
     [Tooltip("Maximum emission rate for proximity sparks when engulfed or at critical distance.")]
     [Range(10f, 300f)]
