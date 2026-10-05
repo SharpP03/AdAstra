@@ -7,6 +7,7 @@
 
 ## 1. SOURCE OF TRUTH & ARCHITECTURE
 - Physical project files are the source of truth for the current implementation; use Git history for architectural context. Disregard legacy claims in `README.md`.
+- Taski i Issues (GitHub Projects) służą wyłącznie do wglądu i orientacji użytkownika – nie są źródłem prawdy ani sztywnym wyznacznikiem. Bieżący zakres i decyzje ustalamy bezpośrednio w konwersacji na czacie.
 - Engine: Unity 6 (6000.2.6f2) URP, New Input System exclusively (`activeInputHandler: 1`).
 - Use ScriptableObjects for shared balance data, configurations, and reusable definitions. Keep instance-specific state and local tweaks directly on MonoBehaviours.
 
@@ -33,6 +34,7 @@
 - Architectural additions or changes to core contracts MUST update the documentation in `Assets/DOCS/`.
 - Routine bug fixes and localized tweaks do not require documentation entries.
 - Documentation must accurately describe the physical implementation as-is, never speculative designs.
+- Dokumenty i raporty w katalogu `Assets/DOCS/raports/` służą wyłącznie celom edukacyjnym i podglądowym dla użytkownika (do pracy inżynierskiej). Agenci NIE powinni ich analizować, traktować jako wytycznych projektowych ani ich egzekwować.
 
 ## 6. VALIDATION & DEFINITION OF DONE
 - A task is not complete until modified code compiles with 0 errors in Unity.
@@ -41,6 +43,7 @@
 - Verify affected namespace references and scripts compile cleanly.
 - Inspect `git diff` before reporting completion to ensure no unintended files or formatting changes were introduced.
 
-## 7. AGENT SKILLS & ARCHITECTURE
+## 7. AGENT SKILLS & TOOLING
 - Przed rozpoczęciem prac nad zadaniem gamedevowym skorzystaj ze skilla `router`, aby dobrać i przeczytać odpowiednie skille dopasowane do bieżącej mechaniki.
 - Przy projektowaniu granic modułów, klas i interfejsów stosuj zasady ze skilla `codebase-design`.
+- **Unity MCP:** Podczas zadań wymagających bezpośredniej interakcji z edytorem Unity (weryfikacja obiektów w scenie, konfiguracja prefabów, odczyt logów z konsoli Unity, uruchamianie testów), korzystaj z narzędzi `unityMCP`. Jeśli narzędzia MCP są niedostępne lub Unity Editor jest wyłączony, a bezpośrednia inspekcja/edycja jest kluczowa dla zadania, **poinformuj o tym użytkownika** zamiast zgadywać lub ryzykownie modyfikować pliki YAML scen/prefabów.
