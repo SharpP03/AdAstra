@@ -93,7 +93,7 @@ public class Player_Spaceship : MonoBehaviour
     private void FixedUpdate()
     {
         HandlePlayerSpeed();
-        if (fuelSystem.HasFuel)
+        if (fuelSystem.HasFuel && !IsControlsLocked)
             MovePlayer();
     }
 
@@ -110,6 +110,12 @@ public class Player_Spaceship : MonoBehaviour
 
     private void HandleInput()
     {
+        if (IsControlsLocked)
+        {
+            ResetMovementInputs();
+            return;
+        }
+
         MoveInput = Vector2.ClampMagnitude(moveAction.ReadValue<Vector2>(), 1f);
         bufferedRollInput = rollAction.ReadValue<float>();
         bufferedMouseDelta.x += mouseX.ReadValue<float>() * mouseSensX;
@@ -137,6 +143,12 @@ public class Player_Spaceship : MonoBehaviour
 
     private void HandleState()
     {
+        if (IsControlsLocked)
+        {
+            playerCurrentState = PlayerState.Standstill;
+            return;
+        }
+
         Vector2 moveInput = MoveInput;
         bool isSprinting = isSprintingInput;
         bool isMoving = moveInput.sqrMagnitude > 0.0001f;
@@ -210,6 +222,33 @@ public class Player_Spaceship : MonoBehaviour
 
     public Vector2 MoveInput { get; private set; }
     public PlayerState CurrentState => playerCurrentState;
+    public bool IsControlsLocked { get; private set; }
+
+    public void SetFlightControlsLocked(bool locked)
+    {
+        IsControlsLocked = locked;
+        if (locked)
+        {
+            ResetMovementInputs();
+            ResetMovementState();
+        }
+    }
+
+    private void ResetMovementInputs()
+    {
+        MoveInput = Vector2.zero;
+        bufferedMouseDelta = Vector2.zero;
+        bufferedRollInput = 0f;
+        isSprintingInput = false;
+    }
+
+    private void ResetMovementState()
+    {
+        playerCurrentState = PlayerState.Standstill;
+        targetSpeed = 0f;
+        currentSpeed = 0f;
+    }
+
     #region EDUCATION NOTE public getter
     // R?wnowa?ne z poni?szym zapisem
     //public PlayerState CurrentState

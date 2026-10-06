@@ -17,4 +17,20 @@ public class GameManager : MonoBehaviour
     {
         Player = player;
     }
+
+    public GameState CurrentState { get; private set; } = GameState.Playing;
+    public event System.Action<GameState> OnGameStateChanged;
+
+    public void SetGameState(GameState newState)
+    {
+        if (CurrentState == newState) return;
+        CurrentState = newState;
+        Debug.Log($"[GameManager] Game state changed to: {newState}");
+        OnGameStateChanged?.Invoke(newState);
+    }
+
+    public void TriggerVictory()
+    {
+        SetGameState(GameState.Victory);
+    }
 }

@@ -12,6 +12,12 @@ public class HealthSystem : MonoBehaviour, IDamageable
     public event Action OnDied;
 
     private bool isDead = false;
+    public bool IsInvulnerable { get; private set; } = false;
+
+    public void SetInvulnerable(bool invulnerable)
+    {
+        IsInvulnerable = invulnerable;
+    }
 
     private void Awake()
     {
@@ -20,7 +26,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damageValue)
     {
-        if (isDead) return;
+        if (isDead || IsInvulnerable) return;
 
         currentHealth = Mathf.Max(0f, currentHealth - damageValue);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
