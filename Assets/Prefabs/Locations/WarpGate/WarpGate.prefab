@@ -1415,6 +1415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WarpGate
   dockPoint: {fileID: 879986904348557467}
   captureDuration: 1
+  wordPool: {fileID: 11400000, guid: 21203d0b195885b499b0c1a7678a51e3, type: 2}
 --- !u!1 &6419915403361988429
 GameObject:
   m_ObjectHideFlags: 0

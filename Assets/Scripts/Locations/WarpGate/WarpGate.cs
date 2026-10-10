@@ -16,6 +16,9 @@ public class WarpGate : MonoBehaviour
     [Tooltip("Time in seconds to pull the ship from its capture position to the dock point.")]
     [SerializeField] private float captureDuration = 1f;
 
+    [Header("Jump Authorization")]
+    [SerializeField] private WarpGateWordPoolSO wordPool;
+
     public bool IsShipCaptured { get; private set; }
 
     /// <summary>Raised once the ship is docked and motionless inside the gate.</summary>
@@ -25,6 +28,11 @@ public class WarpGate : MonoBehaviour
     {
         GetComponent<Collider>().isTrigger = true;
         if (dockPoint == null) dockPoint = transform;
+    }
+
+    public string PickAuthorizationWord()
+    {
+        return wordPool != null ? wordPool.GetRandomWord() : "JUMP";
     }
 
     private void OnTriggerEnter(Collider other)

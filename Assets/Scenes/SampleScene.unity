@@ -8481,6 +8481,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   annihilationWave: {fileID: 1816182266}
   runEndPanel: {fileID: 7665014182053727755}
+  warpGate: {fileID: 1043266257}
+  jumpTerminal: {fileID: 7665014182053727756}
 --- !u!4 &1949836084
 Transform:
   m_ObjectHideFlags: 0
@@ -8992,6 +8994,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 845f077e301312549810c9a91986997d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunEndPanel
+--- !u!114 &7665014182053727756 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2892750061135659679, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
+  m_PrefabInstance: {fileID: 7665014182053727754}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91c40e7752d957a4da5c909ae6aa6584, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JumpTerminal
 --- !u!1001 &8627349586855503839
 PrefabInstance:
   m_ObjectHideFlags: 0

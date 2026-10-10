@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private AnnihilationWaveController annihilationWave;
     [SerializeField] private RunEndPanel runEndPanel;
+    [SerializeField] private WarpGate warpGate;
+    [SerializeField] private JumpTerminal jumpTerminal;
 
     private HealthSystem playerHealth;
     private float runStartTime;
@@ -30,6 +32,8 @@ public class GameManager : MonoBehaviour
         if (annihilationWave != null) annihilationWave.OnDistanceChanged += HandleWaveDistanceChanged;
         if (runEndPanel != null) runEndPanel.OnRestartRequested += RestartRun;
         if (playerHealth != null) playerHealth.OnDied += HandlePlayerDied;
+        if (warpGate != null) warpGate.OnShipDocked += HandleShipDocked;
+        if (jumpTerminal != null) jumpTerminal.OnWordCompleted += HandleJumpAuthorized;
     }
 
     private void OnDisable()
@@ -37,6 +41,8 @@ public class GameManager : MonoBehaviour
         if (annihilationWave != null) annihilationWave.OnDistanceChanged -= HandleWaveDistanceChanged;
         if (runEndPanel != null) runEndPanel.OnRestartRequested -= RestartRun;
         if (playerHealth != null) playerHealth.OnDied -= HandlePlayerDied;
+        if (warpGate != null) warpGate.OnShipDocked -= HandleShipDocked;
+        if (jumpTerminal != null) jumpTerminal.OnWordCompleted -= HandleJumpAuthorized;
     }
 
     private void OnDestroy()
@@ -70,6 +76,18 @@ public class GameManager : MonoBehaviour
         EndRun(GameState.GameOver);
     }
 
+    // The wave keeps moving and dealing damage while the player types the authorization word.
+    private void HandleShipDocked(Player_Spaceship ship)
+    {
+        if (CurrentState != GameState.Playing || jumpTerminal == null) return;
+        jumpTerminal.Open(warpGate.PickAuthorizationWord());
+    }
+
+    private void HandleJumpAuthorized()
+    {
+        EndRun(GameState.Victory);
+    }
+
     /// <summary>
     /// Ends the run once: locks the ship controls, freezes the run statistics and shows the end-of-run panel.
     /// </summary>
@@ -80,6 +98,7 @@ public class GameManager : MonoBehaviour
 
         if (Player != null) Player.SetControlsEnabled(false);
         if (result == GameState.Victory && annihilationWave != null) annihilationWave.SetActive(false);
+        if (jumpTerminal != null && jumpTerminal.IsOpen) jumpTerminal.Close();
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
