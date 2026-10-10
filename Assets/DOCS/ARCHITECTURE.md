@@ -63,6 +63,7 @@ To eliminate initialization race conditions and eradicate coroutine polling loop
 * For components on the same GameObject, query via `GetComponent` in `Awake()`.
 * Avoid scene-wide scans (`GameObject.Find`, `FindObjectOfType`) in runtime gameplay code (acceptable in custom editor utilities).
 * Never use coroutine polling to wait for dependencies.
+* Use `OnValidate` only for editor-time data validation, never for runtime wiring.
 
 ---
 
@@ -70,7 +71,7 @@ To eliminate initialization race conditions and eradicate coroutine polling loop
 
 * **Timing Separation:**
   * **`Update()`:** Read and cache all player input (`playerInput.actions`) and advance gameplay timers.
-  * **`FixedUpdate()`:** Apply all physical movements, forces, and torques.
+  * **`FixedUpdate()`:** Apply all physical movements, forces, and torques. Do not read transient button presses (`WasPressedThisFrame`) here — buffer them in `Update()` and consume the buffered flag, otherwise presses are lost or duplicated between physics steps.
   * **`LateUpdate()`:** Follow targets with the camera, apply cosmetic smoothing (lerps), and update procedural transforms.
 * **Hardware Abstraction:** Gameplay systems should not query raw hardware devices (`Keyboard.current`, `Mouse.current`, `Gamepad.current`) directly; consume actions through the New Input System asset (`playerInput.inputactions`).
 * **Strong Typing:** Avoid string-based action queries (`actions.FindAction("Move")`) in hot paths; generate and use strongly typed C# action wrappers.
