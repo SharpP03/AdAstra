@@ -2,9 +2,6 @@
 
 Unity 6 (`6000.2.6f2`, URP) MVP of a 6DoF space exploration game: fly a ship, manage fuel and hull, outrun the Annihilation Wave. It is the author's engineering thesis project. Everything compiles into `Assembly-CSharp` — there are no custom `.asmdef` files and no automated tests, so verification happens in the Unity Editor. Keep solutions simple: no speculative abstractions.
 
-## Starting a task
-Before starting a new task or mechanic, ask the user whether to create a branch and a GitHub Projects task. The procedure (issue format, branches, commits, PR, merge) is in `.claude/skills/github-task/SKILL.md`. Scope and decisions are agreed in chat; issues are only for the user's overview.
-
 ## Hard rules
 - Never commit or push to `main` without the user's explicit consent.
 - Keep thesis annotations (`#region EDUCATION NOTE`, `DO PRACY INŻ.`). Update them when the logic they describe changes.
