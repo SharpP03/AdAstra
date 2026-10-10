@@ -9,7 +9,7 @@ Board: https://github.com/users/SharpP03/projects/3/views/1 ("AdAstra Kanban"). 
 
 ## 1. Start
 Ask: "Do you want to create a new branch and a GitHub Projects task?" (ask in the user's language).
-- **No** → work on the current branch as agreed in chat. Skip to section 3.
+- **No** → work on the current branch as agreed in chat. Follow section 2; no issue or PR.
 - **Yes** → create the issue, then the branch.
 
 ### Issue
@@ -25,7 +25,7 @@ Ask: "Do you want to create a new branch and a GitHub Projects task?" (ask in th
 
   Created by <Model Name> on SharpP03's behalf
   ```
-- Write the body to a file in the scratchpad and pass it with `--body-file` (avoids PowerShell quoting issues):
+- Write the body to a temporary file and pass it with `--body-file` (avoids PowerShell quoting issues):
   `gh issue create --title "<title>" --body-file <file> --project "AdAstra Kanban" --assignee "@me"`
 - A permission error on `--project` means the token lacks the `project` scope — ask the user to run `gh auth refresh -s project`.
 
@@ -35,13 +35,13 @@ From an up-to-date `main`: `feat/`, `fix/`, `refactor/`, `docs/` or `chore/` (se
 ## 2. Work in steps
 Work in coherent increments. After each one, stop and report:
 - **What** changed — files, classes, methods/fields.
-- **Why** — the cause (bug, physics timing, a rule from `AGENTS.md` / `ARCHITECTURE.md`).
+- **Why** — the cause (bug, physics timing, a rule from `AGENTS.md`).
 - **How** — the technical mechanism.
 
 Propose a Conventional Commits message, ask the user to review `git diff`, and wait for confirmation before committing and moving on. Every step must leave the project compiling in Unity with 0 errors.
 
 ## 3. Pull request
-Before opening: Definition of Done from `Assets/DOCS/ARCHITECTURE.md` §9 is met and `Assets/DOCS/SYSTEMS.md` is updated.
+Before opening: the Definition of Done in `AGENTS.md` is met.
 - Title: Conventional Commits style, e.g. `feat: implement docking magnet mechanism`.
 - Body: only `ref: <issue link>` — no summary, no "Generated with" footer; the issue holds the description.
 - Push the branch, `gh pr create --title "<title>" --body-file <file>`, then give the user the PR title and link.
