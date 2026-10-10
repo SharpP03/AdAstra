@@ -83,3 +83,6 @@ crashlytics-build.properties
 /.idea/.idea.AdAstra/.idea
 /.idea
 /.idea
+
+# Agent skills (restored from skills-lock.json via: npx skills experimental_install)
+/.claude/skills/
