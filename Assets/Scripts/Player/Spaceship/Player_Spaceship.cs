@@ -49,6 +49,7 @@ public class Player_Spaceship : MonoBehaviour
     private Vector2 bufferedMouseDelta;
     private float bufferedRollInput;
     private bool isSprintingInput;
+    private bool controlsEnabled = true;
 
     #region Input system lifecycle
     private void OnEnable()
@@ -110,6 +111,15 @@ public class Player_Spaceship : MonoBehaviour
 
     private void HandleInput()
     {
+        if (!controlsEnabled)
+        {
+            MoveInput = Vector2.zero;
+            bufferedRollInput = 0f;
+            bufferedMouseDelta = Vector2.zero;
+            isSprintingInput = false;
+            return;
+        }
+
         MoveInput = Vector2.ClampMagnitude(moveAction.ReadValue<Vector2>(), 1f);
         bufferedRollInput = rollAction.ReadValue<float>();
         bufferedMouseDelta.x += mouseX.ReadValue<float>() * mouseSensX;
@@ -206,6 +216,14 @@ public class Player_Spaceship : MonoBehaviour
         mouseX = playerInput.actions.FindAction("MouseX");
         mouseY = playerInput.actions.FindAction("MouseY");
         sprintAction = playerInput.actions.FindAction("Sprint");
+    }
+
+    /// <summary>
+    /// Locks or unlocks pilot input (end of run, Warp Gate capture). The ship keeps its momentum.
+    /// </summary>
+    public void SetControlsEnabled(bool enabled)
+    {
+        controlsEnabled = enabled;
     }
 
     public Vector2 MoveInput { get; private set; }
