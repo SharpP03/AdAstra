@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +9,8 @@ using UnityEngine.UI;
 public class RunEndPanel : MonoBehaviour
 {
     [SerializeField] private GameObject panelRoot;
-    [SerializeField] private Text titleText;
-    [SerializeField] private Text statsText;
+    [SerializeField] private TMP_Text titleText;
+    [SerializeField] private TMP_Text statsText;
     [SerializeField] private Button restartButton;
 
     public event Action OnRestartRequested;
