@@ -42,13 +42,13 @@ flowchart TD
 * Balansowanie użyciem sprintu/boostu (prędkość ucieczki vs 2.2x drenaż paliwa).
 
 ### 2.2. Pętla Rdzenna (Minuty / Pojedynczy Run)
-1. **Start:** Wylot ze stacji bazowej (`StartingHub`, Z=0) w kierunku bramy skokowej (`Warp Gate`, Z=4000) w autorskim korytarzu testowym (`SampleScene.unity`).
-2. **Nawigacja i Presja Czasu:** Wskaźniki HUD (Waypoints) wskazują kierunek i dystans w metrach do aktywnego celu (stacja pośrednia, Warp Gate). Za plecami gracza przesuwa się ze stałą prędkością **Front Anihilacji**.
+1. **Start:** Wylot ze stacji bazowej (`StartingHub`, Z=0) w kierunku bramy skokowej (`Warp Gate`, Z=500) w autorskim korytarzu testowym (`SampleScene.unity`).
+2. **Nawigacja i Presja Czasu:** Warp Gate jest widoczna z daleka dzięki świecącemu beaconowi, a HUD pokazuje dystans do bramy w metrach (`WARP GATE: ### m`). Docelowo wskaźniki HUD (Waypoints) mają wskazywać kierunek i dystans do każdego aktywnego celu (stacja pośrednia, Warp Gate). Za plecami gracza przesuwa się ze stałą prędkością **Front Anihilacji**.
 3. **Wymuszony Postój:** Bak paliwa mieści maksymalnie ~60% dystansu sektora – bezpośredni lot w linii prostej bez tankowania jest niemożliwy.
 4. **Zarządzanie Ryzykiem:**
    - **Stacja Pośrednia (Dead-Stop & Magnes Dokujący):** Gracz musi wyhamować wewnątrz strefy `RefuelZone`. Magnes dokujący unieruchamia statek na czas trwania procedury tankowania, podczas gdy gracz obserwuje zbliżający się wskaźnik fali.
    - **Strefy Zagrożenia:** Gracz decyduje, czy zaryzykować wlot w głąb burzy jonowej lub na krawędź anomalii grawitacyjnej, by przechwycić **Rdzenie Danych (Data Cores)**.
-5. **Ekstrakcja:** Wlot do aktywnej bramy Warp Gate kończy run sukcesem.
+5. **Ekstrakcja:** Wlot do bramy Warp Gate rozpoczyna procedurę skoku (przechwycenie statku i autoryzacja w terminalu, patrz 4.4). Poprawna autoryzacja kończy run sukcesem.
 
 ### 2.3. Pętla Makro (Meta-Progresja i Persystencja)
 * **Układ Sektora w MVP:** Autorski korytarz testowy (greybox / blockout) w `SampleScene.unity`. Proceduralny generator całego sektora wzdłuż osi Z odłożony jest do POST-MVP.
@@ -62,16 +62,20 @@ flowchart TD
 ## 3. WARUNKI ZWYCIĘSTWA I PORAŻKI
 
 ### 3.1. Zwycięstwo (Run Complete)
-* Wlot statkiem w collider bramy **Warp Gate** przed dogonieniem przez Front Anihilacji.
-* Ekran podsumowania: czas ucieczki, zachowane zasoby, liczba dowiezionych Rdzeni Danych, ranga pilotażu.
-* Zapis zebranych rdzeni do sumy zbankowanych punktów (`PlayerPrefs`).
+* Wlot statkiem w bramę **Warp Gate** i ukończenie procedury skoku (4.4), zanim kadłub zostanie zniszczony.
+* Wlot liczy się także w stanie Dead-Stick – statek bez paliwa, który „wdryfuje” w bramę siłą pędu, zostaje przechwycony normalnie.
+* Ekran podsumowania (MVP): czas ucieczki (od startu do poprawnej autoryzacji), pozostały kadłub %, pozostałe paliwo %, najmniejszy dystans do Frontu Anihilacji w trakcie runu, przycisk Restart.
+* Docelowo podsumowanie rozszerzy się o liczbę dowiezionych Rdzeni Danych, rangę pilotażu oraz zapis rdzeni do sumy zbankowanych punktów (`PlayerPrefs`).
 
 ### 3.2. Porażka (Game Over)
 * **Destrukcja Kadłuba (`Health <= 0`):** Zderzenia z asteroidami o dużej prędkości względnej, uderzenia piorunów w burzy jonowej lub obrażenia od Fali Anihilacji.
 * **Pochłonięcie przez Front Anihilacji:** Wpadnięcie w strefę niszczącej energii (gwałtowny Rapid DPS redukujący kadłub do zera).
 * **Wytracenie Ciągu (Brak Paliwa - Stan Dead-Stick):**
   - Przy `Fuel == 0` silniki główne oraz mikro-silniki manewrowe RCS gasną. Gracz traci całkowitą kontrolę nad wektorem pędu i rotacją.
-  - Sam brak paliwa **nie wywołuje natychmiastowego Game Over** – statek dryfuje siłą bezwładności. Game Over następuje dopiero w momencie fizycznej kolizji z przeszkodą lub wchłonięcia przez Front Anihilacji. Gracz ma teoretyczną szansę "wdryfować" siłą pędu w strefę stacji paliw.
+  - Sam brak paliwa **nie wywołuje natychmiastowego Game Over** – statek dryfuje siłą bezwładności. Game Over następuje dopiero w momencie fizycznej kolizji z przeszkodą lub wchłonięcia przez Front Anihilacji. Gracz ma teoretyczną szansę "wdryfować" siłą pędu w strefę stacji paliw lub w bramę Warp Gate.
+
+### 3.3. Koniec Runu
+* Wygrana i porażka kończą run w ten sam sposób: sterowanie zostaje zablokowane, pojawia się panel końca runu, a przycisk Restart rozpoczyna run od nowa (ponowne załadowanie sceny).
 
 ---
 
@@ -94,6 +98,20 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 ### 4.3. Rdzenie Danych (Data Cores)
 * Unoszące się w przestrzeni kapsuły/kontenery zlokalizowane w strefach wysokiego ryzyka (wnętrza Burz Jonowych, orbity Anomalii Grawitacyjnych).
 * Zapewniają natychmiastowy zastrzyk zasobów w locie oraz stanowią bazę meta-progresji bankowanej po wlocie w Warp Gate.
+
+### 4.4. Warp Gate (Cel Runu i Procedura Skoku)
+Brama skokowa na końcu korytarza sektora. Finał runu łączy pilotaż z krótką minigrą pod presją Frontu Anihilacji.
+
+**Dotarcie:** Brama jest punktem orientacyjnym widocznym z daleka (świecący beacon), a HUD pokazuje dystans do niej. Napięcie końcówki wynika z układu sektora – po ostatnim tankowaniu gracz ściga się z falą o resztki paliwa, mając cel przed sobą. Brama nie wprowadza dodatkowych mechanik utrudniających podejście.
+
+**Procedura skoku:**
+1. **Przechwycenie:** Wlot w strefę bramy blokuje sterowanie statkiem. Brama płynnie dociąga statek do punktu dokowania w swoim centrum i wygasza jego prędkość. Procedury nie można przerwać ani opuścić bramy.
+2. **Autoryzacja w terminalu:** Na ekranie pojawia się terminal z jednym słowem wylosowanym z puli (angielskie słowa tematyczne, litery A–Z, ok. 6–10 znaków). Gracz musi wpisać je z klawiatury; wielkość liter nie ma znaczenia.
+   - Poprawna litera podświetla się na zielono z krótkim efektem „pop”.
+   - Błędny znak jest odrzucany – ramka terminala miga na czerwono i lekko drga, a dotychczasowy postęp zostaje zachowany. Karą za pomyłkę jest wyłącznie stracony czas.
+3. **Presja fali:** Przez cały czas trwania procedury Front Anihilacji porusza się dalej i zadaje obrażenia. Jeśli dogoni unieruchomiony statek i zniszczy kadłub przed ukończeniem autoryzacji, run kończy się porażką.
+4. **Skok:** Poprawne wpisanie słowa zatrzymuje licznik czasu i Front Anihilacji. Statek zostaje wciągnięty w bramę z narastającą prędkością, kamera rozszerza pole widzenia (efekt warp), a obraz rozjaśnia się do bieli.
+5. **Podsumowanie:** Po skoku wyświetla się ekran podsumowania runu (3.1).
 
 ---
 

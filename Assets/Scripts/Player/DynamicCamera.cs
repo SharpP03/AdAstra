@@ -17,6 +17,9 @@ public class DynamicCamera : MonoBehaviour
     [SerializeField] private float sprintFOVIncrease = 15f;
     [SerializeField] private float sprintTransitionSpeed = 3f;
 
+    [Header("Warp jump effect")]
+    [SerializeField] private float warpFOVIncrease = 45f;
+
     [Header("Tilt and roll following")]
     [SerializeField] private float tiltAmount = 5f;
     [SerializeField] private float tiltSmoothness = 5f;
@@ -29,6 +32,8 @@ public class DynamicCamera : MonoBehaviour
     private float baseFOV;
 
     private float currentRoll; // przechowywany roll kamery
+    private float warpDuration;
+    private float warpElapsed;
 
     private void Awake()
     {
@@ -44,7 +49,7 @@ public class DynamicCamera : MonoBehaviour
             return;
         }
 
-        cam = GetComponent<Camera>();
+        cam = GetComponentInChildren<Camera>(); // the Camera sits on a child of the rig
         if (cam) baseFOV = cam.fieldOfView;
 
         currentOffset = baseOffset;
@@ -113,6 +118,15 @@ public class DynamicCamera : MonoBehaviour
     {
         if (!cam) return;
 
+        if (warpDuration > 0f)
+        {
+            // Warp jump: FOV widens with ease-in, overriding the sprint effect until the run ends.
+            warpElapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(warpElapsed / warpDuration);
+            cam.fieldOfView = baseFOV + warpFOVIncrease * t * t;
+            return;
+        }
+
         bool isSprinting = player.CurrentState == PlayerState.Sprinting;
 
         Vector3 targetOffset = baseOffset + (isSprinting ? new Vector3(0, 0, -sprintZoomOut) : Vector3.zero);
@@ -120,5 +134,14 @@ public class DynamicCamera : MonoBehaviour
 
         float targetFOV = isSprinting ? baseFOV + sprintFOVIncrease : baseFOV;
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, Time.deltaTime * sprintTransitionSpeed);
+    }
+
+    /// <summary>
+    /// Starts the Warp Gate jump camera effect: a FOV kick that builds up over the given duration.
+    /// </summary>
+    public void PlayWarpEffect(float duration)
+    {
+        warpDuration = Mathf.Max(0.01f, duration);
+        warpElapsed = 0f;
     }
 }
