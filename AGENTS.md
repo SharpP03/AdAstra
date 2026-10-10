@@ -1,49 +1,32 @@
-# AGENTS.MD - PROJECT AD ASTRA PROTOCOL
+# AdAstra
 
-## 0. CORE PHILOSOPHY & SIMPLICITY
-- AdAstra is an MVP exploration game. Keep solutions simple, direct, and readable (KISS/YAGNI).
-- Do not overengineer. Avoid speculative abstractions, unnecessary generic interfaces, or deep inheritance hierarchies.
-- Preserve all academic and thesis notes (e.g., `#region EDUCATION NOTE`, `DO PRACY INŻ.`). Keep them accurate if modifying the associated implementation; do not delete them.
+Unity 6 (`6000.2.6f2`, URP) MVP of a 6DoF space exploration game: fly a ship, manage fuel and hull, outrun the Annihilation Wave. It is the author's engineering thesis project. Everything compiles into `Assembly-CSharp` — there are no custom `.asmdef` files and no automated tests, so verification happens in the Unity Editor. Keep solutions simple: no speculative abstractions.
 
-## 1. SOURCE OF TRUTH & ARCHITECTURE
-- Physical project files are the source of truth for the current implementation; use Git history for architectural context. Disregard legacy claims in `README.md`.
-- Taski i Issues (GitHub Projects) służą wyłącznie do wglądu i orientacji użytkownika – nie są źródłem prawdy ani sztywnym wyznacznikiem. Bieżący zakres i decyzje ustalamy bezpośrednio w konwersacji na czacie.
-- Engine: Unity 6 (6000.2.6f2) URP, New Input System exclusively (`activeInputHandler: 1`).
-- Use ScriptableObjects for shared balance data, configurations, and reusable definitions. Keep instance-specific state and local tweaks directly on MonoBehaviours.
+## Hard rules
+- Never commit or push to `main` without the user's explicit consent.
+- Keep thesis annotations (`#region EDUCATION NOTE`, `DO PRACY INŻ.`). Update them when the logic they describe changes.
+- Every asset has a `.meta` file with a GUID. Never delete or hand-write `.meta` files; when moving or renaming a file, move its `.meta` with it. Class name = file name.
+- Change scenes and prefabs through the Unity Editor (MCP tools), not by hand-editing their YAML. If the editor is unavailable and the task needs it, tell the user instead of guessing.
+- Do not modify third-party packages: `Assets/AssetStore/`, `Assets/Plugins/`, `Assets/ThridParty/` (the misspelling is the real folder name).
+- Do not add new global singletons without the user's approval.
 
-## 2. INPUT SUBSYSTEM
-- Use Unity's New Input System exclusively.
-- Gameplay code MUST NOT directly access hardware devices (`Keyboard.current`, `Mouse.current`, `Gamepad.current`).
-- Prefer generated C# wrappers or cache `InputAction` references during initialization (`Awake`/`Start`). Avoid string-based lookups (`actions.FindAction(...)`) in per-frame updates.
-- Read input state and buffer transitions in `Update()`. Apply resulting physics forces in `FixedUpdate()`. Avoid reading transient button presses directly in `FixedUpdate()`.
+## Project conventions
+- `Awake()` configures only the object itself (`GetComponent` on the same GameObject); wiring between objects happens in `Start()`. Never poll for dependencies in coroutine loops.
+- `GameManager` is the composition root and game-state orchestrator (menu, playing, paused, game over, victory, reset), not a service locator. Systems own their state.
+- Prefer `[SerializeField]` references wired on prefabs; no `GameObject.Find` / `FindAnyObjectByType` in runtime gameplay code.
+- Input goes through `Assets/playerInput.inputactions`. `Assets/InputSystem_Actions.*` is Unity's unused default template.
+- Discrete state changes are C# `event`s; listeners subscribe in `OnEnable()` and unsubscribe in `OnDisable()`.
+- ScriptableObjects hold balance and configuration data (thrust, fuel burn, max hull).
+- Core components live on the prefab (`Player.prefab`), not as unapplied scene overrides. Modular scene objects (`StartingHub`, `IonStorm`) stay connected prefab instances.
 
-## 3. PHYSICS & EXECUTION TIMING
-- All physics mutations (`AddForce`, `AddTorque`, direct velocity modifications) MUST run in `FixedUpdate`.
-- When using `ForceMode.Force` or `ForceMode.Acceleration`, DO NOT multiply the vector by `Time.fixedDeltaTime` (Unity integrates the timestep automatically). Use `Time.fixedDeltaTime` for manual rate calculations, smoothing, or custom integration inside `FixedUpdate`.
-- Never poll dependencies using coroutine loops like `while (Instance == null) yield return null;`. Use explicit initialization callbacks, events, or direct references.
+## Definition of Done
+- The project compiles with 0 errors and no new console warnings.
+- Play Mode on `Assets/Scenes/SampleScene.unity` runs without exceptions.
+- Changes made on scene instances are applied to their prefabs.
+- After renaming, moving or deleting a script: grep `*.unity` and `*.prefab` for its old GUID (from its `.meta`). Any hit is a broken reference.
+- `git status` / `git diff` show no unintended changes — especially in `ProjectSettings/`, `Packages/packages-lock.json` or scenes you did not touch.
 
-## 4. REFERENCES & SCENE DISCIPLINE
-- Avoid scene-wide searches (`GameObject.Find`, `FindAnyObjectByType`) in gameplay runtime code. Prefer serialized references (`[SerializeField]`), initialization callbacks, or local queries (`GetComponent` in `Awake`). Use `OnValidate` strictly for editor-time data validation.
-- Do not introduce new global singletons without explicit approval.
-- Prefab Integrity: Core components and baseline configurations must be committed directly to prefabs (`Player.prefab`), not left as unapplied component additions in scenes. Scene overrides are reserved for intentional, instance-specific values.
-- Modular scene objects must remain connected prefab instances, not unpacked raw geometry.
-
-## 5. DOCUMENTATION & LOGS
-- Przed rozpoczęciem każdego nowego zadania / mechaniki postępuj ściśle według procedury zdefiniowanej w `WORKFLOW.md` (zapytaj o utworzenie brancha i taska w GitHub Projects).
-- Przed rozpoczęciem prac nad dowolną mechaniką sprawdź wpis w `Assets/DOCS/SYSTEMS.md`, a po zakończeniu prac zaktualizuj jego checklistę oraz status.
-- Architectural additions or changes to core contracts MUST update the documentation in `Assets/DOCS/`.
-- Routine bug fixes and localized tweaks do not require documentation entries.
-- Documentation must accurately describe the physical implementation as-is, never speculative designs.
-- Dokumenty i raporty w katalogu `Assets/DOCS/raports/` służą wyłącznie celom edukacyjnym i podglądowym dla użytkownika (do pracy inżynierskiej). Agenci NIE powinni ich analizować, traktować jako wytycznych projektowych ani ich egzekwować.
-
-## 6. VALIDATION & DEFINITION OF DONE
-- A task is not complete until modified code compiles with 0 errors in Unity.
-- Verify the Unity Console has no new errors or warnings caused by the changes.
-- Check that modified scenes and prefabs serialize correctly without missing script references (`GUID` nulls).
-- Verify affected namespace references and scripts compile cleanly.
-- Inspect `git diff` before reporting completion to ensure no unintended files or formatting changes were introduced.
-
-## 7. AGENT SKILLS & TOOLING
-- Przed rozpoczęciem prac nad zadaniem gamedevowym skorzystaj ze skilla `router`, aby dobrać i przeczytać odpowiednie skille dopasowane do bieżącej mechaniki.
-- Przy projektowaniu granic modułów, klas i interfejsów stosuj zasady ze skilla `codebase-design`.
-- **Unity MCP:** Podczas zadań wymagających bezpośredniej interakcji z edytorem Unity (weryfikacja obiektów w scenie, konfiguracja prefabów, odczyt logów z konsoli Unity, uruchamianie testów), korzystaj z narzędzi `unityMCP`. Jeśli narzędzia MCP są niedostępne lub Unity Editor jest wyłączony, a bezpośrednia inspekcja/edycja jest kluczowa dla zadania, **poinformuj o tym użytkownika** zamiast zgadywać lub ryzykownie modyfikować pliki YAML scen/prefabów.
+## Documentation
+- `Assets/DOCS/GAMEPLAY.md` — game design overview: core loop, mechanics, win and loss conditions. Read it when a task involves gameplay decisions.
+- Ignore — material for the user and the thesis, not guidelines: `README.md` (legacy), `TODO.md` (roadmap), `Assets/DOCS/SYSTEMS.md` (mechanics registry), `Assets/DOCS/THESIS_NOTES.md`, `Assets/DOCS/raports/`, `Assets/DOCS/Poster/`.
+- Never read generated folders: `Library/`, `Temp/`, `Logs/`, `obj/`, `UserSettings/`, `*.csproj`, `*.sln`.
