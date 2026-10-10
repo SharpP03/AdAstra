@@ -1379,7 +1379,7 @@ MonoBehaviour:
   followSmoothness: 15
   rotationSmoothness: 10
   sprintZoomOut: 2
-  sprintFOVIncrease: 15
+  sprintFOVIncrease: 0
   sprintTransitionSpeed: 3
   warpFOVIncrease: 45
   tiltAmount: 5
@@ -8890,10 +8890,6 @@ PrefabInstance:
       propertyPath: warpGate
       value: 
       objectReference: {fileID: 1043266257}
-    - target: {fileID: 6452705717159351507, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
-      propertyPath: m_FontData.m_MaxSize
-      value: 72
-      objectReference: {fileID: 0}
     - target: {fileID: 7748238865867608534, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -8977,10 +8973,6 @@ PrefabInstance:
     - target: {fileID: 8231377901602216330, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
       propertyPath: m_Name
       value: GameUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 9019300580649825393, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
