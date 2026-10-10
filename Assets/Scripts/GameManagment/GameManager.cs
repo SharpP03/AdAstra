@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Composition root and game-state orchestrator: tracks the run, ends it on victory or death
-/// and restarts it by reloading the scene.
+/// Composition root and game-state orchestrator: tracks the run, drives the Warp Gate jump procedure,
+/// ends the run on victory or death and restarts it by reloading the scene.
 /// </summary>
 public class GameManager : MonoBehaviour
 {
@@ -15,9 +15,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private RunEndPanel runEndPanel;
     [SerializeField] private WarpGate warpGate;
     [SerializeField] private JumpTerminal jumpTerminal;
+    [SerializeField] private DynamicCamera dynamicCamera;
+    [SerializeField] private ScreenFade screenFade;
+
+    [Tooltip("Time in seconds the white flash takes to clear after the jump, revealing the summary.")]
+    [SerializeField] private float jumpFadeOutDuration = 0.6f;
 
     private HealthSystem playerHealth;
     private float runStartTime;
+    private float runEndTime;
+    private bool jumpAuthorized;
     private float closestWaveDistance = float.MaxValue;
 
     private void Awake()
@@ -33,6 +40,7 @@ public class GameManager : MonoBehaviour
         if (runEndPanel != null) runEndPanel.OnRestartRequested += RestartRun;
         if (playerHealth != null) playerHealth.OnDied += HandlePlayerDied;
         if (warpGate != null) warpGate.OnShipDocked += HandleShipDocked;
+        if (warpGate != null) warpGate.OnJumpFinished += HandleJumpFinished;
         if (jumpTerminal != null) jumpTerminal.OnWordCompleted += HandleJumpAuthorized;
     }
 
@@ -42,6 +50,7 @@ public class GameManager : MonoBehaviour
         if (runEndPanel != null) runEndPanel.OnRestartRequested -= RestartRun;
         if (playerHealth != null) playerHealth.OnDied -= HandlePlayerDied;
         if (warpGate != null) warpGate.OnShipDocked -= HandleShipDocked;
+        if (warpGate != null) warpGate.OnJumpFinished -= HandleJumpFinished;
         if (jumpTerminal != null) jumpTerminal.OnWordCompleted -= HandleJumpAuthorized;
     }
 
@@ -67,12 +76,14 @@ public class GameManager : MonoBehaviour
 
     private void HandleWaveDistanceChanged(float distance)
     {
-        if (CurrentState != GameState.Playing) return;
+        if (CurrentState != GameState.Playing || jumpAuthorized) return;
         closestWaveDistance = Mathf.Min(closestWaveDistance, distance);
     }
 
     private void HandlePlayerDied()
     {
+        // Once the jump is authorized the run is won; leftover wave damage during the jump does not count.
+        if (jumpAuthorized) return;
         EndRun(GameState.GameOver);
     }
 
@@ -83,9 +94,29 @@ public class GameManager : MonoBehaviour
         jumpTerminal.Open(warpGate.PickAuthorizationWord());
     }
 
+    /// <summary>
+    /// Correct word typed: the run clock and the wave stop, and the jump sequence starts
+    /// (ship pulled through the portal, camera FOV kick, fade to white).
+    /// </summary>
     private void HandleJumpAuthorized()
     {
+        if (CurrentState != GameState.Playing || jumpAuthorized) return;
+        jumpAuthorized = true;
+        runEndTime = Time.time;
+
+        if (annihilationWave != null) annihilationWave.SetActive(false);
+        jumpTerminal.Close();
+
+        float duration = warpGate.JumpDuration;
+        warpGate.Jump(Player);
+        if (dynamicCamera != null) dynamicCamera.PlayWarpEffect(duration);
+        if (screenFade != null) screenFade.FadeIn(duration);
+    }
+
+    private void HandleJumpFinished()
+    {
         EndRun(GameState.Victory);
+        if (screenFade != null) screenFade.FadeOut(jumpFadeOutDuration);
     }
 
     /// <summary>
@@ -122,6 +153,8 @@ public class GameManager : MonoBehaviour
             if (fuelSystem != null) fuel = fuelSystem.FuelPercent;
         }
 
-        return new RunSummary(result, Time.time - runStartTime, hull, fuel, Mathf.Max(0f, closestWaveDistance));
+        // The escape time ends at the jump authorization, not after the jump animation.
+        float endTime = jumpAuthorized ? runEndTime : Time.time;
+        return new RunSummary(result, endTime - runStartTime, hull, fuel, Mathf.Max(0f, closestWaveDistance));
     }
 }

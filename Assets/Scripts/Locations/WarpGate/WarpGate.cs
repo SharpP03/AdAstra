@@ -19,10 +19,20 @@ public class WarpGate : MonoBehaviour
     [Header("Jump Authorization")]
     [SerializeField] private WarpGateWordPoolSO wordPool;
 
+    [Header("Jump")]
+    [Tooltip("Time in seconds the ship accelerates through the portal before the run ends.")]
+    [SerializeField] private float jumpDuration = 1.6f;
+    [Tooltip("Distance in meters the ship travels along the gate axis during the jump.")]
+    [SerializeField] private float jumpDistance = 400f;
+
     public bool IsShipCaptured { get; private set; }
+    public float JumpDuration => jumpDuration;
 
     /// <summary>Raised once the ship is docked and motionless inside the gate.</summary>
     public event Action<Player_Spaceship> OnShipDocked;
+
+    /// <summary>Raised when the jump sequence has finished.</summary>
+    public event Action OnJumpFinished;
 
     private void Awake()
     {
@@ -78,5 +88,30 @@ public class WarpGate : MonoBehaviour
         }
 
         OnShipDocked?.Invoke(ship);
+    }
+
+    /// <summary>
+    /// Pulls the docked ship through the portal with growing speed, then raises OnJumpFinished.
+    /// </summary>
+    public void Jump(Player_Spaceship ship)
+    {
+        StartCoroutine(JumpRoutine(ship.GetComponent<Rigidbody>()));
+    }
+
+    private IEnumerator JumpRoutine(Rigidbody rb)
+    {
+        Vector3 startPos = rb.position;
+        Vector3 axis = dockPoint.forward;
+        float elapsed = 0f;
+
+        while (elapsed < jumpDuration)
+        {
+            elapsed += Time.fixedDeltaTime;
+            float t = Mathf.Clamp01(elapsed / jumpDuration);
+            rb.MovePosition(startPos + axis * (jumpDistance * t * t * t)); // ease-in: slow start, violent exit
+            yield return new WaitForFixedUpdate();
+        }
+
+        OnJumpFinished?.Invoke();
     }
 }
