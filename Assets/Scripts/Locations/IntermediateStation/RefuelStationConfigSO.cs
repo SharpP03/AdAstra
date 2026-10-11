@@ -14,9 +14,14 @@ public class RefuelStationConfigSO : ScriptableObject
     [Range(0.1f, 10f)]
     public float maxDockSpeed = 2f;
 
+    [Tooltip("Total fuel the station can hand out during one run. Once empty, it stops refueling.")]
+    [Range(0f, 1000f)]
+    public float fuelCapacity = 150f;
+
     private void OnValidate()
     {
         fuelPerSecond = Mathf.Max(0f, fuelPerSecond);
         maxDockSpeed = Mathf.Max(0.1f, maxDockSpeed);
+        fuelCapacity = Mathf.Max(0f, fuelCapacity);
     }
 }

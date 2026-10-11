@@ -86,8 +86,9 @@ crashlytics-build.properties
 
 # Agent skills (restored from skills-lock.json via: npx skills experimental_install)
 /.claude/skills/*
-# Project-owned skill (not from skills-lock.json)
+# Project-owned skills (not from skills-lock.json)
 !/.claude/skills/github-task/
+!/.claude/skills/handoff/
 
 # Agent handoff plans (local only)
 /Assets/DOCS/agent_plans/

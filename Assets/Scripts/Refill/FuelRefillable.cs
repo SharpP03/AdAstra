@@ -13,9 +13,12 @@ public class FuelRefillable : MonoBehaviour, IRefillable
         fuelSystem = GetComponent<FuelSystem>();
     }
 
-    public void Add(float amount)
+    public float Add(float amount)
     {
-        if (fuelSystem == null) return;
+        if (fuelSystem == null) return 0f;
+
+        float before = fuelSystem.currentFuel;
         fuelSystem.AddFuel(amount);
+        return fuelSystem.currentFuel - before;
     }
 }

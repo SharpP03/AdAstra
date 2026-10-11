@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RefuelStationConfigSO
   fuelPerSecond: 8
   maxDockSpeed: 2
+  fuelCapacity: 150
