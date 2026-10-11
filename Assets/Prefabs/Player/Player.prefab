@@ -20328,6 +20328,8 @@ GameObject:
   - component: {fileID: 8461401941012817975}
   - component: {fileID: 6071541103761480627}
   - component: {fileID: 581496042373847135}
+  - component: {fileID: 308050817838535059}
+  - component: {fileID: 7642938018319620391}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -20393,14 +20395,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f69c1618f1f6e7b4db72e73085152ee3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player_Spaceship
-  realisticMovementOn: 0
-  moveSpeed: 15
+  realisticMovementOn: 1
+  moveSpeed: 20
   sprintMultiplier: 1.8
   accelerationRate: 4
   speedMultAngle: 0.5
   speedRollAngle: 1
-  mouseSensX: 10
-  mouseSensY: 10
+  mouseSensX: 0.1
+  mouseSensY: 0.1
 --- !u!114 &2179961292634713657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20472,6 +20474,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_Manager
   fuelBar: {fileID: 4827452439229479677}
   healthBar: {fileID: 1119609318854850580}
+  impactFlashColor: {r: 1, g: 1, b: 1, a: 1}
+  impactFlashDuration: 0.35
 --- !u!114 &8461401941012817975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20531,6 +20535,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c697810b108e48ffb29229cf73cfce93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelRefillable
+--- !u!114 &308050817838535059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8056483462393365249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41705862e06bd22478c4ae7ade7cc020, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HullCollisionDamage
+  config: {fileID: 11400000, guid: 7514f67bec5869548bf5bc454808576e, type: 2}
+--- !u!114 &7642938018319620391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8056483462393365249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52ef428d86ccbc498ecfe608823f44c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ImpactSparksFX
+  sparksPrefab: {fileID: 3690134938039654802, guid: d4650ea90ace7804c92c5a28b6ba12b7, type: 3}
+  minSparks: 8
+  maxSparks: 60
 --- !u!1 &8481978545605755591
 GameObject:
   m_ObjectHideFlags: 0
@@ -30301,6 +30333,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 14ecc61b944515f4880842d4c2249dd2, type: 3}
       propertyPath: m_Name
       value: Spaceship
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 14ecc61b944515f4880842d4c2249dd2, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
