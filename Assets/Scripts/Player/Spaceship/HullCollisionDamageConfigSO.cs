@@ -22,6 +22,10 @@ public class HullCollisionDamageConfigSO : ScriptableObject
     [Range(0f, 1f)]
     public float scrapeFactor = 0.2f;
 
+    [Tooltip("How much the obstacle's mass share m / (m + shipMass) scales the damage. 0 = mass ignored, 1 = pebbles barely hurt, boulders and static geometry deal full damage.")]
+    [Range(0f, 1f)]
+    public float massInfluence = 1f;
+
     [Tooltip("Minimum time in seconds between two damaging impacts, so one hit with several contact points counts once.")]
     [Range(0f, 2f)]
     public float hitCooldown = 0.3f;

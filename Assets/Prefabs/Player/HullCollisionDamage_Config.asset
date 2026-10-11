@@ -16,4 +16,5 @@ MonoBehaviour:
   damagePerSpeed: 4
   maxDamage: 150
   scrapeFactor: 0.2
+  massInfluence: 1
   hitCooldown: 0.3
