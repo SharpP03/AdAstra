@@ -102,7 +102,7 @@ public class DynamicCamera : MonoBehaviour
         UpdateImpactShake();
     }
 
-    private void HandleImpact(float strength)
+    private void HandleImpact(float strength, Vector3 point, Vector3 normal)
     {
         // Hits add up instead of restarting the shake.
         trauma = Mathf.Clamp01(trauma + Mathf.Lerp(minImpactTrauma, 1f, strength));

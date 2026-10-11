@@ -11,9 +11,10 @@ public class HullCollisionDamage : MonoBehaviour
     [SerializeField] private HullCollisionDamageConfigSO config;
 
     /// <summary>
-    /// Raised after a damaging impact. The argument is the impact strength 0..1 (damage / maxDamage).
+    /// Raised after a damaging impact with: strength 0..1 (damage / maxDamage),
+    /// contact point and surface normal pointing away from the obstacle.
     /// </summary>
-    public event Action<float> OnImpact;
+    public event Action<float, Vector3, Vector3> OnImpact;
 
     private IDamageable hull;
     private Rigidbody rb;
@@ -37,15 +38,46 @@ public class HullCollisionDamage : MonoBehaviour
         if (!enabled) return;
         if (Time.time - lastHitTime < config.hitCooldown) return;
 
-        float damage = EvaluateDamage(GetImpactSpeed(collision)) * GetMassFactor(collision);
+        GetContact(collision, out Vector3 point, out Vector3 normal);
+
+        float damage = EvaluateDamage(GetImpactSpeed(collision.relativeVelocity, normal)) * GetMassFactor(collision);
         if (damage <= 0f) return;
 
         lastHitTime = Time.time;
         hull.TakeDamage(damage);
-        OnImpact?.Invoke(config.maxDamage > 0f ? Mathf.Clamp01(damage / config.maxDamage) : 1f);
+        float strength = config.maxDamage > 0f ? Mathf.Clamp01(damage / config.maxDamage) : 1f;
+        OnImpact?.Invoke(strength, point, normal);
     }
 
-    private float GetImpactSpeed(Collision collision)
+    /// <summary>
+    /// Averages all contact points of the hit. The normal is oriented away from the obstacle (towards the ship).
+    /// </summary>
+    private void GetContact(Collision collision, out Vector3 point, out Vector3 normal)
+    {
+        point = Vector3.zero;
+        normal = Vector3.zero;
+
+        int count = collision.contactCount;
+        if (count == 0)
+        {
+            point = transform.position;
+            return;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            ContactPoint contact = collision.GetContact(i);
+            point += contact.point;
+            normal += contact.normal;
+        }
+
+        point /= count;
+        normal = normal.normalized;
+        if (Vector3.Dot(normal, rb.worldCenterOfMass - point) < 0f)
+            normal = -normal;
+    }
+
+    private float GetImpactSpeed(Vector3 relativeVelocity, Vector3 normal)
     {
         #region EDUCATION NOTE impact speed
         // DO PRACY INŻ. - rozkład prędkości względnej na składową normalną i styczną.
@@ -57,16 +89,9 @@ public class HullCollisionDamage : MonoBehaviour
         // Wpływ masy uwzględniamy osobno i jawnie w GetMassFactor: udział masy przeszkody m / (m + mStatku),
         // którego siłę projektant ustawia parametrem massInfluence w konfiguracji.
         #endregion
-        Vector3 relativeVelocity = collision.relativeVelocity;
-
-        Vector3 normal = Vector3.zero;
-        for (int i = 0; i < collision.contactCount; i++)
-            normal += collision.GetContact(i).normal;
-
         if (normal.sqrMagnitude < 0.0001f)
             return relativeVelocity.magnitude;
 
-        normal.Normalize();
         float normalSpeed = Mathf.Abs(Vector3.Dot(relativeVelocity, normal));
         float tangentSpeed = Vector3.ProjectOnPlane(relativeVelocity, normal).magnitude;
 

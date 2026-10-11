@@ -63,7 +63,7 @@ public class UI_Manager : MonoBehaviour
         UpdateImpactFlash();
     }
 
-    private void HandleImpact(float strength)
+    private void HandleImpact(float strength, Vector3 point, Vector3 normal)
     {
         flashTimer = impactFlashDuration;
     }
