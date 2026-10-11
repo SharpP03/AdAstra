@@ -20459,7 +20459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelSystem
   maxFuel: 200
-  fuelUsage: 1
+  fuelUsage: 2.2
 --- !u!114 &8984824206888303891
 MonoBehaviour:
   m_ObjectHideFlags: 0
