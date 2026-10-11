@@ -1,6 +1,6 @@
 ---
 name: github-task
-description: AdAstra GitHub procedure — creating a task (issue on the "AdAstra Kanban" board) and branch, step-by-step commits, opening a PR, squash merge and closing the issue. Use when starting a new task or mechanic, committing a finished step, or when the user asks to open a PR or merge.
+description: AdAstra GitHub procedure — creating a task (issue on the "AdAstra Kanban" board) and branch, and step-by-step commits. Push, PRs and merges are done by the user. Use when starting a new task or mechanic, or committing a finished step.
 ---
 
 # GitHub task procedure
@@ -30,7 +30,7 @@ Ask: "Do you want to create a new branch and a GitHub Projects task?" (ask in th
 - A permission error on `--project` means the token lacks the `project` scope — ask the user to run `gh auth refresh -s project`.
 
 ### Branch
-From an up-to-date `main`: `feat/`, `fix/`, `refactor/`, `docs/` or `chore/` (setup, tooling, config) + kebab-case description.
+`feat/`, `fix/`, `refactor/`, `docs/` or `chore/` (setup, tooling, config) + kebab-case description. One branch per task. By default it starts from the current task branch (stacked branches, merged in order); start from `main` only when the user says so.
 
 ## 2. Work in steps
 Work in coherent increments. After each one, stop and report:
@@ -40,14 +40,8 @@ Work in coherent increments. After each one, stop and report:
 
 Propose a Conventional Commits message, ask the user to review `git diff`, and wait for confirmation before committing and moving on. Every step must leave the project compiling in Unity with 0 errors.
 
-## 3. Pull request
-Before opening: the Definition of Done in `AGENTS.md` is met.
-- Title: Conventional Commits style, e.g. `feat: implement docking magnet mechanism`.
-- Body: only `ref: <issue link>` — no summary, no "Generated with" footer; the issue holds the description.
-- Push the branch, `gh pr create --title "<title>" --body-file <file>`, then give the user the PR title and link.
-
-## 4. Merge and close
-Only after the user agrees the task is done, ask: "Do you want to squash merge into main?" On yes:
-1. `gh pr merge --squash`, then switch to `main` and pull.
-2. Close the issue: `gh issue close <n> --comment "Resolved and merged in PR #<pr>"` (this moves the card to Done). For a draft board item without an issue, set its status to Done with `gh project item-edit` or ask the user to move it.
-3. Tell the user the merge is done and the task closed.
+## 3. Finish the task
+The agent does not push, open PRs, merge or close issues — the user does all of that. When the last step is committed:
+1. Check the Definition of Done in `AGENTS.md`.
+2. Tell the user the task is ready: branch name, the task's commits (`git log --oneline <base>..HEAD`) and anything left open.
+3. If the user asks for help with the PR, give a ready title in Conventional Commits style (e.g. `feat: implement docking magnet mechanism`) and the body `ref: <issue link>` — nothing more; the issue holds the description.
