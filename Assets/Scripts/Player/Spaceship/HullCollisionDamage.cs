@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -8,6 +9,11 @@ using UnityEngine;
 public class HullCollisionDamage : MonoBehaviour
 {
     [SerializeField] private HullCollisionDamageConfigSO config;
+
+    /// <summary>
+    /// Raised after a damaging impact. The argument is the impact strength 0..1 (damage / maxDamage).
+    /// </summary>
+    public event Action<float> OnImpact;
 
     private IDamageable hull;
     private Rigidbody rb;
@@ -36,6 +42,7 @@ public class HullCollisionDamage : MonoBehaviour
 
         lastHitTime = Time.time;
         hull.TakeDamage(damage);
+        OnImpact?.Invoke(config.maxDamage > 0f ? Mathf.Clamp01(damage / config.maxDamage) : 1f);
     }
 
     private float GetImpactSpeed(Collision collision)

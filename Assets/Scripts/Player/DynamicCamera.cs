@@ -25,6 +25,15 @@ public class DynamicCamera : MonoBehaviour
     [SerializeField] private float tiltSmoothness = 5f;
     [SerializeField] private float rollFollowStrength = 0.5f; // Jak mocno kamera podąża za roll'em statku (0-1)
 
+    [Header("Impact shake")]
+    [SerializeField] private HullCollisionDamage hullImpacts;
+    [Tooltip("Trauma added by the weakest damaging impact; the strongest adds 1.")]
+    [SerializeField] private float minImpactTrauma = 0.25f;
+    [SerializeField] private float traumaDecay = 1.5f; // trauma lost per second
+    [SerializeField] private float maxShakeAngle = 4f; // degrees
+    [SerializeField] private float maxShakeOffset = 0.3f;
+    [SerializeField] private float shakeFrequency = 25f;
+
     private Transform target;
     private Vector3 currentVelocity;
     private Vector3 currentOffset;
@@ -34,10 +43,21 @@ public class DynamicCamera : MonoBehaviour
     private float currentRoll; // przechowywany roll kamery
     private float warpDuration;
     private float warpElapsed;
+    private float trauma;
 
     private void Awake()
     {
         ResolveTarget();
+    }
+
+    private void OnEnable()
+    {
+        if (hullImpacts != null) hullImpacts.OnImpact += HandleImpact;
+    }
+
+    private void OnDisable()
+    {
+        if (hullImpacts != null) hullImpacts.OnImpact -= HandleImpact;
     }
 
     private void Start()
@@ -79,6 +99,39 @@ public class DynamicCamera : MonoBehaviour
         UpdateCameraPosition();
         UpdateCameraRotation();
         UpdateSprintEffects();
+        UpdateImpactShake();
+    }
+
+    private void HandleImpact(float strength)
+    {
+        // Hits add up instead of restarting the shake.
+        trauma = Mathf.Clamp01(trauma + Mathf.Lerp(minImpactTrauma, 1f, strength));
+    }
+
+    private void UpdateImpactShake()
+    {
+        if (!cam) return;
+
+        #region EDUCATION NOTE impact shake
+        // DO PRACY INŻ. - wstrząs kamery oparty na "traumie" (trauma-based screen shake).
+        // Trauma 0..1 rośnie przy uderzeniu i liniowo wygasa; siła wstrząsu to trauma^2,
+        // więc lekkie otarcia ledwo poruszają obrazem, a mocne uderzenia są wyraźne.
+        // Szum Perlina zamiast Random daje płynny ruch zamiast drgań "szumu".
+        // Wstrząs przesuwa tylko kamerę-dziecko rigu, więc nie zaburza wygładzania podążania
+        // ani fizyki statku.
+        #endregion
+        trauma = Mathf.Max(0f, trauma - traumaDecay * Time.deltaTime);
+        float shake = trauma * trauma;
+        float t = Time.time * shakeFrequency;
+
+        cam.transform.localRotation = Quaternion.Euler(
+            maxShakeAngle * shake * (Mathf.PerlinNoise(t, 0f) * 2f - 1f),
+            maxShakeAngle * shake * (Mathf.PerlinNoise(0f, t) * 2f - 1f),
+            maxShakeAngle * shake * (Mathf.PerlinNoise(t, t) * 2f - 1f));
+        cam.transform.localPosition = maxShakeOffset * shake * new Vector3(
+            Mathf.PerlinNoise(t + 10f, 0f) * 2f - 1f,
+            Mathf.PerlinNoise(0f, t + 10f) * 2f - 1f,
+            0f);
     }
 
     private void UpdateCameraPosition()
