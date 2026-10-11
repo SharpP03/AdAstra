@@ -51,7 +51,7 @@ flowchart TD
 * Czasowniki gracza w MVP: **steruj, boostuj, hamuj/dokuj, zbieraj, aktywuj Stazę, wpisuj**. Walka i wrogie AI nie wchodzą do MVP; nowe systemy są dopuszczalne, jeśli wyraźnie spajają istniejące mechaniki.
 * Każda strefa zagrożeń testuje inną umiejętność (4.5): precyzję przy prędkości (pole asteroid), czytanie zapowiedzi i timing (burza jonowa), zarządzanie pędem (anomalia grawitacyjna).
 * Balansowanie użyciem boostu (prędkość ucieczki vs ponad dwukrotnie szybsze spalanie paliwa).
-* **Otwarty punkt (priorytet):** gracz potrzebuje czynności i interakcji także między lokacjami i wokół nich (rozmieszczonych losowo), żeby odcinki tranzytowe nie były samym lotem prosto. Kształt ustala osobny grill (kandydaci: dodatkowy Rdzeń Stazy w losowym miejscu, pickupy paliwa na trasie, energia za lot blisko zagrożeń).
+* **Otwarty punkt (priorytet):** gracz potrzebuje czynności i interakcji także między lokacjami i wokół nich (rozmieszczonych losowo), żeby odcinki tranzytowe nie były samym lotem prosto. Kształt ustala osobny grill (kandydaci: zdobywanie materiałów i złomowanie wraków, dodatkowy Rdzeń Stazy w losowym miejscu, pickupy paliwa na trasie, energia za lot blisko zagrożeń).
 
 ### 2.2. Pętla Rdzenna (Minuty / Pojedynczy Run)
 1. **Start:** Wylot ze stacji bazowej w kierunku bramy skokowej (Warp Gate) w autorskim sektorze. Gracz startuje z pełnym bakiem i nieuszkodzonym kadłubem.
@@ -67,7 +67,7 @@ flowchart TD
 
 **Cel runu na HUD:** od pierwszej sekundy gracz widzi cel „Rdzenie 0/2 – dotrzyj do bramy”. Przy pierwszym rdzeniu pojawia się jednorazowa podpowiedź, jak aktywować Stazę (minimalny onboarding).
 
-**Do doprecyzowania:** co się dzieje, gdy gracz dotrze do bramy bez 2 rdzeni – czy run kończy się porażką, czy brama oferuje inną drogę (np. dłuższą procedurę). Do czasu decyzji obowiązuje zabezpieczenie z 4.3.
+**Brak kluczy:** brama bez wymaganej liczby rdzeni się nie otwiera i nie przechwytuje statku. HUD z wyprzedzeniem ostrzega „brakuje rdzeni”, zanim gracz minie ostatnią strefę. Powrót po rdzeń oznacza lot w stronę fali, więc w praktyce brak kluczy kończy się porażką – dlatego spalenie rdzenia-klucza jest chronione zabezpieczeniem z 4.3.
 
 ### 2.3. Pętla Makro (Meta-Progresja i Persystencja) – POST-MVP
 * Docelowo: nagrody dowiezione z runu są bankowane i służą do odblokowania predefiniowanych wariantów statku (np. Lekki Zwiadowca, Ciężki Frachtowiec) lub ulepszeń.
@@ -76,7 +76,7 @@ flowchart TD
 ### 2.4. Zakres MVP
 MVP to pętla rdzenna (2.2) zbudowana na mechanikach z sekcji 4 i trzech modułach zagrożeń (pole asteroid, burza jonowa, anomalia grawitacyjna – każdy z Rdzeniem Stazy) plus Front Anihilacji.
 
-**Kolejność realizacji – pionowy wycinek:** najpierw jeden kompletny run z celem i dylematem: pole asteroid z rdzeniem, wymóg rdzeni przy bramie, Staza, cel na HUD i podpowiedź. Po playteście dochodzą przebudowy burzy jonowej i anomalii oraz minigra tankowania.
+**Kolejność realizacji – pionowy wycinek:** najpierw jeden kompletny run z celem i dylematem: pole asteroid z rdzeniem, wymóg rdzeni przy bramie, Staza, cel na HUD i podpowiedź. Wymagana liczba rdzeni jest parametrem konfiguracji (ScriptableObject) – w wycinku drugi rdzeń leży w obecnej burzy jonowej, bez jej przebudowy, a w razie potrzeby wymóg można obniżyć do 1. Po wycinku następuje playtest z notatkami i flight feel pass. Po playteście dochodzą przebudowy burzy jonowej i anomalii oraz minigra tankowania.
 
 Zakres nie jest zamknięty. Nowe mechaniki i lokacje (minigry, ulepszenia statku, nowe zagrożenia – w tym wrogie AI i walka, alternatywne trasy) są mile widziane, ale wchodzą dopiero wtedy, gdy pętla „start → stacja → brama” jest grywalna i przetestowana. Pomysły czekają jako taski w kolumnie *Ideas* na boardzie projektu.
 
@@ -149,7 +149,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 * **Rozmieszczenie:** po jednym rdzeniu w każdej strefie zagrożeń (4.5), w jej najniebezpieczniejszej części, obok linii krytycznej. Rdzeń świeci pulsującym światłem widocznym z daleka.
 * **Podwójna rola:** rdzeń jest **kluczem** do bramy (wymagane 2, patrz 4.4) i **ratunkiem** – można go spalić jako Stazę. Spalony rdzeń przestaje być kluczem.
 * **Zebranie:** dodaje 1 rdzeń do licznika oraz natychmiast naprawia 20% kadłuba – wejście w strefę częściowo „zwraca” obrażenia w niej odniesione.
-* **Licznik:** gracz zaczyna run z 0, może mieć maks. 3 (w sektorze są 3). HUD pokazuje cel „Rdzenie X/2”.
+* **Licznik:** gracz zaczyna run z 0, może mieć maks. 3 (w sektorze są 3). HUD pokazuje cel „Rdzenie X/2”. Wymagana liczba (domyślnie 2) jest parametrem konfiguracji.
 * **Staza:** jeden klawisz (akcja w `playerInput.inputactions`) spala rdzeń, działa w locie, na stacji i w terminalu bramy. Efekt: Front Anihilacji zatrzymuje się na ~6 s (4.1).
 * **Zabezpieczenie:** spalenie rdzenia, który jest potrzebny jako klucz (licznik ≤ 2), wymaga przytrzymania klawisza, a HUD ostrzega, że gracz traci klucz. Zapasowy rdzeń spala się zwykłym wciśnięciem.
 * **Prowadzenie (stan roboczy, do doprecyzowania osobnym grillem):** strefy zagrożeń są zawsze oznaczone w HUD (ikona i dystans); rdzeń dostaje własny znacznik dopiero w zasięgu wykrycia (~250 m).
@@ -161,7 +161,7 @@ Brama skokowa na końcu korytarza sektora. Finał runu łączy pilotaż z krótk
 **Dotarcie:** Brama jest punktem orientacyjnym widocznym z daleka (świecący beacon), a HUD pokazuje dystans do niej oraz liczbę zebranych kluczy (Rdzenie X/2). Napięcie końcówki wynika z układu sektora – po tankowaniu gracz ściga się z falą o resztki paliwa, mając cel przed sobą. Brama nie wprowadza dodatkowych mechanik utrudniających podejście.
 
 **Procedura skoku:**
-1. **Przechwycenie:** Wlot w strefę bramy z co najmniej 2 Rdzeniami Stazy blokuje sterowanie statkiem, a brama pobiera 2 rdzenie jako klucz. Brama płynnie dociąga statek do punktu dokowania w swoim centrum i wygasza jego prędkość. Procedury nie można przerwać ani opuścić bramy. Zachowanie bramy przy braku rdzeni jest do doprecyzowania (2.2).
+1. **Przechwycenie:** Wlot w strefę bramy z co najmniej 2 Rdzeniami Stazy blokuje sterowanie statkiem, a brama pobiera 2 rdzenie jako klucz. Brama płynnie dociąga statek do punktu dokowania w swoim centrum i wygasza jego prędkość. Procedury nie można przerwać ani opuścić bramy. Bez wymaganych rdzeni brama się nie otwiera (2.2).
 2. **Autoryzacja w terminalu:** Na ekranie pojawia się terminal z krótkim słowem wylosowanym z puli tematycznych słów. Długość słowa jest stała – presję tworzy fala, a jedyną ulgą jest zapasowy (trzeci) rdzeń, który gracz może spalić jako Stazę w trakcie procedury. Gracz musi wpisać je z klawiatury; wielkość liter nie ma znaczenia.
    - Poprawne litery są wyraźnie potwierdzane.
    - Błędny znak jest odrzucany z czytelnym sygnałem błędu, a dotychczasowy postęp zostaje zachowany. Karą za pomyłkę jest stracony czas.
