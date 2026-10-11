@@ -13,9 +13,12 @@ public class HealthRefillable : MonoBehaviour, IRefillable
         healthSystem = GetComponent<HealthSystem>();
     }
 
-    public void Add(float amount)
+    public float Add(float amount)
     {
-        if (healthSystem == null) return;
+        if (healthSystem == null) return 0f;
+
+        float before = healthSystem.currentHealth;
         healthSystem.AddHealth(amount);
+        return healthSystem.currentHealth - before;
     }
 }
