@@ -555,6 +555,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
+--- !u!114 &900936249 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2092774987598891155, guid: 79e3fb40bcea2344697c3885306bed62, type: 3}
+  m_PrefabInstance: {fileID: 900936248}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40d5e013a14f15f4a9a91781631686b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StasisCoreInventory
 --- !u!1001 &1043266256
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -985,6 +996,11 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!4 &2109003560 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6979874014539716595, guid: 36c0345a5111cb641b98c466d111af51, type: 3}
+  m_PrefabInstance: {fileID: 1483711320}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2609885103770060856
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1142,6 +1158,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 682115954875080498, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
+      propertyPath: warpGate
+      value: 
+      objectReference: {fileID: 1043266257}
+    - target: {fileID: 682115954875080498, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
+      propertyPath: inventory
+      value: 
+      objectReference: {fileID: 900936249}
+    - target: {fileID: 682115954875080498, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
+      propertyPath: lastHazardZone
+      value: 
+      objectReference: {fileID: 2109003560}
+    - target: {fileID: 744308861201790632, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
+      propertyPath: wave
+      value: 
+      objectReference: {fileID: 1816182266}
     - target: {fileID: 2661201947786708720, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
       propertyPath: ship
       value: 

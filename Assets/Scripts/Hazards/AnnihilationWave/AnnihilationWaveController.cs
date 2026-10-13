@@ -15,6 +15,7 @@ public enum WaveThreatState
 /// - Signed distance evaluation to target player
 /// - Threat state tracking (Safe -> Warning -> Critical -> Engulfed)
 /// - Continuous boundary damage dealing
+/// - Stasis: a burned Stasis Core freezes the wave for a few seconds
 /// - Event dispatching for HUD and presentation subsystems
 /// </summary>
 [SelectionBase]
@@ -49,12 +50,16 @@ public class AnnihilationWaveController : MonoBehaviour
     public float CriticalDistance => config != null ? config.criticalDistance : 30f;
     public float DamagePerSecond => config != null ? config.damagePerSecond : 50f;
     public bool IsActive { get; private set; }
+    public bool IsFrozen => StasisRemaining > 0f;
+    public float StasisRemaining { get; private set; }
     public float CurrentDistanceToPlayer { get; private set; } = float.MaxValue;
     public WaveThreatState CurrentThreatState { get; private set; } = WaveThreatState.Safe;
 
     // Events for UI/HUD and presentation subsystems
     public event Action<float> OnDistanceChanged;
     public event Action<WaveThreatState> OnThreatStateChanged;
+    /// <summary>Raised when Stasis starts (true) or wears off (false).</summary>
+    public event Action<bool> OnStasisChanged;
 
     private Rigidbody rb;
     private IDamageable cachedPlayerDamageable;
@@ -91,7 +96,9 @@ public class AnnihilationWaveController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsActive)
+        UpdateStasis();
+
+        if (IsActive && !IsFrozen)
         {
             MoveWave();
         }
@@ -227,6 +234,32 @@ public class AnnihilationWaveController : MonoBehaviour
     public void SetActive(bool active)
     {
         IsActive = active;
+    }
+
+    /// <summary>
+    /// Stops the wave front for the given time. Burning another core during Stasis extends it.
+    /// </summary>
+    public void Freeze(float seconds)
+    {
+        #region EDUCATION NOTE
+        // DO PRACY INŻ. - Staza zatrzymuje tylko ruch frontu (MoveWave), a nie cały FixedUpdate.
+        // Śledzenie dystansu i obrażenia działają dalej: zamrożona fala nadal niszczy to, co jest w jej wnętrzu,
+        // więc Staza daje graczowi czas na ucieczkę, a nie nietykalność. Kolejne spalenie dodaje czas,
+        // zamiast go resetować, żeby drugi rdzeń nigdy nie przepadł.
+        #endregion
+        if (seconds <= 0f) return;
+
+        bool wasFrozen = IsFrozen;
+        StasisRemaining += seconds;
+        if (!wasFrozen) OnStasisChanged?.Invoke(true);
+    }
+
+    private void UpdateStasis()
+    {
+        if (!IsFrozen) return;
+
+        StasisRemaining = Mathf.Max(0f, StasisRemaining - Time.fixedDeltaTime);
+        if (!IsFrozen) OnStasisChanged?.Invoke(false);
     }
 
     private void OnDrawGizmosSelected()

@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float jumpFadeOutDuration = 0.6f;
 
     private HealthSystem playerHealth;
+    private StasisCoreInventory playerCores;
     private float runStartTime;
     private float runEndTime;
     private bool jumpAuthorized;
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour
         if (annihilationWave != null) annihilationWave.OnDistanceChanged += HandleWaveDistanceChanged;
         if (runEndPanel != null) runEndPanel.OnRestartRequested += RestartRun;
         if (playerHealth != null) playerHealth.OnDied += HandlePlayerDied;
+        if (playerCores != null) playerCores.OnCoreBurned += HandleCoreBurned;
         if (warpGate != null) warpGate.OnShipDocked += HandleShipDocked;
         if (warpGate != null) warpGate.OnJumpFinished += HandleJumpFinished;
         if (jumpTerminal != null) jumpTerminal.OnWordCompleted += HandleJumpAuthorized;
@@ -49,6 +51,7 @@ public class GameManager : MonoBehaviour
         if (annihilationWave != null) annihilationWave.OnDistanceChanged -= HandleWaveDistanceChanged;
         if (runEndPanel != null) runEndPanel.OnRestartRequested -= RestartRun;
         if (playerHealth != null) playerHealth.OnDied -= HandlePlayerDied;
+        if (playerCores != null) playerCores.OnCoreBurned -= HandleCoreBurned;
         if (warpGate != null) warpGate.OnShipDocked -= HandleShipDocked;
         if (warpGate != null) warpGate.OnJumpFinished -= HandleJumpFinished;
         if (jumpTerminal != null) jumpTerminal.OnWordCompleted -= HandleJumpAuthorized;
@@ -72,6 +75,16 @@ public class GameManager : MonoBehaviour
         if (playerHealth != null) playerHealth.OnDied -= HandlePlayerDied;
         playerHealth = player.GetComponent<HealthSystem>();
         if (playerHealth != null) playerHealth.OnDied += HandlePlayerDied;
+
+        if (playerCores != null) playerCores.OnCoreBurned -= HandleCoreBurned;
+        playerCores = player.GetComponent<StasisCoreInventory>();
+        if (playerCores != null) playerCores.OnCoreBurned += HandleCoreBurned;
+    }
+
+    // A burned Stasis Core freezes the Annihilation Wave.
+    private void HandleCoreBurned()
+    {
+        if (annihilationWave != null) annihilationWave.Freeze(playerCores.StasisDuration);
     }
 
     private void HandleWaveDistanceChanged(float distance)
@@ -155,6 +168,9 @@ public class GameManager : MonoBehaviour
 
         // The escape time ends at the jump authorization, not after the jump animation.
         float endTime = jumpAuthorized ? runEndTime : Time.time;
-        return new RunSummary(result, endTime - runStartTime, hull, fuel, Mathf.Max(0f, closestWaveDistance));
+        int coresCollected = playerCores != null ? playerCores.Collected : 0;
+        int coresBurned = playerCores != null ? playerCores.Burned : 0;
+        return new RunSummary(result, endTime - runStartTime, hull, fuel, Mathf.Max(0f, closestWaveDistance),
+            coresCollected, coresBurned);
     }
 }
