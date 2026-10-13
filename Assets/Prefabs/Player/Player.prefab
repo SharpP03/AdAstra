@@ -20330,6 +20330,7 @@ GameObject:
   - component: {fileID: 581496042373847135}
   - component: {fileID: 308050817838535059}
   - component: {fileID: 7642938018319620391}
+  - component: {fileID: 2092774987598891155}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -20563,6 +20564,19 @@ MonoBehaviour:
   sparksPrefab: {fileID: 3690134938039654802, guid: d4650ea90ace7804c92c5a28b6ba12b7, type: 3}
   minSparks: 8
   maxSparks: 60
+--- !u!114 &2092774987598891155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8056483462393365249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40d5e013a14f15f4a9a91781631686b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StasisCoreInventory
+  config: {fileID: 11400000, guid: ec0d91226eef368409cdd21bbfe8a970, type: 2}
 --- !u!1 &8481978545605755591
 GameObject:
   m_ObjectHideFlags: 0
