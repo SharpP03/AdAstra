@@ -94,17 +94,13 @@ public class StasisCoreInventory : MonoBehaviour
         }
     }
 
-    /// <summary>Adds one core unless the ship already carries the maximum.</summary>
-    public bool TryCollect()
+    /// <summary>Adds one core. The ship can carry any number of cores.</summary>
+    public void Collect()
     {
-        int max = config != null ? config.maxCores : 3;
-        if (Count >= max) return false;
-
         Count++;
         Collected++;
         OnCountChanged?.Invoke(Count);
         OnCoreCollected?.Invoke();
-        return true;
     }
 
     /// <summary>

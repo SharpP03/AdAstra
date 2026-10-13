@@ -48,9 +48,9 @@ public class StasisCore : MonoBehaviour
 
         Rigidbody body = other.attachedRigidbody;
         if (body == null || !body.TryGetComponent(out StasisCoreInventory inventory)) return;
-        if (!inventory.TryCollect()) return;
 
         collected = true;
+        inventory.Collect();
 
         // Entering the zone partly "pays back" the hull damage taken on the way to the core.
         if (body.TryGetComponent(out HealthRefillable hull) && inventory.Config != null)
