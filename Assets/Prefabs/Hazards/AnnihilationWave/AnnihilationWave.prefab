@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3316317759356179537}
   - component: {fileID: 7720176741598761802}
   - component: {fileID: 6905702125771550921}
+  - component: {fileID: 4501535828458960180}
   m_Layer: 0
   m_Name: AnnihilationWave
   m_TagString: Untagged
@@ -96,36 +97,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnnihilationWaveController
   config: {fileID: 11400000, guid: 2a75e3d786d1bcf47b58a9dec82fefd8, type: 2}
-  frontMaterial: {fileID: 2100000, guid: 29152274e002b3547bc78b7574a5b23b, type: 2}
-  speed: 12
   autoStart: 1
-  warningDistance: 100
-  criticalDistance: 30
-  damagePerSecond: 50
-  planeBoundaryDamage: 1
-  visualRoot: {fileID: 2275454626785783258}
-  followPlayerXY: 1
-  proximityParticles: {fileID: 5116867431472405274}
-  maxParticleEmissionRate: 180
-  threatLight: {fileID: 1984115744819097145}
-  baseLightIntensity: 2.5
-  maxLightIntensityBoost: 5
-  lightFlickerFrequency: 3.5
+  targetPlayer: {fileID: 0}
+  waveTrigger: {fileID: 0}
   stormDischargePrefabs:
   - {fileID: 2705533495200665743, guid: e84c40719cee66744925cce01bef28fc, type: 3}
   - {fileID: 3958596659431381315, guid: c50f9e2c685970e4c8ebcd5fc8c7b3e4, type: 3}
   - {fileID: 7834434380170384362, guid: 68101499d07aced4aa0ded4acb624942, type: 3}
-  singleDischargeOnly: 0
-  lightningSimulationSpeed: 0.1
-  dischargeLifetime: 3
-  dischargeFrontWidth: 800
-  dischargeFrontHeight: 450
-  minDischargeInterval: 2.5
-  maxDischargeInterval: 5
-  dischargeScaleRange: {x: 30, y: 100}
-  dischargePoolSize: 12
-  targetPlayer: {fileID: 0}
-  waveTrigger: {fileID: 0}
+--- !u!114 &4501535828458960180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 392159864889209342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ea3ecb996cacc47aa864a6e3c7634a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnnihilationWaveStasisFX
+  curtainRenderer: {fileID: 319556663504762248}
+  threatLight: {fileID: 1984115744819097145}
+  frozenDeepColor: {r: 0.005, g: 0.02, b: 0.08, a: 1}
+  frozenCoreColor: {r: 0.25, g: 0.9, b: 1.8, a: 1}
+  frozenFilamentColor: {r: 0.8, g: 2.2, b: 3.5, a: 1}
+  frozenContactGlowColor: {r: 1.2, g: 3, b: 4.5, a: 1}
+  frozenLightColor: {r: 0.45, g: 0.7, b: 1, a: 1}
+  blendDuration: 0.4
 --- !u!1 &3717092808650819384
 GameObject:
   m_ObjectHideFlags: 0
