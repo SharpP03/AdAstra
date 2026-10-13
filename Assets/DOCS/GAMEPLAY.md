@@ -48,10 +48,10 @@ flowchart TD
 
 ### 2.1. Pętla Mikro (Sekundy)
 * Pilotaż statkiem w przestrzeni 3D oparty na fizyce.
-* Czasowniki gracza w MVP: **steruj, boostuj, hamuj/dokuj, zbieraj, aktywuj Stazę, wpisuj**. Walka i wrogie AI nie wchodzą do MVP; nowe systemy są dopuszczalne, jeśli wyraźnie spajają istniejące mechaniki.
+* Czasowniki gracza w MVP: **steruj, boostuj, hamuj/dokuj, zbieraj, tnij (laser), aktywuj Stazę, wpisuj**. Walka i wrogie AI nie wchodzą do MVP; nowe systemy są dopuszczalne, jeśli wyraźnie spajają istniejące mechaniki.
 * Każda strefa zagrożeń testuje inną umiejętność (4.5): precyzję przy prędkości (pole asteroid), czytanie zapowiedzi i timing (burza jonowa), zarządzanie pędem (anomalia grawitacyjna).
 * Balansowanie użyciem boostu (prędkość ucieczki vs ponad dwukrotnie szybsze spalanie paliwa).
-* **Tranzyt między lokacjami:** odcinki tranzytowe to krótkie okna decyzji, a nie osobne beaty. Treść daje im **wrak** na każdym odcinku (4.6) – zboczyć po paliwo lub kadłub kosztem czasu, czy lecieć dalej – oraz **Odłamki Fali** (4.7), które sprawiają, że bliskość frontu czuć także między lokacjami. Długość odcinków stroi się w metrykach (2.5).
+* **Tranzyt między lokacjami:** odcinki tranzytowe to krótkie okna decyzji, a nie osobne beaty. Treść daje im **wrak** (4.6) – zboczyć i rozciąć laserem skrzynie z ładunkiem kosztem czasu wobec fali, czy lecieć dalej. Długość odcinków stroi się w metrykach (2.5).
 
 ### 2.2. Pętla Rdzenna (Minuty / Pojedynczy Run)
 1. **Start:** Wylot ze stacji bazowej w kierunku bramy skokowej (Warp Gate) w autorskim sektorze. Gracz startuje z pełnym bakiem i nieuszkodzonym kadłubem.
@@ -99,7 +99,7 @@ Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki. Stre
 | Odcinek 2 | Test umiejętności i wybór strefy; burza i anomalia obok trasy, rdzenie w ich wnętrzu, wyrzut z anomalii jako skrót | Burza jonowa, anomalia grawitacyjna | Wysokie |
 | Finisz | Brama w zasięgu wzroku; wyścig z falą o resztki paliwa, zapasowy rdzeń jako Staza na procedurę skoku | Warp Gate | Szczyt |
 
-**Odcinki tranzytowe:** między beatami gracz ma krótkie okno decyzji, nie kolejną strefę. Każdy odcinek tranzytowy (Hub → pole, pole → stacja, stacja → odcinek 2, odcinek 2 → brama) ma autorskie **pasmo**, w którym leży jeden wrak (4.6). Losowość dotyczy tylko „gdzie”, nigdy „czy”: na każdy run losowane są pozycja wraku w paśmie (odległość od linii krytycznej, np. 0–150 m, i strona trasy) oraz jego typ. Wrak tuż przy trasie jest prezentem, daleki – dylematem. Przy zbliżonej fali tranzyt zapełniają Odłamki Fali (4.7). Odcinek tranzytowy może dodatkowo przecinać Strumień Asteroid (4.8) – krótka przeszkoda w poprzek trasy: przeciąć ją albo obejść kosztem czasu.
+**Odcinki tranzytowe:** między beatami gracz ma krótkie okno decyzji, nie kolejną strefę. Każdy odcinek tranzytowy (Hub → pole, pole → stacja, stacja → odcinek 2, odcinek 2 → brama) może mieć wrak (4.6). Proof of concept to jeden wrak w stałym miejscu na odcinku stacja → odcinek 2, ok. 50–80 m od linii krytycznej. Docelowo każdy odcinek ma autorskie **pasmo** z jednym wrakiem, a losowość dotyczy tylko „gdzie”, nigdy „czy”: pozycja w paśmie (odległość od linii krytycznej i strona trasy) oraz typ wraku. Odcinek tranzytowy może dodatkowo przecinać Strumień Asteroid (4.7) – krótka przeszkoda w poprzek trasy: przeciąć ją albo obejść kosztem czasu.
 
 **Reguły strojenia tranzytu:**
 * Suma paliwa ze wszystkich wraków na trasie jest mniejsza niż deficyt, który wymusza postój na stacji (2.2.3) – wraki nie zastępują stacji.
@@ -139,7 +139,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 2. **Front Niszczący:**
    - Zadaje gwałtowne obrażenia kadłubowi co sekundę.
    - Pozwala na dramatyczną ucieczkę "w ostatniej chwili", jeśli gracz posiada resztki paliwa na boost.
-3. **Staza:** Spalenie Rdzenia Stazy (4.3) zatrzymuje front na ~6 s. Fala zamiera, jej kolor przechodzi w chłodny, dźwięk cichnie, a HUD pokazuje odliczanie nad wskaźnikiem dystansu do fali. Staza zamraża także Odłamki Fali (4.7).
+3. **Staza:** Spalenie Rdzenia Stazy (4.3) zatrzymuje front na ~6 s. Fala zamiera, jej kolor przechodzi w chłodny, dźwięk cichnie, a HUD pokazuje odliczanie nad wskaźnikiem dystansu do fali.
 
 ### 4.2. Stacja Pośrednia (Tankowanie na Postoju)
 * W MVP sektor ma jedną stację pośrednią, położoną na linii krytycznej. HUD wskazuje jej położenie.
@@ -160,7 +160,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 * **Zabezpieczenie:** spalenie rdzenia, który jest potrzebny jako klucz (licznik ≤ 2), wymaga przytrzymania klawisza, a HUD ostrzega, że gracz traci klucz. Zapasowy rdzeń spala się zwykłym wciśnięciem.
 * **Prowadzenie (stan roboczy, do doprecyzowania osobnym grillem):** strefy zagrożeń są zawsze oznaczone w HUD (ikona i dystans); rdzeń dostaje własny znacznik dopiero w zasięgu wykrycia (~250 m).
 * **Tylko ze stref zagrożeń:** rdzenie nie pojawiają się w tranzycie. Dylemat stoi na rzadkości – 3 rdzenie, 2 wymagane, jeden zapas – więc wybór pomijanej strefy jest prawdziwy. Czwarty rdzeń poza strefą byłby albo łatwo dostępny (pozwala pominąć strefę lub daje darmową Stazę, dylemat przestaje boleć), albo pilnowany przez zagrożenie (czyli byłby kolejną strefą, nie treścią tranzytu). Przeczy też fikcji: rdzenie krystalizują się wewnątrz zagrożeń. Jeśli dylemat okaże się za ostry, dźwignią jest wymagana liczba rdzeni w konfiguracji, a nie nowe źródło.
-* **Liczba rdzeni w sektorze** jest parametrem układu, strojonym przy integracji sektora. Rdzeń może leżeć w każdej strefie zagrożeń, także w Strumieniu Asteroid (4.8). Ryzyko do sprawdzenia w playteście: więcej niż 3 rdzenie rozmywa dylemat.
+* **Liczba rdzeni w sektorze** jest parametrem układu, strojonym przy integracji sektora. Rdzeń może leżeć w każdej strefie zagrożeń, także w Strumieniu Asteroid (4.7). Ryzyko do sprawdzenia w playteście: więcej niż 3 rdzenie rozmywa dylemat.
 
 ### 4.4. Warp Gate (Cel Runu i Procedura Skoku)
 Brama skokowa na końcu korytarza sektora. Finał runu łączy pilotaż z krótką minigrą pod presją Frontu Anihilacji.
@@ -200,23 +200,19 @@ Każda strefa leży obok linii krytycznej, ma w środku Rdzeń Stazy i testuje i
 * **Wplucie:** statek, który wpadnie w jądro, zostaje wyrzucony do tyłu, w stronę Frontu Anihilacji, i traci 30% kadłuba. Run trwa dalej, ale gracz traci dystans i czas.
 
 ### 4.6. Wraki (Tranzyt)
-Jeden wrak na odcinek tranzytowy, w autorskim paśmie z losowaną pozycją (2.5). Wrak jest decyzją zależną od stanu gracza: zboczyć po zasób kosztem czasu wobec fali, czy lecieć dalej.
-* **Typ:** każdy wrak daje jeden zasób – **paliwo** albo **kadłub** – losowany per run. Typ widać z daleka po kolorze kanistrów, więc gracz z pełnym kadłubem ominie wrak kadłubowy.
-* **Zbieranie (stub):** wokół kadłuba wraku dryfuje 3–5 kanistrów zbieranych przelotem; każdy daje część nagrody. Kadłub wraku jest przeszkodą z obrażeniami od zderzeń. Zebranie wszystkich wymaga pętli lub zwolnienia – kosztem jest czas i ryzyko zderzenia; zebranie części to legalny kompromis. Bez nowego czasownika – to „zbieraj” z 2.1.
-* **Nagroda (hipotezy w ScriptableObject):** kanister paliwa ~5% baku; wrak paliwowy łącznie ~15–20%; wrak kadłubowy łącznie ~10% kadłuba. Ograniczenia: reguły strojenia tranzytu (2.5).
-* **Prowadzenie i feedback:** wrak ma migające światło (beacon) i znacznik HUD dopiero w zasięgu ~250 m, jak rdzeń. Zebranie kanistra: błysk, dźwięk i wartość „+X” przy pasku zasobu.
-* **Stub na później:** paliwo i kadłub to zasoby zastępcze. Gdy pojawi się ich ujście (moduły statku, meta-progresja), wrak może dawać inny zasób bez przebudowy mechaniki; właściwa interakcja złomowania (np. holowanie, rozcinanie) to osobny temat.
-
-### 4.7. Odłamki Fali
-Front Anihilacji wyrzuca przed siebie gruz, który dryfuje w tranzyt. Odłamki to czysty hazard – bez nagrody – i zapowiedź fali w przestrzeni, nie tylko na HUD.
-* Pojawiają się, gdy fala jest bliżej niż ~300 m (wyraźnie przed strefą ostrzegawczą), a ich gęstość rośnie z bliskością frontu. Dzięki temu postój przy wraku czy na stacji sam z siebie robi się groźniejszy.
-* Trafienie zadaje obrażenia przez zwykły system zderzeń kadłuba.
-* Odłamki są czytelne zanim trafią (świecące krawędzie, dźwięk przelotu). Bez drżenia kamery – jest zarezerwowane dla fali i stacji.
-* Staza zamraża odłamki razem z frontem (4.1).
+Wrak to krótki, aktywny moment zręcznościowy w tranzycie. Gracz decyduje, czy zboczyć kosztem czasu wobec fali, i zamienia celowanie w ruchu na zasób. Opis dotyczy proof of conceptu; liczby są hipotezami w ScriptableObject.
+* **Układ:** jeden nieruchomy wrak z migającym światłem (beacon) widocznym z daleka. Wokół niego 4 skrzynie z ładunkiem powoli krążą po różnych orbitach, co najmniej jedna blisko kadłuba – najlepsze sztuki wymagają ciasnego lotu. Fikcja: kontenery wyrzucone z rozbitego statku.
+* **Laser-multitool:** nowy czasownik „tnij” – trzymanie LPM (akcja w `playerInput.inputactions`). Laser jest zawsze dostępny, ale tnie wyłącznie skrzynie: nie rani asteroid ani innych obiektów i nie działa na nie fizycznie, więc nie jest bronią. Nie działa, gdy sterowanie jest zablokowane (brama, terminal, koniec runu, pauza); poza tym działa także bez paliwa i podczas Stazy.
+* **Naprowadzanie:** niewidzialny, wąski prostopadłościan przed dziobem (~6 × 6 × 40 m). Skrzynia w jego wnętrzu przyciąga wiązkę, nawet jeśli nie leży na osi statku – kamera za statkiem nie wymaga idealnego celowania. Bez celu w strefie LPM rysuje krótką, słabą wiązkę prosto z dziobu, bez efektu.
+* **Cięcie:** skrzynia musi być w strefie łącznie ~1,5 s; postęp zostaje, gdy wypadnie ze strefy. Przelot obok z wciśniętym LPM nie wystarcza – trzeba zwolnić i trzymać cel, a skrzynie się przesuwają. Postęp widać na skrzyni: rozgrzewa się od zimnego koloru do bieli, w punkcie styku sypią się iskry, narasta dźwięk. Bez paska na HUD.
+* **Nagroda:** przecięta skrzynia pęka i od razu naprawia ~4% kadłuba (16% za cały wrak – mniej niż Rdzeń Stazy), z błyskiem i wartością „+X” przy pasku kadłuba. Kolor skrzyń oznacza typ zawartości. Zebranie części skrzyń to legalny kompromis.
+* **Ryzyko:** wrak i skrzynie są przeszkodami z obrażeniami od zderzeń. Skrzynie są kinematyczne – po zderzeniu wracają na orbitę. Gracz ryzykuje kadłub, żeby zyskać kadłub.
+* **Otwarte:** koszt lasera (przegrzanie, paliwo albo brak kosztu) – decyzja po playteście. Znacznik HUD wraku przyjdzie ze wspólnym systemem znaczników celów.
+* **Na później:** paliwo jako drugi typ skrzyń (wtedy obowiązuje reguła „wraki nie zastępują stacji”, 2.5), losowanie pozycji i typu wraku, wraki na wszystkich odcinkach. W wersji roguelite skrzynie mają dawać ulepszenia statku zamiast zasobów zastępczych.
 
 ---
 
-### 4.8. Strumień Asteroid
+### 4.7. Strumień Asteroid
 Płaska „rzeka” asteroid w poprzek trasy – przeszkoda w tranzycie, która testuje odczytanie ruchu przy prędkości. Gracz przecina ją w kilka sekund albo obchodzi kosztem czasu.
 * **Ruch:** losowa asteroida w losowym momencie dostaje impuls, głównie w poprzek trasy (tam i z powrotem). Między impulsami zwalnia, a po wyjściu poza obszar strumienia zawraca łukiem – strumień zostaje na miejscu, ale nie ma stałego wzorca.
 * **Zapowiedź:** asteroida rozbłyska na ~0,7 s przed impulsem, więc trafienie jest ryzykiem do odczytania, a nie loterią.

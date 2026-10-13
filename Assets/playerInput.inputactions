@@ -59,6 +59,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Laser",
+                    "type": "Button",
+                    "id": "3f5643bd-ebbc-41fc-95d9-678cd66c530f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -235,6 +244,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Stasis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b0782570-0497-4ea4-8ed0-3e7ad928cff4",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Laser",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

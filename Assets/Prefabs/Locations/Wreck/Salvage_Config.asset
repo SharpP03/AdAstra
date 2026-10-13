@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24074d68f6e87074dbe2580ecdbc264d, type: 3}
+  m_Name: Salvage_Config
+  m_EditorClassIdentifier: Assembly-CSharp::SalvageConfigSO
+  laserRange: 40
+  assistBoxWidth: 6
+  idleBeamLength: 6
+  idleBeamWidthScale: 0.4
+  cutTime: 1.5
+  crateResource: 1
+  rewardFraction: 0.04

@@ -226,6 +226,9 @@ public class Player_Spaceship : MonoBehaviour
         controlsEnabled = enabled;
     }
 
+    /// <summary>False while pilot input is locked (end of run, Warp Gate capture).</summary>
+    public bool ControlsEnabled => controlsEnabled;
+
     public Vector2 MoveInput { get; private set; }
     public PlayerState CurrentState => playerCurrentState;
     #region EDUCATION NOTE public getter
