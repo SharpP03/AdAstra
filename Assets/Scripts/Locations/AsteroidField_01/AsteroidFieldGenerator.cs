@@ -21,33 +21,7 @@ public class AsteroidFieldGenerator : MonoBehaviour
             Quaternion rot = Random.rotation;
             float scale = Random.Range(0.5f * scaleMultiplier, 2.5f * scaleMultiplier);
 
-            GameObject asteroid = Instantiate(prefab, pos, rot, transform);
-            asteroid.transform.localScale = Vector3.one * scale;
-
-            Rigidbody rb = asteroid.GetComponent<Rigidbody>();
-            if (rb == null)
-            {
-                rb = asteroid.AddComponent<Rigidbody>();
-                rb.useGravity = false;
-            }
-
-            SphereCollider sc = asteroid.GetComponent<SphereCollider>();
-            if (sc == null)
-            {
-                sc = asteroid.AddComponent<SphereCollider>();
-                // Radius in local space: the transform scale is applied on top of it.
-                Bounds meshBounds = asteroid.GetComponent<MeshFilter>().sharedMesh.bounds;
-                sc.center = meshBounds.center;
-                sc.radius = (meshBounds.extents.x + meshBounds.extents.y + meshBounds.extents.z) / 3f;
-            }
-
-            #region EDUCATION NOTE asteroid mass
-            // DO PRACY INŻ. - masa proporcjonalna do objętości (r^3), a nie stała.
-            // Drobne odłamki są lekkie i odlatują po trafieniu, a duże głazy są cięższe od statku,
-            // więc wyhamowują go i odbijają - zderzenie jest odczuwalne, nie tylko widoczne na pasku kadłuba.
-            #endregion
-            float worldRadius = sc.radius * scale;
-            rb.mass = density * (4f / 3f) * Mathf.PI * worldRadius * worldRadius * worldRadius;
+            Rigidbody rb = AsteroidSpawn.Create(prefab, pos, rot, scale, density, transform);
 
             // VelocityChange keeps the drift speed independent of the asteroid mass.
             Vector3 randomDirection = Random.onUnitSphere.normalized;

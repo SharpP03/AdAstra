@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: StasisCore_Config
   m_EditorClassIdentifier: Assembly-CSharp::StasisCoreConfigSO
   requiredCores: 2
-  maxCores: 3
   hullRepairFraction: 0.2
   stasisDuration: 6
   keyBurnHoldTime: 1
