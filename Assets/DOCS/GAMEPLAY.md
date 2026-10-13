@@ -5,7 +5,7 @@
 
 Gra łączy precyzyjny pilotaż arcade/6DoF z napięciem wynikającym z zarządzania zasobami (paliwo, kadłub, Rdzenie Stazy) oraz presją nieubłaganie nadciągającej ściany zagłady.
 
-**Spoiwo runu:** w strefach zagrożeń powstają **Rdzenie Stazy** – kapsuły skrystalizowanej energii fali. Rdzeń jest jednocześnie **kluczem** (brama wymaga 2 rdzeni do skoku) i **ratunkiem** (można go spalić, by na chwilę zatrzymać Front Anihilacji). Gracz musi wejść w strefy zagrożeń, ale sam wybiera, które – a w każdym kryzysie staje przed dylematem: spalić rdzeń i przeżyć teraz, czy zachować klucz.
+**Spoiwo runu:** w strefach zagrożeń powstają **Rdzenie Stazy** – kapsuły skrystalizowanej energii fali. Rdzeń jest jednocześnie **kluczem** (brama wymaga 2 rdzeni do skoku), **ratunkiem** (można go spalić, by na chwilę zatrzymać Front Anihilacji) i **inwestycją** (nadmiar dowieziony przez bramę idzie na ulepszenia między runami). Gracz musi wejść w strefy zagrożeń, ale sam wybiera, które – a w każdym kryzysie staje przed dylematem: spalić rdzeń i przeżyć teraz, czy zachować go jako klucz albo ulepszenie.
 
 Długość runu wynika z układu sektora (sekcja 2.5); orientacyjny cel to ok. 2–3 minuty, mierzone podczas blockoutu.
 
@@ -24,11 +24,11 @@ Punkt odniesienia dla każdej decyzji: nowa mechanika, lokacja lub zmiana liczb 
 **Wspólna waluta – dystans do fali.** Front Anihilacji przesuwa się wzdłuż osi Z, więc czas spędzony poza postępem na Z (zboczenie, postój, objazd) zmniejsza dystans do fali. Pozostałe zasoby są jego formami:
 * **Paliwo** – jak daleko dolecisz (budżet ruchu).
 * **Kadłub** – ile błędów możesz popełnić (budżet pomyłek).
-* **Rdzenie Stazy** – klucz do bramy i kupiony czas (Staza).
+* **Rdzenie Stazy** – klucz do bramy, kupiony czas (Staza) i waluta ulepszeń między runami (2.3).
 
 **Kontrakt lokacji:** każda lokacja i każdy moduł odpowiada na trzy pytania – ile kosztuje w dystansie, co oddaje i któremu filarowi służy. Lokacja bez odpowiedzi nie wchodzi do sektora. Nowe zasoby lub waluty wchodzą dopiero wtedy, gdy mają ujście w istniejącej pętli.
 
-**Decyzje gracza w runie:** którą strefę pominąć, jak długo tankować, kiedy spalić rdzeń i czy zboczyć do modułu samodzielnego.
+**Decyzje gracza w runie:** którą strefę pominąć, jak długo tankować, kiedy spalić rdzeń, ile nadmiaru rdzeni dowieźć do bramy i czy zboczyć do modułu samodzielnego.
 
 **Kierunek długoterminowy (poza wycinkiem):** regrywalność przez losowy układ lokacji i lokacje nieznane. Sektor układa się tak, żeby to nie wymagało przebudowy (2.5), ale do czasu domknięcia wycinka nie powstaje kod na zapas.
 
@@ -48,20 +48,20 @@ flowchart TD
         C1["Start w Hubie Sektora"] --> C2["Ucieczka wzdłuż osi Z przed Frontem Anihilacji"]
         C2 --> C3{"Kalkulacja Trasy i Paliwa"}
         C3 -- "Konieczność tankowania" --> C4["Stacja Pośrednia: Tankowanie w wiązce pod presją"]
-        C3 -- "Wybór strefy (2 z 3)" --> C5["Zboczenie w strefę zagrożenia po Rdzeń Stazy (klucz)"]
+        C3 -- "Wybór stref" --> C5["Zboczenie w strefę zagrożenia po Rdzeń Stazy (klucz)"]
         C5 --> C8{"Kryzys: spalić rdzeń jako Stazę?"}
         C8 -- "Tak: fala staje, klucz stracony" --> C9["Potrzebny kolejny rdzeń"]
         C9 --> C5
         C8 -- "Nie: zachowaj klucz" --> C6
-        C4 --> C6["Dotarcie do Warp Gate z 2 rdzeniami"]
+        C4 --> C6["Dotarcie do Warp Gate z 2 rdzeniami (+ nadmiar)"]
         C5 --> C4
         C6 --> C7["Skok / Ekstrakcja"]
     end
 
-    subgraph MacroLoop ["Macro-Loop (Sesja / Meta-Progresja) – POST-MVP"]
-        MA1["Podsumowanie Runu (Statystyki, Ranga)"] --> MA2["Bankowanie nagród z runu"]
-        MA2 --> MA3["Odblokowanie wariantów statków w Hubie"]
-        MA3 --> MA4["Kolejny Run o zmiennej generacji proceduralnej"]
+    subgraph MacroLoop ["Macro-Loop (Sesja / Meta-Progresja) – minimalna wersja w MVP"]
+        MA1["Podsumowanie Runu"] --> MA2["Bankowanie nadmiaru rdzeni (tylko po udanym skoku)"]
+        MA2 --> MA3["Ulepszenia w menu: statystyki i narzędzia"]
+        MA3 --> MA4["Kolejny Run"]
     end
 
     CoreLoop --> MacroLoop
@@ -80,29 +80,40 @@ flowchart TD
 3. **Wymuszony Postój:** Pełny bak nie wystarcza na przelot całego sektora – bez tankowania na stacji pośredniej nie da się dolecieć do bramy.
 4. **Zarządzanie Ryzykiem:**
    - **Stacja Pośrednia:** Gracz musi zatrzymać się w wiązce stacji i utrzymać w niej statek (4.2). Sam decyduje, kiedy odlecieć – pełny bak kosztem zbliżającej się fali albo wcześniejszy odlot z niepełnym bakiem.
-   - **Strefy Zagrożenia:** Brama wymaga 2 **Rdzeni Stazy** (4.3), a w sektorze są 3 – w wycinku po jednym w polu asteroid, Strumieniu Asteroid (4.7) i burzy jonowej. Gracz musi zboczyć z trasy, ale wybiera, którą strefę pominąć. Anomalia grawitacyjna w wycinku nie ma rdzenia; docelowo nagradza samo ryzyko wyrzutem (4.5).
-   - **Staza – klucz czy ratunek:** Każdy rdzeń można spalić, by zatrzymać falę – żeby dłużej tankować albo ratować się po błędzie. Spalony rdzeń przestaje być kluczem, więc trzeba zdobyć kolejny. Trzeci rdzeń to zapas: prawo do jednej Stazy bez tej kary.
+   - **Strefy Zagrożenia:** Brama wymaga 2 **Rdzeni Stazy** (4.3), a w sektorze jest ich więcej. Nadmiar gracz wykorzystuje w trakcie runu (Staza) albo dowozi przez bramę i po udanym skoku wydaje na ulepszenia między runami (2.3) – to daje powód do kolejnego runu. W wycinku po jednym rdzeniu w polu asteroid, Strumieniu Asteroid (4.7) i burzy jonowej. Gracz musi zboczyć z trasy, ale wybiera, którą strefę pominąć. Anomalia grawitacyjna w wycinku nie ma rdzenia; docelowo nagradza samo ryzyko wyrzutem (4.5).
+   - **Staza – klucz czy ratunek:** Każdy rdzeń można spalić, by zatrzymać falę – żeby dłużej tankować albo ratować się po błędzie. Spalony rdzeń przestaje być kluczem, więc trzeba zdobyć kolejny. Każdy rdzeń ponad wymagane 2 to zapas: można go spalić bez utraty klucza, ale wtedy przepada jako ulepszenie.
 5. **Ekstrakcja:** Wlot do bramy Warp Gate rozpoczyna procedurę skoku (przechwycenie statku i autoryzacja w terminalu, patrz 4.4). Poprawna autoryzacja kończy run sukcesem.
 
-**Reguła strojenia:** wprawny gracz jest w stanie zebrać wszystkie 3 rdzenie w jednym runie i dotrzeć do bramy, ale z falą tuż za plecami. Średni gracz zbiera wymagane 2 i musi wybierać, którą strefę pominąć. Na tej regule opiera się strojenie paliwa, dystansów i prędkości fali.
+**Reguła strojenia:** wprawny gracz jest w stanie zebrać wszystkie rdzenie w sektorze i dotrzeć do bramy z nadmiarem, ale z falą tuż za plecami. Średni gracz zbiera wymagane 2, może jeden zapas, i musi wybierać, które strefy pominąć. Na tej regule opiera się strojenie paliwa, dystansów i prędkości fali.
 
 **Cel runu na HUD:** od pierwszej sekundy gracz widzi cel „Rdzenie 0/2 – dotrzyj do bramy”. Przy pierwszym rdzeniu pojawia się jednorazowa podpowiedź, jak aktywować Stazę (minimalny onboarding).
 
 **Brak kluczy:** brama bez wymaganej liczby rdzeni się nie otwiera i nie przechwytuje statku. HUD z wyprzedzeniem ostrzega „brakuje rdzeni”, zanim gracz minie ostatnią strefę. Powrót po rdzeń oznacza lot w stronę fali, więc w praktyce brak kluczy kończy się porażką – dlatego spalenie rdzenia-klucza jest chronione zabezpieczeniem z 4.3.
 
-### 2.3. Pętla Makro (Meta-Progresja i Persystencja) – POST-MVP
-* Docelowo: nagrody dowiezione z runu są bankowane i służą do odblokowania predefiniowanych wariantów statku (np. Lekki Zwiadowca, Ciężki Frachtowiec) lub ulepszeń.
-* Proceduralny generator sektora zastąpi autorski sektor po ustabilizowaniu pętli rdzennej.
+### 2.3. Pętla Makro (Meta-Progresja i Persystencja)
+**Minimalna wersja w MVP:**
+* **Bankowanie:** rdzenie ponad wymagane, dowiezione przez bramę, trafiają do banku dopiero po udanym skoku. Porażka zabiera cały nadmiar z runu – końcówka runu stawia pytanie, ile jeszcze zaryzykować.
+* **Menu ulepszeń** między runami: gracz wydaje zbankowane rdzenie na ulepszenia statku. Przykłady: wytrzymalszy kadłub, większy bak, dłuższa Staza, lepszy laser albo nowe narzędzie (np. skaner ujawniający lokacje nieznane, 4.8).
+* **Umiar:** ulepszenia są małe albo poboczne (nowe narzędzia zamiast dużych bonusów), żeby po kilku runach nie znosiły presji fali. Wartości siedzą w ScriptableObjectach.
+* **Nowe narzędzia (kandydaci – JESZCZE NIE ISTNIEJĄ):** proste w implementacji systemy, które dokładają czasownik albo nowy wybór, zamiast podbijać liczby. Każdy spełnia kontrakt lokacji (1.1) – ma koszt i nie znosi presji fali:
+  - **Unik (evasive boost)** – krótki impuls w bok kosztem przegrzania lub chwilowego wyłączenia silnika.
+  - **SOS** – gdy skończy się paliwo, sygnał coś aktywuje (np. zrzut ratunkowy kosztem czasu albo z ryzykiem); rozwija pomysł z taska „Distress beacon (SOS)”.
+  - **Laser górniczy** – ulepszony laser kopie asteroidy. Zmienia regułę z 4.6 („laser nie rani asteroid”) tylko dla tego ulepszenia; urobek wymaga ujścia w pętli (np. paliwo lub kadłub, w limitach z 2.5).
+  - **Skaner** – ujawnia zawartość lokacji nieznanych (4.8).
+* **Persystencja – DO GRILLA:** bank i kupione ulepszenia mają się zapisywać lokalnie między uruchomieniami gry. Format, miejsce zapisu i to, kto go posiada (bez nowego globalnego singletona bez zgody), rozstrzyga osobny grill przed realizacją.
+
+**Poza MVP:** predefiniowane warianty statku (np. Lekki Zwiadowca, Ciężki Frachtowiec), ranga pilotażu, proceduralny generator sektora zamiast autorskiego sektora po ustabilizowaniu pętli rdzennej.
 
 ### 2.4. Zakres MVP
-MVP to pętla rdzenna (2.2) zbudowana na mechanikach z sekcji 4 i trzech modułach zagrożeń (pole asteroid, burza jonowa, anomalia grawitacyjna – każdy z Rdzeniem Stazy) plus Front Anihilacji.
+MVP to pętla rdzenna (2.2) zbudowana na mechanikach z sekcji 4, strefach zagrożeń z Rdzeniami Stazy i Froncie Anihilacji, plus minimalna pętla makro (2.3): bankowanie nadmiaru rdzeni i ulepszenia między runami.
 
 **Kolejność realizacji – pionowy wycinek:** najpierw jeden kompletny run z celem i dylematem, złożony z tego, co już istnieje: pole asteroid z gęstym środkiem, Strumień Asteroid i obecna burza jonowa (bez przebudowy) – każde z rdzeniem; anomalia bez rdzenia; stacja z obecnym tankowaniem; wrak i drobne moduły samodzielne w tranzycie (4.8). Wymagana liczba rdzeni jest parametrem konfiguracji (ScriptableObject). Kolejne kroki:
-1. **Integracja sektora** – run da się przejść od startu do bramy, z wyborem 2 z 3 rdzeni, a liczby zgadzają się z budżetem dystansu (2.5).
+1. **Integracja sektora** – run da się przejść od startu do bramy, z wyborem stref, a liczby zgadzają się z budżetem dystansu (2.5).
 2. **Playtest wycinka** z notatkami, m.in.: czy cel jest jasny, czy gracz wchodzi w strefy, czy „spalić czy zachować rdzeń” to prawdziwy dylemat, gdzie run jest nudny i która lokacja jest najuboższa.
 3. **Poprawki według notatek** – rozbudowa lokacji, flight feel pass, HUD, ewentualnie minigra tankowania oraz przebudowy burzy jonowej i anomalii.
+4. **Minimalna meta-progresja (2.3)** – bankowanie i menu ulepszeń; kolejny playtest sprawdza, czy nadmiar rdzeni tworzy dylemat „spalić czy dowieźć”.
 
-Zakres nie jest zamknięty. Nowe mechaniki i lokacje (minigry, ulepszenia statku, nowe zagrożenia – w tym wrogie AI i walka, alternatywne trasy) są mile widziane, ale wchodzą dopiero wtedy, gdy pętla „start → stacja → brama” jest grywalna i przetestowana. Pomysły czekają jako taski w kolumnie *Ideas* na boardzie projektu.
+Zakres nie jest zamknięty. Nowe mechaniki i lokacje (minigry, nowe zagrożenia – w tym wrogie AI i walka, alternatywne trasy) są mile widziane, ale wchodzą dopiero wtedy, gdy pętla „start → stacja → brama” jest grywalna i przetestowana. Pomysły czekają jako taski w kolumnie *Ideas* na boardzie projektu.
 
 ### 2.5. Układ Sektora (Blockout)
 Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki. Strefy ryzyka z Rdzeniami Stazy leżą obok trasy jako opcjonalne zboczenia.
@@ -131,15 +142,6 @@ Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki. Stre
 
 **Odcinki tranzytowe:** między beatami gracz ma krótkie okno decyzji, nie kolejną strefę. Każdy odcinek tranzytowy (Hub → pole, pole → stacja, stacja → odcinek 2, odcinek 2 → brama) dostaje moduły samodzielne (4.8). Docelowo każdy odcinek ma autorskie **pasmo**, a losowość dotyczy tylko „gdzie”, nigdy „czy”: pozycja w paśmie (odległość od linii krytycznej, strona i wysokość) oraz typ modułu. Odcinek tranzytowy może dodatkowo przecinać Strumień Asteroid (4.7) – krótka przeszkoda w poprzek trasy: przeciąć ją albo obejść kosztem czasu.
 
-**Wycinek – rozmieszczenie modułów samodzielnych (z gotowych prefabów):**
-
-| Odcinek | Moduł | Po co |
-|---------|-------|-------|
-| Start → pole asteroid | Rzadkie pole dryfujące zahaczające o krawędź trasy; 1 samotna skrzynia blisko trasy | Nauka zderzeń i lasera przed pierwszą strefą |
-| Pole → stacja | Mały wrak z 2 skrzyniami, z boku lub nad trasą | Pokusa przed stacją: kadłub kosztem czasu tankowania |
-| Stacja → odcinek 2 | Wrak (4.6) | Obecny proof of concept |
-| Odcinek 2 → brama | 1–2 skrzynie na krawędzi anomalii | Nagroda przy przyciąganiu – ryzyko z wyboru |
-
 **Reguły strojenia tranzytu:**
 * Suma paliwa ze wszystkich modułów na trasie jest mniejsza niż deficyt, który wymusza postój na stacji (2.2.3) – moduły nie zastępują stacji.
 * Cały salvage w sektorze (wraki i samotne skrzynie) naprawia łącznie mniej niż zebranie jednego Rdzenia Stazy (20%) – nie konkuruje z kluczem.
@@ -158,8 +160,8 @@ Mechaniki i lokacje na tym etapie powstają z prymitywów; docelowe assety przyc
 
 ### 3.1. Zwycięstwo (Run Complete)
 * Wlot statkiem w bramę **Warp Gate** i ukończenie procedury skoku (4.4), zanim kadłub zostanie zniszczony.
-* Ekran podsumowania (MVP): czas ucieczki (od startu do poprawnej autoryzacji), pozostały kadłub %, pozostałe paliwo %, najmniejszy dystans do Frontu Anihilacji w trakcie runu, Rdzenie Stazy zebrane / użyte, przycisk Restart.
-* Docelowo podsumowanie rozszerzy się o rangę pilotażu oraz bankowanie nagród.
+* Ekran podsumowania (MVP): czas ucieczki (od startu do poprawnej autoryzacji), pozostały kadłub %, pozostałe paliwo %, najmniejszy dystans do Frontu Anihilacji w trakcie runu, Rdzenie Stazy zebrane / użyte / zbankowane, przycisk Restart oraz przejście do menu ulepszeń (2.3).
+* Docelowo podsumowanie rozszerzy się o rangę pilotażu.
 
 ### 3.2. Porażka (Game Over)
 * **Destrukcja Kadłuba:** Zderzenia z asteroidami przy dużej prędkości, uderzenia piorunów w burzy jonowej, wplucie z jądra anomalii lub obrażenia od Frontu Anihilacji.
@@ -197,15 +199,16 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 
 ### 4.3. Rdzenie Stazy (Stasis Cores)
 * **Fikcja:** zagrożenia w sektorze to odpryski tej samej energii, która tworzy Front Anihilacji. W ich wnętrzu energia krystalizuje się w Rdzenie Stazy, które statek potrafi wykorzystać przeciwko fali.
-* **Rozmieszczenie:** po jednym rdzeniu w strefie zagrożeń (4.5, 4.7), w jej najniebezpieczniejszej części, poza linią krytyczną – zebranie rdzenia zawsze kosztuje zboczenie. W wycinku: pole asteroid, Strumień Asteroid i burza jonowa; anomalia grawitacyjna dostaje rdzeń razem ze swoją przebudową. Rdzeń świeci pulsującym światłem widocznym z daleka.
-* **Podwójna rola:** rdzeń jest **kluczem** do bramy (wymagane 2, patrz 4.4) i **ratunkiem** – można go spalić jako Stazę. Spalony rdzeń przestaje być kluczem.
+* **Rozmieszczenie:** rdzenie leżą w strefach zagrożeń (4.5, 4.7), w ich najniebezpieczniejszej części, poza linią krytyczną – zebranie rdzenia zawsze kosztuje zboczenie. W wycinku: pole asteroid, Strumień Asteroid i burza jonowa; anomalia grawitacyjna dostaje rdzeń razem ze swoją przebudową. Rdzeń świeci pulsującym światłem widocznym z daleka.
+* **Potrójna rola:** rdzeń jest **kluczem** do bramy (wymagane 2, patrz 4.4), **ratunkiem** – można go spalić jako Stazę – i **inwestycją**: nadmiar dowieziony przez bramę idzie na ulepszenia (2.3). Spalony rdzeń przestaje być kluczem i ulepszeniem.
 * **Zebranie:** dodaje 1 rdzeń do licznika oraz natychmiast naprawia 20% kadłuba – wejście w strefę częściowo „zwraca” obrażenia w niej odniesione.
 * **Licznik:** gracz zaczyna run z 0 i nie ma limitu noszenia. HUD pokazuje cel „Rdzenie X/2”. Wymagana liczba (domyślnie 2) jest parametrem konfiguracji.
 * **Staza:** jeden klawisz (akcja w `playerInput.inputactions`) spala rdzeń, działa w locie, na stacji i w terminalu bramy. Efekt: Front Anihilacji zatrzymuje się na ~6 s (4.1).
 * **Zabezpieczenie:** spalenie rdzenia, który jest potrzebny jako klucz (licznik ≤ 2), wymaga przytrzymania klawisza, a HUD ostrzega, że gracz traci klucz. Zapasowy rdzeń spala się zwykłym wciśnięciem.
 * **Prowadzenie (stan roboczy, do doprecyzowania osobnym grillem):** strefy zagrożeń są zawsze oznaczone w HUD (ikona i dystans); rdzeń dostaje własny znacznik dopiero w zasięgu wykrycia (~250 m).
-* **Tylko ze stref zagrożeń:** rdzenie nie pojawiają się w tranzycie. Dylemat stoi na rzadkości – 3 rdzenie, 2 wymagane, jeden zapas – więc wybór pomijanej strefy jest prawdziwy. Czwarty rdzeń poza strefą byłby albo łatwo dostępny (pozwala pominąć strefę lub daje darmową Stazę, dylemat przestaje boleć), albo pilnowany przez zagrożenie (czyli byłby kolejną strefą, nie treścią tranzytu). Przeczy też fikcji: rdzenie krystalizują się wewnątrz zagrożeń. Jeśli dylemat okaże się za ostry, dźwignią jest wymagana liczba rdzeni w konfiguracji, a nie nowe źródło.
-* **Liczba rdzeni w sektorze** jest parametrem układu, strojonym przy integracji sektora. Rdzeń może leżeć w każdej strefie zagrożeń, także w Strumieniu Asteroid (4.7). Ryzyko do sprawdzenia w playteście: więcej niż 3 rdzenie rozmywa dylemat.
+* **Tylko ze stref zagrożeń:** rdzenie nie pojawiają się w tranzycie ani w modułach samodzielnych – krystalizują się wewnątrz zagrożeń, a każdy rdzeń musi kosztować wejście w strefę. Rdzeń łatwo dostępny byłby darmową Stazą albo darmowym ulepszeniem. Więcej rdzeni w sektorze oznacza więcej stref albo kolejny rdzeń głębiej w tej samej strefie.
+* **Dylemat stoi na koszcie alternatywnym:** każdy rdzeń to klucz, ratunek albo ulepszenie – nigdy wszystko naraz. Nawet gdy klucze są pewne, każda Staza kosztuje ulepszenie.
+* **Liczba rdzeni w sektorze** jest parametrem układu, strojonym przy integracji sektora (w wycinku 3). Rdzeń może leżeć w każdej strefie zagrożeń, także w Strumieniu Asteroid (4.7). Ryzyko do sprawdzenia w playteście: przy zbyt wielu łatwych rdzeniach klucz przestaje być problemem – nadmiar musi wymagać głębszego wejścia w strefy.
 
 ### 4.4. Warp Gate (Cel Runu i Procedura Skoku)
 Brama skokowa na końcu korytarza sektora. Finał runu łączy pilotaż z krótką minigrą pod presją Frontu Anihilacji.
@@ -214,7 +217,7 @@ Brama skokowa na końcu korytarza sektora. Finał runu łączy pilotaż z krótk
 
 **Procedura skoku:**
 1. **Przechwycenie:** Wlot w strefę bramy z co najmniej 2 Rdzeniami Stazy blokuje sterowanie statkiem, a brama pobiera 2 rdzenie jako klucz. Brama płynnie dociąga statek do punktu dokowania w swoim centrum i wygasza jego prędkość. Procedury nie można przerwać ani opuścić bramy. Bez wymaganych rdzeni brama się nie otwiera (2.2).
-2. **Autoryzacja w terminalu:** Na ekranie pojawia się terminal z krótkim słowem wylosowanym z puli tematycznych słów. Długość słowa jest stała – presję tworzy fala, a jedyną ulgą jest zapasowy (trzeci) rdzeń, który gracz może spalić jako Stazę w trakcie procedury. Gracz musi wpisać je z klawiatury; wielkość liter nie ma znaczenia.
+2. **Autoryzacja w terminalu:** Na ekranie pojawia się terminal z krótkim słowem wylosowanym z puli tematycznych słów. Długość słowa jest stała – presję tworzy fala, a jedyną ulgą jest zapasowy rdzeń (ponad wymagane), który gracz może spalić jako Stazę w trakcie procedury – kosztem ulepszenia. Gracz musi wpisać je z klawiatury; wielkość liter nie ma znaczenia.
    - Poprawne litery są wyraźnie potwierdzane.
    - Błędny znak jest odrzucany z czytelnym sygnałem błędu, a dotychczasowy postęp zostaje zachowany. Karą za pomyłkę jest stracony czas.
 3. **Presja fali:** Przez cały czas trwania procedury Front Anihilacji porusza się dalej i zadaje obrażenia. Jeśli dogoni unieruchomiony statek i zniszczy kadłub przed ukończeniem autoryzacji, run kończy się porażką.
@@ -284,4 +287,4 @@ Moduł samodzielny to mały element bez własnego beatu: stoi w tranzycie lub z 
 | Sygnał nieznany | Podleć i sprawdź | Czas | Losowo: nagroda, pułapka albo wybór | Filar 3 „w ciemno” – lokacja nieznana |
 
 ## 5. ROZWÓJ POZA MVP
-Pomysły spoza MVP (m.in. bezwładny model lotu z dryfem, alternatywne trasy i struktura wielu skoków, wrogie AI i walka, ulepszenia statku, moduły statku zdobywane w strefach, ładowanie bramy rdzeniami, magnes dokujący, prądy jonowe w tranzycie, energia za lot blisko zagrożeń, materiały z wraków jako waluta, sygnał SOS, generator proceduralny, meta-progresja) są prowadzone jako taski w kolumnie *Ideas* na boardzie projektu „AdAstra Kanban”. Dokument opisuje je zwykle dopiero wtedy, gdy wchodzą do realizacji; wyjątkiem są rekomendacje oznaczone jako jeszcze nieistniejące (np. 4.8), które wyznaczają kierunek.
+Pomysły spoza MVP (m.in. bezwładny model lotu z dryfem, alternatywne trasy i struktura wielu skoków, wrogie AI i walka, moduły statku zdobywane w strefach, ładowanie bramy rdzeniami, magnes dokujący, prądy jonowe w tranzycie, energia za lot blisko zagrożeń, materiały z wraków jako waluta, sygnał SOS, generator proceduralny, rozbudowana meta-progresja z wariantami statku) są prowadzone jako taski w kolumnie *Ideas* na boardzie projektu „AdAstra Kanban”. Dokument opisuje je zwykle dopiero wtedy, gdy wchodzą do realizacji; wyjątkiem są rekomendacje oznaczone jako jeszcze nieistniejące (np. 4.8), które wyznaczają kierunek.
