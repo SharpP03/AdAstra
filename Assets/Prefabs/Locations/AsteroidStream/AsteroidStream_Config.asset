@@ -24,17 +24,17 @@ MonoBehaviour:
   - {fileID: 1109359388396963920, guid: 487e961d6d1b2c442a2d1b91c985ab7b, type: 3}
   - {fileID: 1811741729055678737, guid: a336035a49436ed479a007f40dcdf840, type: 3}
   seed: 0
-  size: {x: 300, y: 120, z: 70}
-  count: 80
-  scale: {x: 0.8, y: 3}
-  coreClearance: 10
+  size: {x: 300, y: 150, z: 150}
+  count: 120
+  scale: {x: 2, y: 4}
+  coreClearance: 5
   impulseInterval: {x: 3, y: 9}
-  impulseSpeed: {x: 8, y: 16}
-  axisBias: 0.6
+  impulseSpeed: {x: 10, y: 100}
+  axisBias: 0.8
   telegraphTime: 0.7
-  telegraphColor: {r: 6, g: 2.6999998, b: 0.6, a: 6}
+  telegraphColor: {r: 0.3509893, g: 0.11091868, b: 1.0592737, a: 6}
   returnAcceleration: 6
   damping: 0.3
-  maxSpeed: 20
+  maxSpeed: 80
   density: 0.5
   spinSpeed: {x: 0.1, y: 0.6}
