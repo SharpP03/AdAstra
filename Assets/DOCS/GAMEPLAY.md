@@ -51,7 +51,7 @@ flowchart TD
 * Czasowniki gracza w MVP: **steruj, boostuj, hamuj/dokuj, zbieraj, aktywuj Stazę, wpisuj**. Walka i wrogie AI nie wchodzą do MVP; nowe systemy są dopuszczalne, jeśli wyraźnie spajają istniejące mechaniki.
 * Każda strefa zagrożeń testuje inną umiejętność (4.5): precyzję przy prędkości (pole asteroid), czytanie zapowiedzi i timing (burza jonowa), zarządzanie pędem (anomalia grawitacyjna).
 * Balansowanie użyciem boostu (prędkość ucieczki vs ponad dwukrotnie szybsze spalanie paliwa).
-* **Otwarty punkt (priorytet):** gracz potrzebuje czynności i interakcji także między lokacjami i wokół nich (rozmieszczonych losowo), żeby odcinki tranzytowe nie były samym lotem prosto. Kształt ustala osobny grill (kandydaci: zdobywanie materiałów i złomowanie wraków, dodatkowy Rdzeń Stazy w losowym miejscu, pickupy paliwa na trasie, energia za lot blisko zagrożeń).
+* **Tranzyt między lokacjami:** odcinki tranzytowe to krótkie okna decyzji, a nie osobne beaty. Treść daje im **wrak** na każdym odcinku (4.6) – zboczyć po paliwo lub kadłub kosztem czasu, czy lecieć dalej – oraz **Odłamki Fali** (4.7), które sprawiają, że bliskość frontu czuć także między lokacjami. Długość odcinków stroi się w metrykach (2.5).
 
 ### 2.2. Pętla Rdzenna (Minuty / Pojedynczy Run)
 1. **Start:** Wylot ze stacji bazowej w kierunku bramy skokowej (Warp Gate) w autorskim sektorze. Gracz startuje z pełnym bakiem i nieuszkodzonym kadłubem.
@@ -99,7 +99,13 @@ Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki. Stre
 | Odcinek 2 | Test umiejętności i wybór strefy; burza i anomalia obok trasy, rdzenie w ich wnętrzu, wyrzut z anomalii jako skrót | Burza jonowa, anomalia grawitacyjna | Wysokie |
 | Finisz | Brama w zasięgu wzroku; wyścig z falą o resztki paliwa, zapasowy rdzeń jako Staza na procedurę skoku | Warp Gate | Szczyt |
 
-Odcinki tranzytowe między beatami nie mają jeszcze własnej treści (otwarty punkt w 2.1).
+**Odcinki tranzytowe:** między beatami gracz ma krótkie okno decyzji, nie kolejną strefę. Każdy odcinek tranzytowy (Hub → pole, pole → stacja, stacja → odcinek 2, odcinek 2 → brama) ma autorskie **pasmo**, w którym leży jeden wrak (4.6). Losowość dotyczy tylko „gdzie”, nigdy „czy”: na każdy run losowane są pozycja wraku w paśmie (odległość od linii krytycznej, np. 0–150 m, i strona trasy) oraz jego typ. Wrak tuż przy trasie jest prezentem, daleki – dylematem. Przy zbliżonej fali tranzyt zapełniają Odłamki Fali (4.7).
+
+**Reguły strojenia tranzytu:**
+* Suma paliwa ze wszystkich wraków na trasie jest mniejsza niż deficyt, który wymusza postój na stacji (2.2.3) – wraki nie zastępują stacji.
+* Wrak kadłubowy naprawia łącznie mniej niż zebranie Rdzenia Stazy (20%) – nie konkuruje z kluczem.
+
+Mechaniki i lokacje na tym etapie powstają z prymitywów; docelowe assety przychodzą po strojeniu (krok 4 metody).
 
 ---
 
@@ -133,7 +139,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 2. **Front Niszczący:**
    - Zadaje gwałtowne obrażenia kadłubowi co sekundę.
    - Pozwala na dramatyczną ucieczkę "w ostatniej chwili", jeśli gracz posiada resztki paliwa na boost.
-3. **Staza:** Spalenie Rdzenia Stazy (4.3) zatrzymuje front na ~6 s. Fala zamiera, jej kolor przechodzi w chłodny, dźwięk cichnie, a HUD pokazuje odliczanie nad wskaźnikiem dystansu do fali.
+3. **Staza:** Spalenie Rdzenia Stazy (4.3) zatrzymuje front na ~6 s. Fala zamiera, jej kolor przechodzi w chłodny, dźwięk cichnie, a HUD pokazuje odliczanie nad wskaźnikiem dystansu do fali. Staza zamraża także Odłamki Fali (4.7).
 
 ### 4.2. Stacja Pośrednia (Tankowanie na Postoju)
 * W MVP sektor ma jedną stację pośrednią, położoną na linii krytycznej. HUD wskazuje jej położenie.
@@ -153,7 +159,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 * **Staza:** jeden klawisz (akcja w `playerInput.inputactions`) spala rdzeń, działa w locie, na stacji i w terminalu bramy. Efekt: Front Anihilacji zatrzymuje się na ~6 s (4.1).
 * **Zabezpieczenie:** spalenie rdzenia, który jest potrzebny jako klucz (licznik ≤ 2), wymaga przytrzymania klawisza, a HUD ostrzega, że gracz traci klucz. Zapasowy rdzeń spala się zwykłym wciśnięciem.
 * **Prowadzenie (stan roboczy, do doprecyzowania osobnym grillem):** strefy zagrożeń są zawsze oznaczone w HUD (ikona i dystans); rdzeń dostaje własny znacznik dopiero w zasięgu wykrycia (~250 m).
-* Na tym etapie rdzenie pochodzą wyłącznie ze stref zagrożeń. Dodatkowe źródła (pierwszy kandydat: rdzeń w losowym miejscu między lokacjami; dalej np. energia za lot blisko zagrożeń) rozstrzyga grill o interakcjach między lokacjami (2.1).
+* **Tylko ze stref zagrożeń:** rdzenie nie pojawiają się w tranzycie. Dylemat stoi na rzadkości – 3 rdzenie, 2 wymagane, jeden zapas – więc wybór pomijanej strefy jest prawdziwy. Czwarty rdzeń poza strefą byłby albo łatwo dostępny (pozwala pominąć strefę lub daje darmową Stazę, dylemat przestaje boleć), albo pilnowany przez zagrożenie (czyli byłby kolejną strefą, nie treścią tranzytu). Przeczy też fikcji: rdzenie krystalizują się wewnątrz zagrożeń. Jeśli dylemat okaże się za ostry, dźwignią jest wymagana liczba rdzeni w konfiguracji, a nie nowe źródło.
 
 ### 4.4. Warp Gate (Cel Runu i Procedura Skoku)
 Brama skokowa na końcu korytarza sektora. Finał runu łączy pilotaż z krótką minigrą pod presją Frontu Anihilacji.
@@ -188,7 +194,22 @@ Każda strefa leży obok linii krytycznej, ma w środku Rdzeń Stazy i testuje i
 * **Wyrzut:** wyjście z pierścienia wewnętrznego daje impuls wzdłuż kierunku lotu, proporcjonalny do głębokości wejścia. Działa także bez zebrania rdzenia – nagradza samo ryzyko. To jedyny „darmowy” dystans w grze, ale w fizyce nie zachodzi naturalnie (pole jest zachowawcze), więc jest efektem zaprojektowanym.
 * **Wplucie:** statek, który wpadnie w jądro, zostaje wyrzucony do tyłu, w stronę Frontu Anihilacji, i traci 30% kadłuba. Run trwa dalej, ale gracz traci dystans i czas.
 
+### 4.6. Wraki (Tranzyt)
+Jeden wrak na odcinek tranzytowy, w autorskim paśmie z losowaną pozycją (2.5). Wrak jest decyzją zależną od stanu gracza: zboczyć po zasób kosztem czasu wobec fali, czy lecieć dalej.
+* **Typ:** każdy wrak daje jeden zasób – **paliwo** albo **kadłub** – losowany per run. Typ widać z daleka po kolorze kanistrów, więc gracz z pełnym kadłubem ominie wrak kadłubowy.
+* **Zbieranie (stub):** wokół kadłuba wraku dryfuje 3–5 kanistrów zbieranych przelotem; każdy daje część nagrody. Kadłub wraku jest przeszkodą z obrażeniami od zderzeń. Zebranie wszystkich wymaga pętli lub zwolnienia – kosztem jest czas i ryzyko zderzenia; zebranie części to legalny kompromis. Bez nowego czasownika – to „zbieraj” z 2.1.
+* **Nagroda (hipotezy w ScriptableObject):** kanister paliwa ~5% baku; wrak paliwowy łącznie ~15–20%; wrak kadłubowy łącznie ~10% kadłuba. Ograniczenia: reguły strojenia tranzytu (2.5).
+* **Prowadzenie i feedback:** wrak ma migające światło (beacon) i znacznik HUD dopiero w zasięgu ~250 m, jak rdzeń. Zebranie kanistra: błysk, dźwięk i wartość „+X” przy pasku zasobu.
+* **Stub na później:** paliwo i kadłub to zasoby zastępcze. Gdy pojawi się ich ujście (moduły statku, meta-progresja), wrak może dawać inny zasób bez przebudowy mechaniki; właściwa interakcja złomowania (np. holowanie, rozcinanie) to osobny temat.
+
+### 4.7. Odłamki Fali
+Front Anihilacji wyrzuca przed siebie gruz, który dryfuje w tranzyt. Odłamki to czysty hazard – bez nagrody – i zapowiedź fali w przestrzeni, nie tylko na HUD.
+* Pojawiają się, gdy fala jest bliżej niż ~300 m (wyraźnie przed strefą ostrzegawczą), a ich gęstość rośnie z bliskością frontu. Dzięki temu postój przy wraku czy na stacji sam z siebie robi się groźniejszy.
+* Trafienie zadaje obrażenia przez zwykły system zderzeń kadłuba.
+* Odłamki są czytelne zanim trafią (świecące krawędzie, dźwięk przelotu). Bez drżenia kamery – jest zarezerwowane dla fali i stacji.
+* Staza zamraża odłamki razem z frontem (4.1).
+
 ---
 
 ## 5. ROZWÓJ POZA MVP
-Pomysły spoza MVP (m.in. bezwładny model lotu z dryfem, alternatywne trasy, wrogie AI i walka, ulepszenia statku, moduły statku zdobywane w strefach, ładowanie bramy rdzeniami, magnes dokujący, sygnał SOS, generator proceduralny, meta-progresja) są prowadzone jako taski w kolumnie *Ideas* na boardzie projektu „AdAstra Kanban”. Ten dokument opisuje je dopiero wtedy, gdy wchodzą do realizacji.
+Pomysły spoza MVP (m.in. bezwładny model lotu z dryfem, alternatywne trasy, wrogie AI i walka, ulepszenia statku, moduły statku zdobywane w strefach, ładowanie bramy rdzeniami, magnes dokujący, prądy jonowe w tranzycie, energia za lot blisko zagrożeń, materiały z wraków jako waluta, sygnał SOS, generator proceduralny, meta-progresja) są prowadzone jako taski w kolumnie *Ideas* na boardzie projektu „AdAstra Kanban”. Ten dokument opisuje je dopiero wtedy, gdy wchodzą do realizacji.
