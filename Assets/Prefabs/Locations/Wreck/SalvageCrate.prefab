@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1594071316656270610}
   - component: {fileID: 2986964389751033805}
   - component: {fileID: 257322330425363222}
+  - component: {fileID: 7248439719292314234}
   m_Layer: 0
   m_Name: SalvageCrate
   m_TagString: Untagged
@@ -96,6 +97,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SalvageCrate
   config: {fileID: 11400000, guid: 16cd95d3535d32444bbbebfd6ca30825, type: 2}
+--- !u!114 &7248439719292314234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6676144594541175178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843b6c5c94b8d764cbcc3b863cf03367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SalvageCrateFX
+  visual: {fileID: 1114389730564465207}
+  hotColor: {r: 4, g: 3.6, b: 3, a: 1}
+  sparksPrefab: {fileID: 3690134938039654802, guid: d4650ea90ace7804c92c5a28b6ba12b7, type: 3}
+  sparkInterval: 0.06
+  sparksPerBurst: 4
+  burstPrefab: {fileID: 3690134938039654802, guid: 48fca3d8cd3d71d4f960001b5c92b841, type: 3}
 --- !u!1 &7359406238191977365
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,7 +181,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8041b9db780cba441905f7935f444650, type: 2}
+  - {fileID: 2100000, guid: 9ff0e578993cc1645a09dd4ea86a5ee8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
