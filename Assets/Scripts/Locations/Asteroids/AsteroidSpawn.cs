@@ -6,6 +6,8 @@ using UnityEngine;
 /// </summary>
 public static class AsteroidSpawn
 {
+    public const string LayerName = "Asteroid";
+
     /// <summary>
     /// Collision radius of the prefab at scale 1. Lets a location keep asteroids apart before spawning them.
     /// </summary>
@@ -28,6 +30,11 @@ public static class AsteroidSpawn
     {
         GameObject asteroid = Object.Instantiate(prefab, position, rotation, parent);
         asteroid.transform.localScale = Vector3.one * scale;
+
+        // Asteroids ignore each other (layer collision matrix): fields stay stable and cheap,
+        // while the ship still collides with every one of them.
+        int layer = LayerMask.NameToLayer(LayerName);
+        if (layer >= 0) asteroid.layer = layer;
 
         Rigidbody rb = asteroid.GetComponent<Rigidbody>();
         if (rb == null)

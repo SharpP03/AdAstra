@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
 /// <summary>
 /// Collectible Stasis Core lying inside a hazard zone. Flying through it adds a core to the ship
 /// and repairs part of the hull. Its light pulses so it can be spotted from afar.
+/// The pulse and the pickup are exposed so the hazard zone around the core can react to them.
 /// </summary>
 [SelectionBase]
 [RequireComponent(typeof(Collider))]
@@ -19,6 +21,12 @@ public class StasisCore : MonoBehaviour
     [SerializeField] private float scalePulseAmount = 0.12f;
     [SerializeField] private float spinSpeed = 30f;
 
+    /// <summary>Current pulse value from -1 to 1, in sync with the light and the visual.</summary>
+    public float Pulse { get; private set; }
+
+    /// <summary>Raised once when the ship picks the core up, right before it is destroyed.</summary>
+    public event Action OnCollected;
+
     private float baseIntensity;
     private Vector3 baseScale;
     private bool collected;
@@ -32,11 +40,11 @@ public class StasisCore : MonoBehaviour
 
     private void Update()
     {
-        float pulse = Mathf.Sin(Time.time * pulseFrequency * 2f * Mathf.PI);
-        if (pulseLight != null) pulseLight.intensity = baseIntensity * (1f + pulse * lightPulseAmount);
+        Pulse = Mathf.Sin(Time.time * pulseFrequency * 2f * Mathf.PI);
+        if (pulseLight != null) pulseLight.intensity = baseIntensity * (1f + Pulse * lightPulseAmount);
         if (visual != null)
         {
-            visual.localScale = baseScale * (1f + pulse * scalePulseAmount);
+            visual.localScale = baseScale * (1f + Pulse * scalePulseAmount);
             visual.Rotate(Vector3.up, spinSpeed * Time.deltaTime, Space.Self);
         }
     }
@@ -56,6 +64,7 @@ public class StasisCore : MonoBehaviour
         if (body.TryGetComponent(out HealthRefillable hull) && inventory.Config != null)
             hull.Add(hull.Max * inventory.Config.hullRepairFraction);
 
+        OnCollected?.Invoke();
         Destroy(gameObject);
     }
 }
