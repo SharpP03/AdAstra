@@ -99,7 +99,7 @@ Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki. Stre
 | Odcinek 2 | Test umiejętności i wybór strefy; burza i anomalia obok trasy, rdzenie w ich wnętrzu, wyrzut z anomalii jako skrót | Burza jonowa, anomalia grawitacyjna | Wysokie |
 | Finisz | Brama w zasięgu wzroku; wyścig z falą o resztki paliwa, zapasowy rdzeń jako Staza na procedurę skoku | Warp Gate | Szczyt |
 
-**Odcinki tranzytowe:** między beatami gracz ma krótkie okno decyzji, nie kolejną strefę. Każdy odcinek tranzytowy (Hub → pole, pole → stacja, stacja → odcinek 2, odcinek 2 → brama) ma autorskie **pasmo**, w którym leży jeden wrak (4.6). Losowość dotyczy tylko „gdzie”, nigdy „czy”: na każdy run losowane są pozycja wraku w paśmie (odległość od linii krytycznej, np. 0–150 m, i strona trasy) oraz jego typ. Wrak tuż przy trasie jest prezentem, daleki – dylematem. Przy zbliżonej fali tranzyt zapełniają Odłamki Fali (4.7).
+**Odcinki tranzytowe:** między beatami gracz ma krótkie okno decyzji, nie kolejną strefę. Każdy odcinek tranzytowy (Hub → pole, pole → stacja, stacja → odcinek 2, odcinek 2 → brama) ma autorskie **pasmo**, w którym leży jeden wrak (4.6). Losowość dotyczy tylko „gdzie”, nigdy „czy”: na każdy run losowane są pozycja wraku w paśmie (odległość od linii krytycznej, np. 0–150 m, i strona trasy) oraz jego typ. Wrak tuż przy trasie jest prezentem, daleki – dylematem. Przy zbliżonej fali tranzyt zapełniają Odłamki Fali (4.7). Odcinek tranzytowy może dodatkowo przecinać Strumień Asteroid (4.8) – krótka przeszkoda w poprzek trasy: przeciąć ją albo obejść kosztem czasu.
 
 **Reguły strojenia tranzytu:**
 * Suma paliwa ze wszystkich wraków na trasie jest mniejsza niż deficyt, który wymusza postój na stacji (2.2.3) – wraki nie zastępują stacji.
@@ -155,11 +155,12 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 * **Rozmieszczenie:** po jednym rdzeniu w każdej strefie zagrożeń (4.5), w jej najniebezpieczniejszej części, obok linii krytycznej. Rdzeń świeci pulsującym światłem widocznym z daleka.
 * **Podwójna rola:** rdzeń jest **kluczem** do bramy (wymagane 2, patrz 4.4) i **ratunkiem** – można go spalić jako Stazę. Spalony rdzeń przestaje być kluczem.
 * **Zebranie:** dodaje 1 rdzeń do licznika oraz natychmiast naprawia 20% kadłuba – wejście w strefę częściowo „zwraca” obrażenia w niej odniesione.
-* **Licznik:** gracz zaczyna run z 0, może mieć maks. 3 (w sektorze są 3). HUD pokazuje cel „Rdzenie X/2”. Wymagana liczba (domyślnie 2) jest parametrem konfiguracji.
+* **Licznik:** gracz zaczyna run z 0 i nie ma limitu noszenia. HUD pokazuje cel „Rdzenie X/2”. Wymagana liczba (domyślnie 2) jest parametrem konfiguracji.
 * **Staza:** jeden klawisz (akcja w `playerInput.inputactions`) spala rdzeń, działa w locie, na stacji i w terminalu bramy. Efekt: Front Anihilacji zatrzymuje się na ~6 s (4.1).
 * **Zabezpieczenie:** spalenie rdzenia, który jest potrzebny jako klucz (licznik ≤ 2), wymaga przytrzymania klawisza, a HUD ostrzega, że gracz traci klucz. Zapasowy rdzeń spala się zwykłym wciśnięciem.
 * **Prowadzenie (stan roboczy, do doprecyzowania osobnym grillem):** strefy zagrożeń są zawsze oznaczone w HUD (ikona i dystans); rdzeń dostaje własny znacznik dopiero w zasięgu wykrycia (~250 m).
 * **Tylko ze stref zagrożeń:** rdzenie nie pojawiają się w tranzycie. Dylemat stoi na rzadkości – 3 rdzenie, 2 wymagane, jeden zapas – więc wybór pomijanej strefy jest prawdziwy. Czwarty rdzeń poza strefą byłby albo łatwo dostępny (pozwala pominąć strefę lub daje darmową Stazę, dylemat przestaje boleć), albo pilnowany przez zagrożenie (czyli byłby kolejną strefą, nie treścią tranzytu). Przeczy też fikcji: rdzenie krystalizują się wewnątrz zagrożeń. Jeśli dylemat okaże się za ostry, dźwignią jest wymagana liczba rdzeni w konfiguracji, a nie nowe źródło.
+* **Liczba rdzeni w sektorze** jest parametrem układu, strojonym przy integracji sektora. Rdzeń może leżeć w każdej strefie zagrożeń, także w Strumieniu Asteroid (4.8). Ryzyko do sprawdzenia w playteście: więcej niż 3 rdzenie rozmywa dylemat.
 
 ### 4.4. Warp Gate (Cel Runu i Procedura Skoku)
 Brama skokowa na końcu korytarza sektora. Finał runu łączy pilotaż z krótką minigrą pod presją Frontu Anihilacji.
@@ -185,6 +186,10 @@ Każda strefa leży obok linii krytycznej, ma w środku Rdzeń Stazy i testuje i
 | Anomalia grawitacyjna | Zarządzanie pędem | Rdzeń na orbicie + wyrzut (darmowy dystans) | Paliwo na wyjście, ryzyko wplucia |
 
 **Pole asteroid:** gęstość rośnie w stronę środka – krawędź jest rzadka i bezpieczna, środek wymaga ciasnych przelotów. Wolny lot jest bezpieczny, ale fala goni.
+* **Układ:** spłaszczone pole ze skupiskami wokół wielkich głazów (punkty orientacyjne) i drobnicą między nimi; im bliżej środka, tym gęściej. Rdzeń leży w małej, pustej kieszeni, do której prowadzi jedno wejście od strony nadlatującego gracza – przez nie widać światło rdzenia.
+* **Oddychanie:** asteroidy krążą wokół swoich miejsc (bliżej rdzenia mocniej) i pulsują w rytm rdzenia, więc prześwity otwierają się i zamykają. Trącona asteroida wraca na miejsce – pole żyje, ale się nie rozpada.
+* **Zapadnięcie:** po zabraniu rdzenia pole przez kilkanaście sekund zaciska się ku środkowi – zebranie klucza kończy się ucieczką z pola.
+* **Rzadkie pole dryfujące:** osobna lokacja bez rdzenia – luźne, dryfujące asteroidy do swobodnego rozstawiania jako tło i drobna przeszkoda.
 
 **Burza jonowa:** uderzenie celuje tam, gdzie statek *będzie* za ~1 s (przewidywanie z wektora prędkości). Przez tę sekundę widać świecący znacznik i słychać narastający ładunek. Unik wymaga zmiany kursu lub prędkości; lot prosto ze stałą prędkością kończy się trafieniem. W centrum burzy uderzenia są częstsze. Trafienie zabiera kadłub i na chwilę zakłóca HUD/sterowanie.
 
@@ -210,6 +215,13 @@ Front Anihilacji wyrzuca przed siebie gruz, który dryfuje w tranzyt. Odłamki t
 * Staza zamraża odłamki razem z frontem (4.1).
 
 ---
+
+### 4.8. Strumień Asteroid
+Płaska „rzeka” asteroid w poprzek trasy – przeszkoda w tranzycie, która testuje odczytanie ruchu przy prędkości. Gracz przecina ją w kilka sekund albo obchodzi kosztem czasu.
+* **Ruch:** losowa asteroida w losowym momencie dostaje impuls, głównie w poprzek trasy (tam i z powrotem). Między impulsami zwalnia, a po wyjściu poza obszar strumienia zawraca łukiem – strumień zostaje na miejscu, ale nie ma stałego wzorca.
+* **Zapowiedź:** asteroida rozbłyska na ~0,7 s przed impulsem, więc trafienie jest ryzykiem do odczytania, a nie loterią.
+* **Nagroda:** czysty hazard. Może trzymać Rdzeń Stazy w środku (4.3) – wtedy staje się strefą zagrożeń z wyboru.
+* **Staza** nie zamraża strumienia – to nie energia fali.
 
 ## 5. ROZWÓJ POZA MVP
 Pomysły spoza MVP (m.in. bezwładny model lotu z dryfem, alternatywne trasy, wrogie AI i walka, ulepszenia statku, moduły statku zdobywane w strefach, ładowanie bramy rdzeniami, magnes dokujący, prądy jonowe w tranzycie, energia za lot blisko zagrożeń, materiały z wraków jako waluta, sygnał SOS, generator proceduralny, meta-progresja) są prowadzone jako taski w kolumnie *Ideas* na boardzie projektu „AdAstra Kanban”. Ten dokument opisuje je dopiero wtedy, gdy wchodzą do realizacji.
