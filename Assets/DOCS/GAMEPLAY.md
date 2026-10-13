@@ -7,9 +7,30 @@ Gra łączy precyzyjny pilotaż arcade/6DoF z napięciem wynikającym z zarządz
 
 **Spoiwo runu:** w strefach zagrożeń powstają **Rdzenie Stazy** – kapsuły skrystalizowanej energii fali. Rdzeń jest jednocześnie **kluczem** (brama wymaga 2 rdzeni do skoku) i **ratunkiem** (można go spalić, by na chwilę zatrzymać Front Anihilacji). Gracz musi wejść w strefy zagrożeń, ale sam wybiera, które – a w każdym kryzysie staje przed dylematem: spalić rdzeń i przeżyć teraz, czy zachować klucz.
 
-Długość runu nie jest celem samym w sobie – wynika z układu sektora (sekcja 2.5) i jest mierzona podczas blockoutu.
+Długość runu wynika z układu sektora (sekcja 2.5); orientacyjny cel to ok. 2–3 minuty, mierzone podczas blockoutu.
+
+**Fikcja i kierunek:** docelowo gracz zmierza do centrum galaktyki, a każdy skok przez Warp Gate to kolejny krok w jego stronę. W MVP run to jeden sektor; centrum galaktyki istnieje tylko w fikcji i w kierunku pętli makro (2.3).
 
 > Dokument opisuje aktualne założenia projektowe. Reguły i liczby są hipotezami weryfikowanymi w playtestach i mogą się zmieniać w trakcie prac.
+
+### 1.1. Cel projektowy (Design Target)
+Punkt odniesienia dla każdej decyzji: nowa mechanika, lokacja lub zmiana liczb musi służyć co najmniej jednemu filarowi i podłączać się do wspólnej waluty.
+
+**Filary:**
+1. **Ucieczka na budżecie** – każde zboczenie z trasy gracz kupuje dystansem do fali. To pętla runu.
+2. **Lot sam w sobie daje frajdę** – prędkość, manewry 6DoF i czytelna informacja zwrotna. To momenty.
+3. **Ryzyko z wyboru, czasem w ciemno** – część lokacji pokazuje nagrodę z daleka (strefa z rdzeniem), część nie (lokacja nieznana, 4.8). To decyzje.
+
+**Wspólna waluta – dystans do fali.** Front Anihilacji przesuwa się wzdłuż osi Z, więc czas spędzony poza postępem na Z (zboczenie, postój, objazd) zmniejsza dystans do fali. Pozostałe zasoby są jego formami:
+* **Paliwo** – jak daleko dolecisz (budżet ruchu).
+* **Kadłub** – ile błędów możesz popełnić (budżet pomyłek).
+* **Rdzenie Stazy** – klucz do bramy i kupiony czas (Staza).
+
+**Kontrakt lokacji:** każda lokacja i każdy moduł odpowiada na trzy pytania – ile kosztuje w dystansie, co oddaje i któremu filarowi służy. Lokacja bez odpowiedzi nie wchodzi do sektora. Nowe zasoby lub waluty wchodzą dopiero wtedy, gdy mają ujście w istniejącej pętli.
+
+**Decyzje gracza w runie:** którą strefę pominąć, jak długo tankować, kiedy spalić rdzeń i czy zboczyć do modułu samodzielnego.
+
+**Kierunek długoterminowy (poza wycinkiem):** regrywalność przez losowy układ lokacji i lokacje nieznane. Sektor układa się tak, żeby to nie wymagało przebudowy (2.5), ale do czasu domknięcia wycinka nie powstaje kod na zapas.
 
 ---
 
@@ -51,7 +72,7 @@ flowchart TD
 * Czasowniki gracza w MVP: **steruj, boostuj, hamuj/dokuj, zbieraj, tnij (laser), aktywuj Stazę, wpisuj**. Walka i wrogie AI nie wchodzą do MVP; nowe systemy są dopuszczalne, jeśli wyraźnie spajają istniejące mechaniki.
 * Każda strefa zagrożeń testuje inną umiejętność (4.5): precyzję przy prędkości (pole asteroid), czytanie zapowiedzi i timing (burza jonowa), zarządzanie pędem (anomalia grawitacyjna).
 * Balansowanie użyciem boostu (prędkość ucieczki vs ponad dwukrotnie szybsze spalanie paliwa).
-* **Tranzyt między lokacjami:** odcinki tranzytowe to krótkie okna decyzji, a nie osobne beaty. Treść daje im **wrak** (4.6) – zboczyć i rozciąć laserem skrzynie z ładunkiem kosztem czasu wobec fali, czy lecieć dalej. Długość odcinków stroi się w metrykach (2.5).
+* **Tranzyt między lokacjami:** odcinki tranzytowe to krótkie okna decyzji, a nie osobne beaty. Treść dają im **moduły samodzielne** (4.8), np. **wrak** (4.6) – zboczyć i rozciąć laserem skrzynie z ładunkiem kosztem czasu wobec fali, czy lecieć dalej. Długość odcinków stroi się w metrykach (2.5).
 
 ### 2.2. Pętla Rdzenna (Minuty / Pojedynczy Run)
 1. **Start:** Wylot ze stacji bazowej w kierunku bramy skokowej (Warp Gate) w autorskim sektorze. Gracz startuje z pełnym bakiem i nieuszkodzonym kadłubem.
@@ -59,7 +80,7 @@ flowchart TD
 3. **Wymuszony Postój:** Pełny bak nie wystarcza na przelot całego sektora – bez tankowania na stacji pośredniej nie da się dolecieć do bramy.
 4. **Zarządzanie Ryzykiem:**
    - **Stacja Pośrednia:** Gracz musi zatrzymać się w wiązce stacji i utrzymać w niej statek (4.2). Sam decyduje, kiedy odlecieć – pełny bak kosztem zbliżającej się fali albo wcześniejszy odlot z niepełnym bakiem.
-   - **Strefy Zagrożenia:** Brama wymaga 2 **Rdzeni Stazy** (4.3), a w sektorze są 3 – po jednym w polu asteroid, burzy jonowej i anomalii grawitacyjnej. Gracz musi zboczyć z trasy, ale wybiera, którą strefę pominąć. Anomalia dodatkowo nagradza samo ryzyko wyrzutem (4.5).
+   - **Strefy Zagrożenia:** Brama wymaga 2 **Rdzeni Stazy** (4.3), a w sektorze są 3 – w wycinku po jednym w polu asteroid, Strumieniu Asteroid (4.7) i burzy jonowej. Gracz musi zboczyć z trasy, ale wybiera, którą strefę pominąć. Anomalia grawitacyjna w wycinku nie ma rdzenia; docelowo nagradza samo ryzyko wyrzutem (4.5).
    - **Staza – klucz czy ratunek:** Każdy rdzeń można spalić, by zatrzymać falę – żeby dłużej tankować albo ratować się po błędzie. Spalony rdzeń przestaje być kluczem, więc trzeba zdobyć kolejny. Trzeci rdzeń to zapas: prawo do jednej Stazy bez tej kary.
 5. **Ekstrakcja:** Wlot do bramy Warp Gate rozpoczyna procedurę skoku (przechwycenie statku i autoryzacja w terminalu, patrz 4.4). Poprawna autoryzacja kończy run sukcesem.
 
@@ -76,12 +97,21 @@ flowchart TD
 ### 2.4. Zakres MVP
 MVP to pętla rdzenna (2.2) zbudowana na mechanikach z sekcji 4 i trzech modułach zagrożeń (pole asteroid, burza jonowa, anomalia grawitacyjna – każdy z Rdzeniem Stazy) plus Front Anihilacji.
 
-**Kolejność realizacji – pionowy wycinek:** najpierw jeden kompletny run z celem i dylematem: pole asteroid z rdzeniem, wymóg rdzeni przy bramie, Staza, cel na HUD i podpowiedź. Wymagana liczba rdzeni jest parametrem konfiguracji (ScriptableObject) – w wycinku drugi rdzeń leży w obecnej burzy jonowej, bez jej przebudowy, a w razie potrzeby wymóg można obniżyć do 1. Po wycinku następuje playtest z notatkami i flight feel pass. Po playteście dochodzą przebudowy burzy jonowej i anomalii oraz minigra tankowania.
+**Kolejność realizacji – pionowy wycinek:** najpierw jeden kompletny run z celem i dylematem, złożony z tego, co już istnieje: pole asteroid z gęstym środkiem, Strumień Asteroid i obecna burza jonowa (bez przebudowy) – każde z rdzeniem; anomalia bez rdzenia; stacja z obecnym tankowaniem; wrak i drobne moduły samodzielne w tranzycie (4.8). Wymagana liczba rdzeni jest parametrem konfiguracji (ScriptableObject). Kolejne kroki:
+1. **Integracja sektora** – run da się przejść od startu do bramy, z wyborem 2 z 3 rdzeni, a liczby zgadzają się z budżetem dystansu (2.5).
+2. **Playtest wycinka** z notatkami, m.in.: czy cel jest jasny, czy gracz wchodzi w strefy, czy „spalić czy zachować rdzeń” to prawdziwy dylemat, gdzie run jest nudny i która lokacja jest najuboższa.
+3. **Poprawki według notatek** – rozbudowa lokacji, flight feel pass, HUD, ewentualnie minigra tankowania oraz przebudowy burzy jonowej i anomalii.
 
 Zakres nie jest zamknięty. Nowe mechaniki i lokacje (minigry, ulepszenia statku, nowe zagrożenia – w tym wrogie AI i walka, alternatywne trasy) są mile widziane, ale wchodzą dopiero wtedy, gdy pętla „start → stacja → brama” jest grywalna i przetestowana. Pomysły czekają jako taski w kolumnie *Ideas* na boardzie projektu.
 
 ### 2.5. Układ Sektora (Blockout)
 Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki. Strefy ryzyka z Rdzeniami Stazy leżą obok trasy jako opcjonalne zboczenia.
+
+**Beaty na Z jako kręgosłup, szerokość na boki.** Fala przesuwa się wzdłuż Z, więc oś Z to czas – kolejność beatów wyznacza rytm napięcia i się jej nie rusza. Szerokość sektor dostaje na dwa sposoby: lokacje wychodzą na boki (także nad i pod trasę), a przerwy między nimi wypełniają moduły samodzielne (4.8). W wycinku lokacje rozszerza się tylko istniejącymi parametrami (promień, rozmiar, pozycja); nowa treść lokacji przychodzi po playteście.
+* Każdą strefę da się ominąć – nawet taką, która przecina trasę. Objazd to zwykły koszt w dystansie.
+* Z każdego miejsca trasy widać co najmniej jedną rzecz, do której warto skręcić.
+* Boki nie mają granicy: lot w bok nie przybliża do bramy, a fala idzie dalej, więc karze go sama.
+* **Sloty:** każda lokacja i moduł to samodzielny prefab bez referencji do innych lokacji, ustawiony w obszarze beatu. Późniejsze losowanie układu ma być wyborem prefabu i pozycji, a nie przebudową sektora.
 
 **Metoda:**
 1. **Metryki najpierw.** Prędkość przelotowa i boostu, zasięg na pełnym baku, prędkość Frontu Anihilacji i czas tankowania. Każdy odstęp w sektorze wyraża się w tych jednostkach, nie „na oko”.
@@ -96,14 +126,29 @@ Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki. Stre
 | Start | Nauka lotu; fala daleko w tyle | Hub | Niskie |
 | Odcinek 1 | Nauka zderzeń; pierwszy Rdzeń Stazy w gęstym środku pola – nauka klucza i Stazy | Pole asteroid | Średnie |
 | Stacja | Tankowanie w wiązce pod presją fali; pierwszy dylemat: dotankować kosztem spalenia rdzenia? | Stacja pośrednia | Rosnące |
-| Odcinek 2 | Test umiejętności i wybór strefy; burza i anomalia obok trasy, rdzenie w ich wnętrzu, wyrzut z anomalii jako skrót | Burza jonowa, anomalia grawitacyjna | Wysokie |
+| Odcinek 2 | Test umiejętności i wybór strefy; strumień w poprzek trasy, burza i anomalia obok niej; rdzenie w strumieniu i burzy (docelowo także anomalia z wyrzutem jako skrótem) | Strumień Asteroid, burza jonowa, anomalia grawitacyjna | Wysokie |
 | Finisz | Brama w zasięgu wzroku; wyścig z falą o resztki paliwa, zapasowy rdzeń jako Staza na procedurę skoku | Warp Gate | Szczyt |
 
-**Odcinki tranzytowe:** między beatami gracz ma krótkie okno decyzji, nie kolejną strefę. Każdy odcinek tranzytowy (Hub → pole, pole → stacja, stacja → odcinek 2, odcinek 2 → brama) może mieć wrak (4.6). Proof of concept to jeden wrak w stałym miejscu na odcinku stacja → odcinek 2, ok. 50–80 m od linii krytycznej. Docelowo każdy odcinek ma autorskie **pasmo** z jednym wrakiem, a losowość dotyczy tylko „gdzie”, nigdy „czy”: pozycja w paśmie (odległość od linii krytycznej i strona trasy) oraz typ wraku. Odcinek tranzytowy może dodatkowo przecinać Strumień Asteroid (4.7) – krótka przeszkoda w poprzek trasy: przeciąć ją albo obejść kosztem czasu.
+**Odcinki tranzytowe:** między beatami gracz ma krótkie okno decyzji, nie kolejną strefę. Każdy odcinek tranzytowy (Hub → pole, pole → stacja, stacja → odcinek 2, odcinek 2 → brama) dostaje moduły samodzielne (4.8). Docelowo każdy odcinek ma autorskie **pasmo**, a losowość dotyczy tylko „gdzie”, nigdy „czy”: pozycja w paśmie (odległość od linii krytycznej, strona i wysokość) oraz typ modułu. Odcinek tranzytowy może dodatkowo przecinać Strumień Asteroid (4.7) – krótka przeszkoda w poprzek trasy: przeciąć ją albo obejść kosztem czasu.
+
+**Wycinek – rozmieszczenie modułów samodzielnych (z gotowych prefabów):**
+
+| Odcinek | Moduł | Po co |
+|---------|-------|-------|
+| Start → pole asteroid | Rzadkie pole dryfujące zahaczające o krawędź trasy; 1 samotna skrzynia blisko trasy | Nauka zderzeń i lasera przed pierwszą strefą |
+| Pole → stacja | Mały wrak z 2 skrzyniami, z boku lub nad trasą | Pokusa przed stacją: kadłub kosztem czasu tankowania |
+| Stacja → odcinek 2 | Wrak (4.6) | Obecny proof of concept |
+| Odcinek 2 → brama | 1–2 skrzynie na krawędzi anomalii | Nagroda przy przyciąganiu – ryzyko z wyboru |
 
 **Reguły strojenia tranzytu:**
-* Suma paliwa ze wszystkich wraków na trasie jest mniejsza niż deficyt, który wymusza postój na stacji (2.2.3) – wraki nie zastępują stacji.
-* Wrak kadłubowy naprawia łącznie mniej niż zebranie Rdzenia Stazy (20%) – nie konkuruje z kluczem.
+* Suma paliwa ze wszystkich modułów na trasie jest mniejsza niż deficyt, który wymusza postój na stacji (2.2.3) – moduły nie zastępują stacji.
+* Cały salvage w sektorze (wraki i samotne skrzynie) naprawia łącznie mniej niż zebranie jednego Rdzenia Stazy (20%) – nie konkuruje z kluczem.
+
+**Budżet dystansu (cele orientacyjne, mierzone przy integracji sektora):** każdy koszt w runie wyraża się w metrach dystansu do fali – postój lub lot poza postępem na Z kosztuje tyle, ile fala przejdzie w tym czasie; Staza oddaje dystans, jaki fala przeszłaby przez czas jej trwania.
+* Run z 2 rdzeniami i pełnym tankowaniem dociera do bramy z zapasem ok. 150–250 m przed falą (czas na terminal i jeden błąd).
+* Run z 3 rdzeniami ma zapas ok. 0–50 m – wymaga Stazy albo bardzo czystego lotu.
+* Gdy liczby się nie spinają, najpierw zmienia się odległości w sektorze, dopiero potem prędkość fali.
+* Zmierzone wartości (prędkości, czas tankowania, koszt każdego zboczenia) dopisuje się tutaj po integracji.
 
 Mechaniki i lokacje na tym etapie powstają z prymitywów; docelowe assety przychodzą po strojeniu (krok 4 metody).
 
@@ -152,7 +197,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 
 ### 4.3. Rdzenie Stazy (Stasis Cores)
 * **Fikcja:** zagrożenia w sektorze to odpryski tej samej energii, która tworzy Front Anihilacji. W ich wnętrzu energia krystalizuje się w Rdzenie Stazy, które statek potrafi wykorzystać przeciwko fali.
-* **Rozmieszczenie:** po jednym rdzeniu w każdej strefie zagrożeń (4.5), w jej najniebezpieczniejszej części, obok linii krytycznej. Rdzeń świeci pulsującym światłem widocznym z daleka.
+* **Rozmieszczenie:** po jednym rdzeniu w strefie zagrożeń (4.5, 4.7), w jej najniebezpieczniejszej części, poza linią krytyczną – zebranie rdzenia zawsze kosztuje zboczenie. W wycinku: pole asteroid, Strumień Asteroid i burza jonowa; anomalia grawitacyjna dostaje rdzeń razem ze swoją przebudową. Rdzeń świeci pulsującym światłem widocznym z daleka.
 * **Podwójna rola:** rdzeń jest **kluczem** do bramy (wymagane 2, patrz 4.4) i **ratunkiem** – można go spalić jako Stazę. Spalony rdzeń przestaje być kluczem.
 * **Zebranie:** dodaje 1 rdzeń do licznika oraz natychmiast naprawia 20% kadłuba – wejście w strefę częściowo „zwraca” obrażenia w niej odniesione.
 * **Licznik:** gracz zaczyna run z 0 i nie ma limitu noszenia. HUD pokazuje cel „Rdzenie X/2”. Wymagana liczba (domyślnie 2) jest parametrem konfiguracji.
@@ -193,7 +238,7 @@ Każda strefa leży obok linii krytycznej, ma w środku Rdzeń Stazy i testuje i
 
 **Burza jonowa:** uderzenie celuje tam, gdzie statek *będzie* za ~1 s (przewidywanie z wektora prędkości). Przez tę sekundę widać świecący znacznik i słychać narastający ładunek. Unik wymaga zmiany kursu lub prędkości; lot prosto ze stałą prędkością kończy się trafieniem. W centrum burzy uderzenia są częstsze. Trafienie zabiera kadłub i na chwilę zakłóca HUD/sterowanie.
 
-**Anomalia grawitacyjna:**
+**Anomalia grawitacyjna** (opis docelowy; w wycinku anomalia działa po staremu i nie ma rdzenia):
 * Przyciąganie rośnie w stronę jądra. Strefa ma czytelne pierścienie: **krawędź** (zwykły ciąg wystarcza do ucieczki), **pierścień wewnętrzny** (ucieczka wymaga boostu), **jądro** (punkt bez powrotu).
 * Rdzeń Stazy krąży po orbicie w pierścieniu wewnętrznym – trzeba trafić w moment.
 * **Wyrzut:** wyjście z pierścienia wewnętrznego daje impuls wzdłuż kierunku lotu, proporcjonalny do głębokości wejścia. Działa także bez zebrania rdzenia – nagradza samo ryzyko. To jedyny „darmowy” dystans w grze, ale w fizyce nie zachodzi naturalnie (pole jest zachowawcze), więc jest efektem zaprojektowanym.
@@ -208,7 +253,8 @@ Wrak to krótki, aktywny moment zręcznościowy w tranzycie. Gracz decyduje, czy
 * **Nagroda:** przecięta skrzynia pęka i od razu naprawia ~4% kadłuba (16% za cały wrak – mniej niż Rdzeń Stazy), z błyskiem i wartością „+X” przy pasku kadłuba. Kolor skrzyń oznacza typ zawartości. Zebranie części skrzyń to legalny kompromis.
 * **Ryzyko:** wrak i skrzynie są przeszkodami z obrażeniami od zderzeń. Skrzynie są kinematyczne – po zderzeniu wracają na orbitę. Gracz ryzykuje kadłub, żeby zyskać kadłub.
 * **Otwarte:** koszt lasera (przegrzanie, paliwo albo brak kosztu) – decyzja po playteście. Znacznik HUD wraku przyjdzie ze wspólnym systemem znaczników celów.
-* **Na później:** paliwo jako drugi typ skrzyń (wtedy obowiązuje reguła „wraki nie zastępują stacji”, 2.5), losowanie pozycji i typu wraku, wraki na wszystkich odcinkach. W wersji roguelite skrzynie mają dawać ulepszenia statku zamiast zasobów zastępczych.
+* **Na później:** paliwo jako drugi typ skrzyń (wtedy obowiązuje reguła „moduły nie zastępują stacji”, 2.5), losowanie pozycji i typu wraku. W wersji roguelite skrzynie mają dawać ulepszenia statku zamiast zasobów zastępczych.
+* **Warianty:** ten sam prefab służy jako mały wrak (mniej skrzyń na orbitach), a pojedyncza skrzynia działa także samodzielnie, bez wraku – stoi w miejscu i daje się ciąć (4.8).
 
 ---
 
@@ -219,5 +265,23 @@ Płaska „rzeka” asteroid w poprzek trasy – przeszkoda w tranzycie, która 
 * **Nagroda:** czysty hazard. Może trzymać Rdzeń Stazy w środku (4.3) – wtedy staje się strefą zagrożeń z wyboru.
 * **Staza** nie zamraża strumienia – to nie energia fali.
 
+### 4.8. Moduły Samodzielne
+Moduł samodzielny to mały element bez własnego beatu: stoi w tranzycie lub z boku trasy, kosztuje kilka sekund i oddaje niewiele albo nic (wtedy jest przeszkodą lub punktem orientacyjnym). Spełnia kontrakt lokacji (1.1) i jest samodzielnym prefabem (sloty, 2.5). Nie zawiera Rdzeni Stazy – te są tylko w strefach zagrożeń (4.3).
+
+**Istniejące (wchodzą do wycinka):**
+* **Wrak** z krążącymi skrzyniami (4.6) i jego mniejszy wariant z 1–2 skrzyniami.
+* **Samotna skrzynia** – pojedyncza skrzynia do cięcia laserem, bez wraku.
+* **Rzadkie pole dryfujące** (4.5) – luźne asteroidy jako lekka przeszkoda i punkt orientacyjny, bez nagrody.
+
+**Rekomendowane pomniejsze eventy – JESZCZE NIE ISTNIEJĄ.** Tabela to punkt wyjścia (seam w MVP), który można swobodnie zmienić lub rozwinąć. Każdy kandydat używa istniejących czasowników i płaci w dystansie; wybór, co powstaje najpierw, wynika z playtestu wycinka.
+
+| Moduł | Czasownik | Koszt | Nagroda | Co można wykorzystać |
+|-------|-----------|-------|---------|----------------------|
+| Kapsuła ratunkowa | Hamuj/dokuj – stań przy kapsule na kilka sekund | Postój = dystans | Kadłub lub paliwo | Strefa postoju stacji |
+| Uciekający kontener | Tnij w pościgu – skrzynia odlatuje od gracza | Czas i boost | Większa niż zwykła skrzynia | Skrzynia z wraku z własnym ruchem |
+| Skrytka z kodem | Wpisuj – krótkie słowo przy boi, bez blokady sterowania | Zatrzymanie się | Paliwo lub kadłub | Terminal bramy i pula słów |
+| Kieszeń w polu szczątków | Precyzyjny lot – skrzynia w środku małego, gęstego skupiska | Ryzyko zderzeń | Kadłub | Spawn asteroid i skrzynia |
+| Sygnał nieznany | Podleć i sprawdź | Czas | Losowo: nagroda, pułapka albo wybór | Filar 3 „w ciemno” – lokacja nieznana |
+
 ## 5. ROZWÓJ POZA MVP
-Pomysły spoza MVP (m.in. bezwładny model lotu z dryfem, alternatywne trasy, wrogie AI i walka, ulepszenia statku, moduły statku zdobywane w strefach, ładowanie bramy rdzeniami, magnes dokujący, prądy jonowe w tranzycie, energia za lot blisko zagrożeń, materiały z wraków jako waluta, sygnał SOS, generator proceduralny, meta-progresja) są prowadzone jako taski w kolumnie *Ideas* na boardzie projektu „AdAstra Kanban”. Ten dokument opisuje je dopiero wtedy, gdy wchodzą do realizacji.
+Pomysły spoza MVP (m.in. bezwładny model lotu z dryfem, alternatywne trasy i struktura wielu skoków, wrogie AI i walka, ulepszenia statku, moduły statku zdobywane w strefach, ładowanie bramy rdzeniami, magnes dokujący, prądy jonowe w tranzycie, energia za lot blisko zagrożeń, materiały z wraków jako waluta, sygnał SOS, generator proceduralny, meta-progresja) są prowadzone jako taski w kolumnie *Ideas* na boardzie projektu „AdAstra Kanban”. Dokument opisuje je zwykle dopiero wtedy, gdy wchodzą do realizacji; wyjątkiem są rekomendacje oznaczone jako jeszcze nieistniejące (np. 4.8), które wyznaczają kierunek.
