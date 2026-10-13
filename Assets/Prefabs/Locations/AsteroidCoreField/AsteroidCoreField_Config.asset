@@ -24,22 +24,22 @@ MonoBehaviour:
   - {fileID: 1109359388396963920, guid: 487e961d6d1b2c442a2d1b91c985ab7b, type: 3}
   - {fileID: 1811741729055678737, guid: a336035a49436ed479a007f40dcdf840, type: 3}
   seed: 0
-  fieldRadius: 180
+  fieldRadius: 200
   shapeScale: {x: 1, y: 0.5, z: 1}
-  pocketRadius: 15
-  entranceRadius: 8
+  pocketRadius: 2
+  entranceRadius: 4
   clusterCount: 26
   centerBias: 3
   clusterRadius: {x: 14, y: 30}
   clusterMembers: {x: 6, y: 14}
   boulderScale: {x: 5, y: 9}
   looseCount: 150
-  memberScale: {x: 0.6, y: 2.5}
-  sizeBias: 2.5
+  memberScale: {x: 1.5, y: 3}
+  sizeBias: 2.48
   minClearance: 1.5
   placementAttempts: 20
-  wanderAmplitude: {x: 0.5, y: 3}
-  wanderPeriod: 4
+  wanderAmplitude: {x: 2, y: 10}
+  wanderPeriod: 2
   pulseAmplitude: {x: 0, y: 0.4}
   springPeriod: 1.5
   springDamping: 0.7
