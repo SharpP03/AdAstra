@@ -168,6 +168,9 @@ public class GameManager : MonoBehaviour
 
         // The escape time ends at the jump authorization, not after the jump animation.
         float endTime = jumpAuthorized ? runEndTime : Time.time;
-        return new RunSummary(result, endTime - runStartTime, hull, fuel, Mathf.Max(0f, closestWaveDistance));
+        int coresCollected = playerCores != null ? playerCores.Collected : 0;
+        int coresBurned = playerCores != null ? playerCores.Burned : 0;
+        return new RunSummary(result, endTime - runStartTime, hull, fuel, Mathf.Max(0f, closestWaveDistance),
+            coresCollected, coresBurned);
     }
 }

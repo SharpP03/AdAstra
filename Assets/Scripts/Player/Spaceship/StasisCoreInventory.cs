@@ -18,6 +18,8 @@ public class StasisCoreInventory : MonoBehaviour
     public int RequiredCores => config != null ? config.requiredCores : 2;
     public bool HasRequiredCores => Count >= RequiredCores;
     public float StasisDuration => config != null ? config.stasisDuration : 6f;
+    /// <summary>True once the Warp Gate has taken its key cores; any core left is a spare.</summary>
+    public bool KeysDelivered { get; private set; }
 
     /// <summary>True while the player holds the Stasis action to burn a core that is still a gate key.</summary>
     public bool IsHoldingKeyBurn { get; private set; }
@@ -41,7 +43,7 @@ public class StasisCoreInventory : MonoBehaviour
 
     private float KeyBurnHoldTime => config != null ? config.keyBurnHoldTime : 1f;
     // Burning would leave the ship without enough keys for the gate.
-    private bool NextBurnCostsKey => Count <= RequiredCores;
+    private bool NextBurnCostsKey => !KeysDelivered && Count <= RequiredCores;
 
     private void Awake()
     {
@@ -102,6 +104,20 @@ public class StasisCoreInventory : MonoBehaviour
         Collected++;
         OnCountChanged?.Invoke(Count);
         OnCoreCollected?.Invoke();
+        return true;
+    }
+
+    /// <summary>
+    /// Hands the required cores to the Warp Gate. Returns false (and keeps the cores) if the ship has too few.
+    /// </summary>
+    public bool TryDeliverKeys()
+    {
+        if (KeysDelivered) return true;
+        if (!HasRequiredCores) return false;
+
+        Count -= RequiredCores;
+        KeysDelivered = true;
+        OnCountChanged?.Invoke(Count);
         return true;
     }
 

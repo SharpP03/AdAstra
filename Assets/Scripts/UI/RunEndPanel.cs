@@ -41,7 +41,8 @@ public class RunEndPanel : MonoBehaviour
             $"Escape time: {duration:mm\\:ss}\n" +
             $"Hull: {summary.HullPercent:P0}\n" +
             $"Fuel: {summary.FuelPercent:P0}\n" +
-            $"Closest to the wave: {closest}";
+            $"Closest to the wave: {closest}\n" +
+            $"Stasis Cores collected / burned: {summary.CoresCollected} / {summary.CoresBurned}";
 
         panelRoot.SetActive(true);
     }

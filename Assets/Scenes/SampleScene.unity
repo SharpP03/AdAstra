@@ -996,6 +996,11 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!4 &2109003560 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6979874014539716595, guid: 36c0345a5111cb641b98c466d111af51, type: 3}
+  m_PrefabInstance: {fileID: 1483711320}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2609885103770060856
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1154,9 +1159,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 682115954875080498, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
+      propertyPath: warpGate
+      value: 
+      objectReference: {fileID: 1043266257}
+    - target: {fileID: 682115954875080498, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 900936249}
+    - target: {fileID: 682115954875080498, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
+      propertyPath: lastHazardZone
+      value: 
+      objectReference: {fileID: 2109003560}
     - target: {fileID: 744308861201790632, guid: d1512fa51669d8e4ca3fcc0a17f55bb0, type: 3}
       propertyPath: wave
       value: 

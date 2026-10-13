@@ -3,8 +3,9 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// Run goal at the end of the sector. Entering the capture zone locks the ship controls and pulls
-/// the ship into the docking point, where the jump authorization (terminal) takes place.
+/// Run goal at the end of the sector. Entering the capture zone with the required Stasis Cores hands them over
+/// as the key, locks the ship controls and pulls the ship into the docking point, where the jump authorization
+/// (terminal) takes place. Without the cores the gate stays closed.
 /// </summary>
 [SelectionBase]
 [RequireComponent(typeof(Collider))]
@@ -31,6 +32,9 @@ public class WarpGate : MonoBehaviour
     /// <summary>Raised once the ship is docked and motionless inside the gate.</summary>
     public event Action<Player_Spaceship> OnShipDocked;
 
+    /// <summary>Raised when a ship without the required Stasis Cores enters the gate zone.</summary>
+    public event Action OnEntryDenied;
+
     /// <summary>Raised when the jump sequence has finished.</summary>
     public event Action OnJumpFinished;
 
@@ -53,6 +57,12 @@ public class WarpGate : MonoBehaviour
         // Works with no fuel too: a drifting ship is captured like any other.
         var ship = other.GetComponentInParent<Player_Spaceship>();
         if (ship == null) return;
+
+        if (!ship.TryGetComponent(out StasisCoreInventory cores) || !cores.TryDeliverKeys())
+        {
+            OnEntryDenied?.Invoke();
+            return;
+        }
 
         StartCoroutine(CaptureRoutine(ship));
     }
