@@ -1,6 +1,6 @@
 # AdAstra
 
-Unity 6 (`6000.2.6f2`, URP) MVP of a 6DoF space exploration game: fly a ship, manage fuel and hull, outrun the Annihilation Wave. It is the author's engineering thesis project. Everything compiles into `Assembly-CSharp` — there are no custom `.asmdef` files and no automated tests, so verification happens in the Unity Editor. Keep solutions simple: no speculative abstractions.
+Unity 6 (`6000.2.6f2`, URP) MVP of a 6DoF space exploration game: fly a ship, manage fuel and hull, outrun the Annihilation Wave. It is the author's engineering thesis project. Everything compiles into `Assembly-CSharp` — there are no custom `.asmdef` files and no automated tests, so verification happens in the Unity Editor. Keep solutions simple: no speculative abstractions. This is a prototype whose goal is an MVP that is fun to play: prioritize game feel and game design over complete specs; prefer building and playtesting over specifying and calculating; use rough values and balance later.
 
 ## Hard rules
 - Never commit or push to `main` without the user's explicit consent.

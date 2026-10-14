@@ -14,7 +14,7 @@ Długość runu wynika z układu sektora (sekcja 2.5); orientacyjny cel to ok. 2
 > Dokument opisuje aktualne założenia projektowe. Reguły i liczby są hipotezami weryfikowanymi w playtestach i mogą się zmieniać w trakcie prac.
 
 ### 1.1. Cel projektowy (Design Target)
-Punkt odniesienia dla każdej decyzji: nowa mechanika, lokacja lub zmiana liczb musi służyć co najmniej jednemu filarowi i podłączać się do wspólnej waluty.
+Cel MVP: run, który daje frajdę – dobry game feel i czytelne decyzje są ważniejsze niż kompletność opisu. Filary to kompas, nie lista wymagań: nowa mechanika lub lokacja powinna służyć co najmniej jednemu z nich.
 
 **Filary:**
 1. **Ucieczka na budżecie** – każde zboczenie z trasy gracz kupuje dystansem do fali. To pętla runu.
@@ -26,7 +26,7 @@ Punkt odniesienia dla każdej decyzji: nowa mechanika, lokacja lub zmiana liczb 
 * **Kadłub** – ile błędów możesz popełnić (budżet pomyłek).
 * **Rdzenie Stazy** – klucz do bramy, kupiony czas (Staza) i waluta ulepszeń między runami (2.3).
 
-**Kontrakt lokacji:** każda lokacja i każdy moduł odpowiada na trzy pytania – ile kosztuje w dystansie, co oddaje i któremu filarowi służy. Lokacja bez odpowiedzi nie wchodzi do sektora. Nowe zasoby lub waluty wchodzą dopiero wtedy, gdy mają ujście w istniejącej pętli.
+**Kontrakt lokacji:** każda lokacja i każdy moduł odpowiada na trzy pytania – ile kosztuje w dystansie, co oddaje i któremu filarowi służy. To pytania pomocnicze, nie bramka – odpowiedź może być przybliżona i wyjść dopiero z playtestu. Nowy zasób lub waluta ma sens wtedy, gdy ma ujście w pętli.
 
 **Decyzje gracza w runie:** którą strefę pominąć, jak długo tankować, kiedy spalić rdzeń, ile nadmiaru rdzeni dowieźć do bramy i czy zboczyć do modułu samodzielnego.
 
@@ -108,7 +108,7 @@ flowchart TD
 MVP to pętla rdzenna (2.2) zbudowana na mechanikach z sekcji 4, strefach zagrożeń z Rdzeniami Stazy i Froncie Anihilacji, plus minimalna pętla makro (2.3): bankowanie nadmiaru rdzeni i ulepszenia między runami.
 
 **Kolejność realizacji – pionowy wycinek:** najpierw jeden kompletny run z celem i dylematem, złożony z tego, co już istnieje: pole asteroid z gęstym środkiem, Strumień Asteroid i obecna burza jonowa (bez przebudowy) – każde z rdzeniem; anomalia bez rdzenia; stacja z obecnym tankowaniem; wrak i drobne moduły samodzielne w tranzycie (4.8). Wymagana liczba rdzeni jest parametrem konfiguracji (ScriptableObject). Kolejne kroki:
-1. **Integracja sektora** – run da się przejść od startu do bramy, z wyborem stref, a liczby zgadzają się z budżetem dystansu (2.5).
+1. **Integracja sektora** – przebudowa układu świata z istniejących lokacji: run da się przejść od startu do bramy, z wyborem stref (2.5).
 2. **Playtest wycinka** z notatkami (`Assets/DOCS/raports/playtests/`), m.in.: czy cel jest jasny, czy gracz wchodzi w strefy, czy „spalić czy zachować rdzeń” to prawdziwy dylemat, gdzie run jest nudny i która lokacja jest najuboższa.
 3. **Poprawki według notatek** – rozbudowa lokacji, flight feel pass, HUD, ewentualnie minigra tankowania oraz przebudowy burzy jonowej i anomalii.
 4. **Minimalna meta-progresja (2.3)** – bankowanie i menu ulepszeń; kolejny playtest sprawdza, czy nadmiar rdzeni tworzy dylemat „spalić czy dowieźć”.
@@ -124,13 +124,13 @@ Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki, od s
 * **Start i Warp Gate** to punkty końcowe, nie beaty.
 
 **Zasady rozmieszczenia** (zamiast stałej tabeli beatów – układ wynika z zasad game designu i playtestu):
-1. **Stacja tam, gdzie wynika z paliwa:** w zasięgu pełnego baku od startu, a po zatankowaniu paliwa musi wystarczyć do bramy łącznie ze zboczeniami. To jedna z dwóch twardych kontroli.
-2. **Brama osiągalna z zapasem:** run z wymaganymi rdzeniami i pełnym tankowaniem kończy się przed falą z czasem na terminal. Druga twarda kontrola.
+1. **Stacja w zasięgu paliwa:** da się do niej dolecieć z pełnego baku, a po zatankowaniu – dolecieć do bramy. Sprawdza się przelotem, nie obliczeniem.
+2. **Brama osiągalna:** run z wymaganymi rdzeniami kończy się przed falą z czasem na terminal. Też sprawdza się przelotem.
 3. **Napięcie rośnie ku bramie:** najprostsza lokacja główna leży wcześnie (uczy), najtrudniejsza bliżej końca.
 4. **Lokacje główne się nie zlewają**, chyba że celowo – każda ma swoje „wejście na scenę”.
 5. **Moduły opcjonalne** stoją w przerwach, przy lokacjach głównych, a nawet w ich wnętrzu – tam, gdzie spełniają kontrakt lokacji (1.1).
 6. **Z każdego miejsca trasy widać co najmniej jedną rzecz, do której warto skręcić.**
-7. Pozostałe odległości można ustawiać orientacyjnie, „lekko na oko” – budżet dystansu (niżej) jest punktem odniesienia, a playtest koryguje.
+7. Pozostałe odległości i liczby ustawia się orientacyjnie, „na oko” – playtest koryguje, balans przychodzi na końcu.
 
 **Szerokość na boki:** lokacje wychodzą na boki (także nad i pod trasę). W wycinku rozszerza się je tylko istniejącymi parametrami (promień, rozmiar, pozycja); nowa treść lokacji przychodzi po playteście.
 * Każdą lokację da się ominąć – nawet taką, która przecina trasę. Objazd to zwykły koszt w dystansie.
@@ -138,7 +138,7 @@ Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki, od s
 * **Sloty:** każda lokacja i moduł to samodzielny prefab bez referencji do innych lokacji. Późniejsze losowanie układu ma być wyborem prefabu i pozycji według zasad rozmieszczenia, a nie przebudową sektora.
 
 **Metoda:**
-1. **Metryki najpierw.** Prędkość przelotowa i boostu, zasięg na pełnym baku, prędkość Frontu Anihilacji i czas tankowania – na nich opierają się twarde kontrole (zasady 1–2).
+1. **Przybliżone wartości.** Liczby (prędkości, naprawy, czas tankowania) to szacunki do późniejszego balansu; twarde są tylko zasady 1–2.
 2. **Element = podmienialny segment.** Nowa mechanika to podmiana lub dołożenie lokacji albo modułu, a nie przebudowa sektora. Sektora nie buduje się pod mechaniki, których jeszcze nie ma – bez pustych placeholderów i rezerwowania przestrzeni „na zapas”.
 3. **Blockout → playtest → strojenie liczb → dopiero dekoracja.**
 
@@ -148,11 +148,7 @@ Poprzednia tabela beatów i odcinków tranzytowych jest zarchiwizowana w `Assets
 * Suma paliwa ze wszystkich modułów na trasie jest mniejsza niż deficyt, który wymusza postój na stacji (2.2.3) – moduły nie zastępują stacji.
 * Cały salvage w sektorze (wraki i samotne skrzynie) naprawia łącznie mniej niż zebranie jednego Rdzenia Stazy (20%) – nie konkuruje z kluczem.
 
-**Budżet dystansu (cele orientacyjne, sprawdzane przy integracji sektora):** każdy koszt w runie wyraża się w metrach dystansu do fali – postój lub lot poza postępem na Z kosztuje tyle, ile fala przejdzie w tym czasie; Staza oddaje dystans, jaki fala przeszłaby przez czas jej trwania.
-* Run z 2 rdzeniami i pełnym tankowaniem dociera do bramy z zapasem ok. 150–250 m przed falą (czas na terminal i jeden błąd).
-* Run z 3 rdzeniami ma zapas ok. 0–50 m – wymaga Stazy albo bardzo czystego lotu.
-* Gdy liczby się nie spinają, najpierw zmienia się odległości w sektorze, dopiero potem prędkość fali.
-* Kluczowe wartości (prędkości, czas tankowania, zasięg baku) dopisuje się tutaj po integracji; koszt pojedynczych zboczeń wystarczy oszacować.
+**Dystans do fali jako miara:** postój lub lot poza postępem na Z kosztuje tyle, ile fala przejdzie w tym czasie, a Staza ten dystans oddaje. To sposób myślenia o kosztach, nie budżet do wyliczania – liczby ustala playtest.
 
 Mechaniki i lokacje na tym etapie powstają z prymitywów; docelowe assety przychodzą po strojeniu (krok 4 metody).
 
@@ -210,7 +206,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 * **Prowadzenie (stan roboczy, do doprecyzowania osobnym grillem):** strefy zagrożeń są zawsze oznaczone w HUD (ikona i dystans); rdzeń dostaje własny znacznik dopiero w zasięgu wykrycia (~250 m).
 * **Przeważnie z zagrożeń:** rdzenie krystalizują się wewnątrz zagrożeń, więc domyślnie każdy rdzeń kosztuje wejście w niebezpieczne miejsce – rdzeń łatwo dostępny byłby darmową Stazą albo darmowym ulepszeniem. Inne źródło jest dopuszczalne, jeśli uzasadnia je game design (np. nagroda z losowego eventu, 4.8). Więcej rdzeni w sektorze oznacza zwykle więcej zagrożeń albo kolejny rdzeń głębiej w tym samym.
 * **Dylemat stoi na koszcie alternatywnym:** każdy rdzeń to klucz, ratunek albo ulepszenie – nigdy wszystko naraz. Nawet gdy klucze są pewne, każda Staza kosztuje ulepszenie.
-* **Liczba rdzeni w sektorze** jest parametrem układu, strojonym przy integracji sektora (w wycinku 3). Rdzeń może leżeć w każdej strefie zagrożeń, także w Strumieniu Asteroid (4.7). Ryzyko do sprawdzenia w playteście: przy zbyt wielu łatwych rdzeniach klucz przestaje być problemem – nadmiar musi wymagać głębszego wejścia w strefy.
+* **Liczba rdzeni w sektorze** jest parametrem układu, dopasowywanym do potrzeb (klucze, Staza, meta-progresja) – może być ich więcej niż wymaga brama. Rdzeń może leżeć w każdej strefie zagrożeń, także w Strumieniu Asteroid (4.7). Ryzyko do sprawdzenia w playteście: przy zbyt wielu łatwych rdzeniach klucz przestaje być problemem – nadmiar musi wymagać głębszego wejścia w strefy.
 
 ### 4.4. Warp Gate (Cel Runu i Procedura Skoku)
 Brama skokowa na końcu korytarza sektora. Finał runu łączy pilotaż z krótką minigrą pod presją Frontu Anihilacji.
