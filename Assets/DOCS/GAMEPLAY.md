@@ -241,11 +241,16 @@ Każda strefa leży obok linii krytycznej, ma w środku Rdzeń Stazy i testuje i
 
 **Burza jonowa:** uderzenie celuje tam, gdzie statek *będzie* za ~1 s (przewidywanie z wektora prędkości). Przez tę sekundę widać świecący znacznik i słychać narastający ładunek. Unik wymaga zmiany kursu lub prędkości; lot prosto ze stałą prędkością kończy się trafieniem. W centrum burzy uderzenia są częstsze. Trafienie zabiera kadłub i na chwilę zakłóca HUD/sterowanie.
 
-**Anomalia grawitacyjna** (opis docelowy; w wycinku anomalia działa po staremu i nie ma rdzenia):
-* Przyciąganie rośnie w stronę jądra. Strefa ma czytelne pierścienie: **krawędź** (zwykły ciąg wystarcza do ucieczki), **pierścień wewnętrzny** (ucieczka wymaga boostu), **jądro** (punkt bez powrotu).
-* Rdzeń Stazy krąży po orbicie w pierścieniu wewnętrznym – trzeba trafić w moment.
-* **Wyrzut:** wyjście z pierścienia wewnętrznego daje impuls wzdłuż kierunku lotu, proporcjonalny do głębokości wejścia. Działa także bez zebrania rdzenia – nagradza samo ryzyko. To jedyny „darmowy” dystans w grze, ale w fizyce nie zachodzi naturalnie (pole jest zachowawcze), więc jest efektem zaprojektowanym.
-* **Wplucie:** statek, który wpadnie w jądro, zostaje wyrzucony do tyłu, w stronę Frontu Anihilacji, i traci 30% kadłuba. Run trwa dalej, ale gracz traci dystans i czas.
+**Anomalia grawitacyjna:**
+* Przyciąganie jest czysto radialne (bez wirów i tłumienia), więc pęd zależy wyłącznie od gracza – można np. zrobić procę obok jądra. Siła jest stała w obrębie pierścienia i skacze na jego granicy, dzięki czemu strefy są czytelne. Pierścienie widać jako półprzezroczyste powłoki:
+  - **krawędź:** ok. 6 m/s², zwykły ciąg (12) wystarcza do ucieczki;
+  - **pierścień wewnętrzny:** ok. 18 m/s², ucieczka wymaga boostu (24);
+  - **jądro:** punkt bez powrotu.
+* Anomalia przyciąga każde dynamiczne ciało w strefie, nie tylko statek.
+* Rdzeń Stazy krąży po orbicie w środku pierścienia wewnętrznego, wolniej niż statek (ok. minuty na okrążenie) – trzeba go dogonić albo wyjść mu na spotkanie, a każda sekunda w pierścieniu kosztuje paliwo na boost.
+* **Wyrzut:** wyjście statku z pierścienia wewnętrznego daje impuls wzdłuż kierunku lotu (ok. 10–40 m/s, im głębiej statek zszedł, tym mocniej) oraz kilka sekund oporu jak przy pustym baku, z kopnięciem kamery. Sam impuls przy normalnym oporze wygasłby po ok. 2 s i dałby znikomy dystans, dlatego wyrzut to impuls razem z oknem niskiego oporu. Działa także bez zebrania rdzenia – nagradza samo ryzyko. To jedyny „darmowy” dystans w grze; w fizyce nie zachodzi naturalnie (pole jest zachowawcze), więc jest efektem zaprojektowanym.
+* **Wplucie:** każde ciało, które wpadnie w jądro, zostaje wystrzelone wzdłuż osi sektora do tyłu, w stronę Frontu Anihilacji, a anomalia ignoruje je, dopóki nie opuści strefy. Statek traci przy tym 30% kadłuba. Run trwa dalej, ale gracz traci dystans i czas.
+* Poprzednia wersja (najsilniejsze przyciąganie przy krawędzi, pułapka bez wyjścia) jest zachowana jako `BlackHoleDeathTrap` poza sektorem. Przed ponownym użyciem potrzebuje własnej roli i wyglądu, który z daleka zdradza, że to pułapka.
 
 ### 4.6. Wraki
 Wrak to krótki, aktywny moment zręcznościowy w tranzycie. Gracz decyduje, czy zboczyć kosztem czasu wobec fali, i zamienia celowanie w ruchu na zasób. Opis dotyczy proof of conceptu; liczby są hipotezami w ScriptableObject.

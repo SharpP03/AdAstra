@@ -17,6 +17,11 @@ public class DynamicCamera : MonoBehaviour
     [SerializeField] private float sprintFOVIncrease = 15f;
     [SerializeField] private float sprintTransitionSpeed = 3f;
 
+    [Header("Slingshot effect")]
+    [Tooltip("Instant FOV jump when a gravity anomaly launches the ship, at full strength.")]
+    [SerializeField] private float slingshotFOVKick = 25f;
+    [SerializeField] private float slingshotTrauma = 0.5f;
+
     [Header("Warp jump effect")]
     [SerializeField] private float warpFOVIncrease = 45f;
 
@@ -47,11 +52,13 @@ public class DynamicCamera : MonoBehaviour
     private void OnEnable()
     {
         if (hullImpacts != null) hullImpacts.OnImpact += HandleImpact;
+        if (player != null) player.OnSlingshot += HandleSlingshot;
     }
 
     private void OnDisable()
     {
         if (hullImpacts != null) hullImpacts.OnImpact -= HandleImpact;
+        if (player != null) player.OnSlingshot -= HandleSlingshot;
     }
 
     private void Start()
@@ -100,6 +107,13 @@ public class DynamicCamera : MonoBehaviour
     {
         // Hits add up instead of restarting the shake.
         trauma = Mathf.Clamp01(trauma + Mathf.Lerp(minImpactTrauma, 1f, strength));
+    }
+
+    private void HandleSlingshot(float strength)
+    {
+        // Kick the FOV at once; the boost look below then holds it until the slingshot ends.
+        if (cam) cam.fieldOfView = Mathf.Max(cam.fieldOfView, baseFOV + sprintFOVIncrease + slingshotFOVKick * strength);
+        trauma = Mathf.Clamp01(trauma + slingshotTrauma * strength);
     }
 
     private void UpdateImpactShake()
@@ -161,7 +175,8 @@ public class DynamicCamera : MonoBehaviour
             return;
         }
 
-        bool isSprinting = player.CurrentState == PlayerState.Sprinting;
+        // A slingshot looks like a boost for as long as it keeps the ship fast.
+        bool isSprinting = player.CurrentState == PlayerState.Sprinting || player.InSlingshot;
 
         Vector3 targetOffset = baseOffset + (isSprinting ? new Vector3(0, 0, -sprintZoomOut) : Vector3.zero);
         currentOffset = Vector3.Lerp(currentOffset, targetOffset, Time.deltaTime * sprintTransitionSpeed);

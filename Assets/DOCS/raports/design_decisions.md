@@ -111,3 +111,9 @@ Odcinki tranzytowe (sprzed zmiany): Hub → pole, pole → stacja, stacja → od
 * **Decyzja / podejście:** dwa poziomy oporu. Przy działających silnikach opór ogranicza prędkość maksymalną (ok. ciąg / opór), a po puszczeniu ciągu statek hamuje. Przy pustym baku opór spada prawie do zera i statek dryfuje na resztce pędu (droga ok. v / opór), ale skończenie. Stacja wyhamowuje w swojej strefie statek bez paliwa, żeby mógł zatankować; statek z paliwem przelatuje bez hamowania.
 * **Dlaczego:** daje decyzję „ostatnie paliwo na boost i wystrzelenie się w stronę stacji”, celując przed wygaśnięciem silników. Odrzucono niski opór przy każdym braku ciągu – opłacałoby się „pyknąć” ciąg i lecieć za darmo, a paliwo przestałoby być budżetem dystansu.
 * **Powiązane:** #96, `Player_Spaceship.cs`, `ShipFlightConfigSO.cs`, `RefuelStation.cs`, `GAMEPLAY.md` 3.2 i 4.2.
+
+## Wyrzut z anomalii grawitacyjnej, feat/gravity-anomaly-rings, 2026-10-14
+* **Problem / kontekst:** anomalia ciągnęła najmocniej przy krawędzi, więc była pułapką bez wyjścia. Do tego pole grawitacyjne jest zachowawcze, więc wyjście z niego nie daje „darmowego” dystansu.
+* **Decyzja / podejście:** czyste przyciąganie radialne, stałe w pierścieniach ustawionych między ciągiem a boostem statku. Wyrzut to impuls zależny od głębokości zejścia plus ok. 3 s niskiego oporu. Starą wersję zachowano jako `BlackHoleDeathTrap`.
+* **Dlaczego:** przy oporze silników sam impuls wygasa po ok. 2 s i daje znikomy dystans. Odrzucono darmowy boost bez paliwa, bo nie daje odczuwalnego kopnięcia.
+* **Powiązane:** #71, GAMEPLAY 4.5, `GravityAnomaly.cs`, `Player_Spaceship.Slingshot`.

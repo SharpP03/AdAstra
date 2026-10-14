@@ -43,6 +43,7 @@ public class Player_Spaceship : MonoBehaviour
     private float bufferedRollInput;
     private bool isSprintingInput;
     private bool controlsEnabled = true;
+    private float slingshotEndTime;
 
     #region Input system lifecycle
     private void OnEnable()
@@ -100,9 +101,11 @@ public class Player_Spaceship : MonoBehaviour
         // Ostatnie paliwo można więc spalić na boost i "wystrzelić się" np. w stronę stacji.
         // Niski opór tylko przy pustym baku, bo przy niskim oporze zawsze opłacałoby się "pyknąć" ciąg i lecieć
         // za darmo – paliwo przestałoby być budżetem dystansu.
+        // Wyjątek: wyrzut z anomalii grawitacyjnej (Slingshot) na kilka sekund obniża opór do poziomu pustego baku,
+        // bo przy zwykłym oporze dodana prędkość wygasłaby po ok. 2 s i nie dałaby odczuwalnego dystansu.
         #endregion
         // Applied every step so drag can be tuned on the config asset during Play Mode.
-        rb.linearDamping = fuelSystem.HasFuel ? config.linearDrag : config.emptyTankDrag;
+        rb.linearDamping = fuelSystem.HasFuel && !InSlingshot ? config.linearDrag : config.emptyTankDrag;
         rb.angularDamping = config.angularDrag;
 
         HandlePlayerSpeed();
@@ -247,6 +250,24 @@ public class Player_Spaceship : MonoBehaviour
 
     /// <summary>False while pilot input is locked (end of run, Warp Gate capture).</summary>
     public bool ControlsEnabled => controlsEnabled;
+
+    /// <summary>Raised by Slingshot; the argument is the launch strength from 0 to 1.</summary>
+    public event System.Action<float> OnSlingshot;
+
+    /// <summary>True while a slingshot keeps drag at the empty-tank level.</summary>
+    public bool InSlingshot => Time.time < slingshotEndTime;
+
+    /// <summary>
+    /// Launches the ship along its flight direction (gravity anomaly exit): adds speed and keeps drag
+    /// at the empty-tank level for a while, so the extra speed turns into distance instead of fading at once.
+    /// </summary>
+    public void Slingshot(float speedGain, float lowDragSeconds, float strength)
+    {
+        Vector3 direction = rb.linearVelocity.sqrMagnitude > 0.01f ? rb.linearVelocity.normalized : transform.forward;
+        rb.AddForce(direction * speedGain, ForceMode.VelocityChange);
+        slingshotEndTime = Time.time + lowDragSeconds;
+        OnSlingshot?.Invoke(strength);
+    }
 
     public Vector2 MoveInput { get; private set; }
     public PlayerState CurrentState => playerCurrentState;
