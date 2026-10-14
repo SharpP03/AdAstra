@@ -43,5 +43,6 @@ Propose a Conventional Commits message, ask the user to review `git diff`, and w
 ## 3. Finish the task
 The agent does not push, open PRs, merge or close issues — the user does all of that. When the last step is committed:
 1. Check the Definition of Done in `AGENTS.md`.
-2. Tell the user the task is ready: branch name, the task's commits (`git log --oneline <base>..HEAD`) and anything left open.
-3. If the user asks for help with the PR, give a ready title in Conventional Commits style (e.g. `feat: implement docking magnet mechanism`) and the body `ref: <issue link>` — nothing more; the issue holds the description.
+2. Ask whether the task brought a decision, problem or approach worth a thesis log entry (`Assets/DOCS/raports/design_decisions.md`, format in its frontmatter). If yes, propose the entry and add it after the user agrees, as part of the last step.
+3. Tell the user the task is ready: branch name, the task's commits (`git log --oneline <base>..HEAD`) and anything left open.
+4. If the user asks for help with the PR, give a ready title in Conventional Commits style (e.g. `feat: implement docking magnet mechanism`) and the body `ref: <issue link>` — nothing more; the issue holds the description.

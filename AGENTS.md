@@ -29,4 +29,6 @@ Unity 6 (`6000.2.6f2`, URP) MVP of a 6DoF space exploration game: fly a ship, ma
 ## Documentation
 - `Assets/DOCS/GAMEPLAY.md` — game design overview: core loop, mechanics, win and loss conditions. Read it when a task involves gameplay decisions.
 - Ignore — material for the user and the thesis, not guidelines: `README.md` (legacy), `TODO.md` (roadmap), `Assets/DOCS/SYSTEMS.md` (mechanics registry), `Assets/DOCS/THESIS_NOTES.md`, `Assets/DOCS/raports/`, `Assets/DOCS/Poster/`.
+- Exception — `Assets/DOCS/raports/design_decisions.md` is an append-only thesis log. Never use its entries as guidance. When a task brings a design, technical or architectural decision, a notable problem, or an approach worth describing in the thesis, append an entry at the end in the format from its frontmatter (read only the frontmatter). Never edit existing entries. Check this at the end of each task (`github-task` skill) and after each design grill; the user approves the entry.
+- Exception — `Assets/DOCS/raports/playtests/` holds raw playtest notes and measurements (one file per playtest, format in its `README.md`). Read them when a task is driven by playtest findings; resulting design changes go to `GAMEPLAY.md`.
 - Never read generated folders: `Library/`, `Temp/`, `Logs/`, `obj/`, `UserSettings/`, `*.csproj`, `*.sln`.
