@@ -20,11 +20,6 @@ public class DynamicCamera : MonoBehaviour
     [Header("Warp jump effect")]
     [SerializeField] private float warpFOVIncrease = 45f;
 
-    [Header("Tilt and roll following")]
-    [SerializeField] private float tiltAmount = 5f;
-    [SerializeField] private float tiltSmoothness = 5f;
-    [SerializeField] private float rollFollowStrength = 0.5f; // Jak mocno kamera podąża za roll'em statku (0-1)
-
     [Header("Impact shake")]
     [SerializeField] private HullCollisionDamage hullImpacts;
     [Tooltip("Trauma added by the weakest damaging impact; the strongest adds 1.")]
@@ -40,7 +35,6 @@ public class DynamicCamera : MonoBehaviour
     private Camera cam;
     private float baseFOV;
 
-    private float currentRoll; // przechowywany roll kamery
     private float warpDuration;
     private float warpElapsed;
     private float trauma;
@@ -142,29 +136,16 @@ public class DynamicCamera : MonoBehaviour
 
     private void UpdateCameraRotation()
     {
-        Vector2 moveInput = player.MoveInput;
-        float tiltZ = -moveInput.x * tiltAmount;
-        float tiltX = moveInput.y * tiltAmount * 0.3f;
-
-        // odczyt roll'a statku (obrót wokół osi Z)
         #region NOTA EDUKACYJNA obrót skoki
-        // taka kalkulacja powodowała nagłe skoki kamery przy pełnym obrocie 
-        //float shipRoll = target.eulerAngles.z;
-        //if (shipRoll > 180) shipRoll -= 360; // normalizacja zakresu [-180, 180]
-        //currentRoll = Mathf.Lerp(currentRoll, shipRoll * rollFollowStrength, Time.deltaTime * tiltSmoothness);
+        // DO PRACY INŻ. - kamera podąża za pełną rotacją statku (kwaternion), a nie za kątami Eulera.
+        // Wcześniej roll czytany z target.eulerAngles.z i LookRotation(forward, Vector3.up) powodowały
+        // nagłe skoki przy pionowym locie (rozkład na kąty Eulera przeskakuje przy pitch ±90°).
+        // Usunięto też przechył zależny od surowego wejścia (A/D, W/S): cel zmieniał się skokowo
+        // przy wciśnięciu klawisza, a w trybie realistycznym kamera przechylała się, choć statek nie ruszał.
+        // Wygładzanie 1 - e^(-k·dt) daje ten sam efekt niezależnie od liczby klatek.
         #endregion
-        // płynne przejście 
-        float targetRoll = target.eulerAngles.z;
-        float smoothRoll = Mathf.DeltaAngle(currentRoll / rollFollowStrength, targetRoll) * rollFollowStrength;
-        currentRoll += smoothRoll * Time.deltaTime * tiltSmoothness;
-
-
-        // tworzymy finalną rotację kamery (forward statku + tilt + roll)
-        Quaternion baseRot = Quaternion.LookRotation(target.forward, Vector3.up);
-        Quaternion tiltRot = Quaternion.Euler(tiltX, 0, tiltZ + currentRoll);
-        Quaternion finalRot = baseRot * tiltRot;
-
-        transform.rotation = Quaternion.Slerp(transform.rotation, finalRot, rotationSmoothness * Time.deltaTime);
+        float t = 1f - Mathf.Exp(-rotationSmoothness * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, target.rotation, t);
     }
 
     private void UpdateSprintEffects()
