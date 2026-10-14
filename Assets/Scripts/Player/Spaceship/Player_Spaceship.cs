@@ -113,7 +113,26 @@ public class Player_Spaceship : MonoBehaviour
 
         HandlePlayerSpeed();
         if (fuelSystem.HasFuel)
+        {
             MovePlayer();
+            if (InGravityField || InSlingshot) AssistTowardNose();
+        }
+    }
+
+    private void AssistTowardNose()
+    {
+        #region EDUCATION NOTE asysta lotu w anomalii
+        // DO PRACY INŻ. - w anomalii statek nie ma oporu, więc przy dużej prędkości sam ciąg prawie nie zmienia
+        // kierunku lotu (przy 80 m/s ciąg 12 m/s² skręca tor o mniej niż 10°/s) i statek "wyślizguje się".
+        // Asysta obraca wektor prędkości w stronę nosa statku, ale nie zmienia jego długości: proca i efekt Obertha
+        // zostają nietknięte. Działa tylko przy ciągu do przodu, więc bez ciągu tor wynika z czystej fizyki orbity.
+        #endregion
+        float forwardInput = MoveInput.y;
+        Vector3 velocity = rb.linearVelocity;
+        if (forwardInput <= 0f || velocity.sqrMagnitude < 1f) return;
+
+        float maxRadians = config.gravityAssistTurnRate * Mathf.Deg2Rad * forwardInput * Time.fixedDeltaTime;
+        rb.linearVelocity = Vector3.RotateTowards(velocity, transform.forward * velocity.magnitude, maxRadians, 0f);
     }
 
     private void Update()

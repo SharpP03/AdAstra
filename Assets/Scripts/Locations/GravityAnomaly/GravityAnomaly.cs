@@ -20,6 +20,10 @@ public class GravityAnomaly : MonoBehaviour
     [Tooltip("Pull in the inner ring (m/s²); between thrust and boost, so only boost can stop or climb.")]
     [SerializeField] private float innerPull = 18f;
     [SerializeField] private LayerMask affectedLayers = ~0;
+    [Tooltip("Above this speed (m/s) the zone adds drag, so circling with thrust cannot speed a body up forever.")]
+    [SerializeField] private float softSpeedCap = 110f;
+    [Tooltip("Drag (1/s) applied to the speed above the soft cap.")]
+    [SerializeField] private float overCapDrag = 0.5f;
 
     [Header("Slingshot exit (ship only)")]
     [Tooltip("Low drag kept after leaving the zone, so the speed gained in the flyby turns into distance.")]
@@ -56,6 +60,21 @@ public class GravityAnomaly : MonoBehaviour
     private readonly List<Rigidbody> left = new();
     private readonly Collider[] overlapBuffer = new Collider[64];
 
+    /// <summary>The player's ship while the anomaly pulls it (not while it is being spat out), else null.</summary>
+    public Player_Spaceship ShipInside { get; private set; }
+
+    /// <summary>Pull acceleration at a world position; zero outside the zone and inside the core.</summary>
+    public Vector3 PullAt(Vector3 position)
+    {
+        Vector3 toCenter = transform.position - position;
+        float distance = toCenter.magnitude;
+        if (distance >= edgeRadius || distance < coreRadius) return Vector3.zero;
+        return toCenter / distance * (distance < innerRadius ? innerPull : edgePull);
+    }
+
+    /// <summary>True if the position is inside the core (point of no return).</summary>
+    public bool IsInCore(Vector3 position) => (position - transform.position).sqrMagnitude < coreRadius * coreRadius;
+
     private void OnDisable()
     {
         inside.Clear();
@@ -76,6 +95,7 @@ public class GravityAnomaly : MonoBehaviour
             QueryTriggerInteraction.Ignore);
 
         seenThisStep.Clear();
+        ShipInside = null;
         for (int i = 0; i < count; i++)
         {
             Rigidbody body = overlapBuffer[i].attachedRigidbody;
@@ -102,11 +122,16 @@ public class GravityAnomaly : MonoBehaviour
             bool inInnerRing = distance < innerRadius;
             body.AddForce(toCenter / distance * (inInnerRing ? innerPull : edgePull), ForceMode.Acceleration);
 
+            float speed = body.linearVelocity.magnitude;
+            if (speed > softSpeedCap)
+                body.AddForce(-body.linearVelocity / speed * ((speed - softSpeedCap) * overCapDrag), ForceMode.Acceleration);
+
             if (ship != null)
             {
                 // Depth signal: a noticeable step at the inner ring border, growing toward the core.
                 float stress = inInnerRing ? Mathf.Lerp(0.3f, 1f, Mathf.InverseLerp(innerRadius, coreRadius, distance)) : 0f;
                 ship.HoldInGravityField(stress);
+                ShipInside = ship;
             }
         }
 
