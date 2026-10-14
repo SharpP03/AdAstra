@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1820e4f11e3ec994594d10ded7e369bd, type: 3}
   m_Name: IntermediateStation_Config
   m_EditorClassIdentifier: Assembly-CSharp::RefuelStationConfigSO
-  fuelPerSecond: 8
+  fuelPerSecond: 15
   maxDockSpeed: 2
   fuelCapacity: 150

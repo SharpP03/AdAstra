@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab238de371c5973488dc718931626495, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SalvageCrate
-  config: {fileID: 11400000, guid: 16cd95d3535d32444bbbebfd6ca30825, type: 2}
+  config: {fileID: 11400000, guid: e43ef605f53459f419d9eb0365264e10, type: 2}
 --- !u!114 &7248439719292314234
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,6 +8,9 @@ public class FuelSystem : MonoBehaviour
     public float currentFuel { get; private set; }
     [SerializeField]
     private float fuelUsage;
+    [Tooltip("Boost burn as a multiple of fuelUsage. Keep it above the boost speed multiplier so boosting costs more per meter.")]
+    [SerializeField]
+    private float sprintFuelMultiplier = 3.2f;
     private float fuelSprintUsage;
 
     public bool HasFuel => currentFuel > 0f;
@@ -19,7 +22,7 @@ public class FuelSystem : MonoBehaviour
     {
         player = GetComponent<Player_Spaceship>();
         currentFuel = maxFuel;
-        fuelSprintUsage = fuelUsage * 2.2f;
+        fuelSprintUsage = fuelUsage * sprintFuelMultiplier;
     }
 
     private void Update()

@@ -16,6 +16,3 @@ MonoBehaviour:
   assistBoxWidth: 6
   idleBeamLength: 6
   idleBeamWidthScale: 0.4
-  cutTime: 1.5
-  crateResource: 1
-  rewardFraction: 0.04

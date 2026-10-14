@@ -20678,8 +20678,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player_Spaceship
   realisticMovementOn: 1
-  moveSpeed: 20
-  sprintMultiplier: 1.8
+  moveSpeed: 23
+  sprintMultiplier: 2
   accelerationRate: 4
   speedMultAngle: 0.5
   speedRollAngle: 1
@@ -20742,6 +20742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FuelSystem
   maxFuel: 200
   fuelUsage: 2.2
+  sprintFuelMultiplier: 3.2
 --- !u!114 &8984824206888303891
 MonoBehaviour:
   m_ObjectHideFlags: 0
