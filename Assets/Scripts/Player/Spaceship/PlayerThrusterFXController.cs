@@ -24,6 +24,7 @@ public class PlayerThrusterFXController : MonoBehaviour
     [SerializeField] private float transitionSpeed = 5f;
 
     private Player_Spaceship player;
+    private FuelSystem fuelSystem;
     private ParticleStateSettings targetSettings;
 
     private bool isPlayerRegistered = false;
@@ -31,6 +32,7 @@ public class PlayerThrusterFXController : MonoBehaviour
     private void Awake()
     {
         player = GetComponent<Player_Spaceship>();
+        fuelSystem = GetComponent<FuelSystem>();
     }
 
     private void Start()
@@ -57,6 +59,10 @@ public class PlayerThrusterFXController : MonoBehaviour
     {
         // target settings depending on player state
         targetSettings = GetSettingsForState(player.CurrentState);
+
+        // Empty tank: the engines are dead, so the flames fade out until the ship is refueled.
+        if (fuelSystem != null && !fuelSystem.HasFuel)
+            targetSettings.emissionRate = 0f;
 
         foreach (var ps in thrusters)
         {
