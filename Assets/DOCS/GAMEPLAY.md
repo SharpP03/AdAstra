@@ -199,7 +199,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 
 ### 4.3. Rdzenie Stazy (Stasis Cores)
 * **Fikcja:** zagrożenia w sektorze to odpryski tej samej energii, która tworzy Front Anihilacji. W ich wnętrzu energia krystalizuje się w Rdzenie Stazy, które statek potrafi wykorzystać przeciwko fali.
-* **Rozmieszczenie:** rdzenie leżą przeważnie w miejscach o dużym zagrożeniu – w lokacjach głównych (4.5) i modułach-zagrożeniach (4.7), w ich najniebezpieczniejszej części, poza linią krytyczną – zebranie rdzenia kosztuje zboczenie. W wycinku: pole asteroid, Strumień Asteroid i burza jonowa; anomalia grawitacyjna dostaje rdzeń razem ze swoją przebudową. Rdzeń świeci pulsującym światłem widocznym z daleka.
+* **Rozmieszczenie:** rdzenie leżą przeważnie w miejscach o dużym zagrożeniu – w lokacjach głównych (4.5) i modułach-zagrożeniach (4.7), w ich najniebezpieczniejszej części, poza linią krytyczną – zebranie rdzenia kosztuje zboczenie. W wycinku: pole asteroid, Strumień Asteroid i burza jonowa; anomalia grawitacyjna dostaje rdzeń razem ze swoją przebudową. Rdzeń świeci pulsującym, zimnym biało-cyjanowym światłem, a gwiazdka z przecinających się promieni co kilka sekund na chwilę się powiększa (miganie), dzięki czemu rdzeń wyróżnia się z daleka nawet na tle świecących stref.
 * **Potrójna rola:** rdzeń jest **kluczem** do bramy (wymagane 2, patrz 4.4), **ratunkiem** – można go spalić jako Stazę – i **inwestycją**: nadmiar dowieziony przez bramę idzie na ulepszenia (2.3). Spalony rdzeń przestaje być kluczem i ulepszeniem.
 * **Zebranie:** dodaje 1 rdzeń do licznika oraz natychmiast naprawia 20% kadłuba – wejście w strefę częściowo „zwraca” obrażenia w niej odniesione.
 * **Licznik:** gracz zaczyna run z 0 i nie ma limitu noszenia. HUD pokazuje cel „Rdzenie X/2”. Wymagana liczba (domyślnie 2) jest parametrem konfiguracji.
@@ -241,11 +241,20 @@ Każda strefa leży obok linii krytycznej, ma w środku Rdzeń Stazy i testuje i
 
 **Burza jonowa:** uderzenie celuje tam, gdzie statek *będzie* za ~1 s (przewidywanie z wektora prędkości). Przez tę sekundę widać świecący znacznik i słychać narastający ładunek. Unik wymaga zmiany kursu lub prędkości; lot prosto ze stałą prędkością kończy się trafieniem. W centrum burzy uderzenia są częstsze. Trafienie zabiera kadłub i na chwilę zakłóca HUD/sterowanie.
 
-**Anomalia grawitacyjna** (opis docelowy; w wycinku anomalia działa po staremu i nie ma rdzenia):
-* Przyciąganie rośnie w stronę jądra. Strefa ma czytelne pierścienie: **krawędź** (zwykły ciąg wystarcza do ucieczki), **pierścień wewnętrzny** (ucieczka wymaga boostu), **jądro** (punkt bez powrotu).
-* Rdzeń Stazy krąży po orbicie w pierścieniu wewnętrznym – trzeba trafić w moment.
-* **Wyrzut:** wyjście z pierścienia wewnętrznego daje impuls wzdłuż kierunku lotu, proporcjonalny do głębokości wejścia. Działa także bez zebrania rdzenia – nagradza samo ryzyko. To jedyny „darmowy” dystans w grze, ale w fizyce nie zachodzi naturalnie (pole jest zachowawcze), więc jest efektem zaprojektowanym.
-* **Wplucie:** statek, który wpadnie w jądro, zostaje wyrzucony do tyłu, w stronę Frontu Anihilacji, i traci 30% kadłuba. Run trwa dalej, ale gracz traci dystans i czas.
+**Anomalia grawitacyjna:**
+* Przyciąganie jest czysto radialne (bez wirów i tłumienia) i stałe w obrębie pierścienia. Wewnątrz całej strefy statek traci opór silników (opór jak przy pustym baku) – anomalia zakrzywia przestrzeń, więc pęd zależy wyłącznie od gracza. Pierścienie mówią, gdzie da się **zatrzymać**:
+  - **krawędź:** ok. 6 m/s², zwykły ciąg (12) wystarcza, żeby się zatrzymać i wycofać;
+  - **pierścień wewnętrzny:** ok. 18 m/s², bez boostu (24) nie da się zatrzymać ani wspiąć – ucieka się pędem albo boostem;
+  - **jądro:** punkt bez powrotu.
+* Anomalia przyciąga każde dynamiczne ciało w strefie, nie tylko statek.
+* Rdzeń Stazy krąży po orbicie w środku pierścienia wewnętrznego, w płaszczyźnie dysku akrecyjnego, wolniej niż statek (ok. minuty na okrążenie).
+* **Proca (wyrzut):** nagrodą jest przelot, a nie granica pierścienia. Statek, który wleci po stycznej, rozpędza się, spadając ku jądru, zakręca wokół niego i wylatuje. Boost odpalony w najniższym punkcie przelotu daje więcej prędkości niż ten sam boost w pustej przestrzeni (efekt Obertha) – to jedyny „darmowy” dystans w grze i wynika z umiejętności. Po wylocie ze strefy statek ma jeszcze ok. 3 s niskiego oporu, żeby zdobyta prędkość zamieniła się w dystans; kamera kopie proporcjonalnie do prędkości wylotu.
+* **Sterowność:** w strefie i w oknie procy trzymanie ciągu do przodu obraca kierunek lotu w stronę nosa statku (ok. 60°/s) bez utraty prędkości – bez tej asysty statek przy dużej prędkości „wyślizguje się”. Bez ciągu tor wynika z czystej fizyki orbity. Powyżej ok. 110 m/s strefa dodaje opór, żeby krążenie z ciągiem nie rozpędzało statku bez końca.
+* **Przewidywany tor:** w strefie widać hologramową, przerywaną linię toru na najbliższe ok. 4,5 s lotu bez ciągu. Pokazuje skutek (zakręt wokół jądra, otarcie, wylot), a nie trasę do przelotu – linię procy gracz znajduje sam.
+* **Sygnał głębokości:** w pierścieniu wewnętrznym kamera lekko wibruje, a krawędzie ekranu ciemnieją – im bliżej jądra, tym mocniej.
+* **Wplucie:** każde ciało, które wpadnie w jądro, zostaje wystrzelone do tyłu, w stronę Frontu Anihilacji, pod losowym kątem (stożek ok. 30° wokół osi sektora), a anomalia ignoruje je, dopóki nie opuści strefy. Statek traci przy tym 30% kadłuba. Run trwa dalej, ale gracz traci dystans i czas.
+* **Wygląd:** czarne jądro z jasnym obrysem, obracający się dysk akrecyjny (jasny i gęsty w pierścieniu wewnętrznym, rzadki na krawędzi) i pył spływający ku jądru, który pokazuje kierunek przyciągania.
+* Poprzednia wersja (najsilniejsze przyciąganie przy krawędzi, pułapka bez wyjścia) jest zachowana jako `BlackHoleDeathTrap` poza sektorem. Przed ponownym użyciem potrzebuje własnej roli i wyglądu, który z daleka zdradza, że to pułapka.
 
 ### 4.6. Wraki
 Wrak to krótki, aktywny moment zręcznościowy w tranzycie. Gracz decyduje, czy zboczyć kosztem czasu wobec fali, i zamienia celowanie w ruchu na zasób. Opis dotyczy proof of conceptu; liczby są hipotezami w ScriptableObject.

@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GravityAnomallyController : MonoBehaviour
+/// <summary>
+///     Outdated gravity anomaly: pulls hardest at its edge, so a ship that enters cannot escape.
+///     Kept as a death trap for a future role; replaced in the sector by GravityAnomaly.
+/// </summary>
+public class BlackHoleDeathTrap : MonoBehaviour
 {
     private readonly Dictionary<Rigidbody, Vector3> _orbitalAxes = new();
 

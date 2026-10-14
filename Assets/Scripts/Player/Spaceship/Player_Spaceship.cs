@@ -43,6 +43,9 @@ public class Player_Spaceship : MonoBehaviour
     private float bufferedRollInput;
     private bool isSprintingInput;
     private bool controlsEnabled = true;
+    private float slingshotEndTime;
+    private float gravityFieldEndTime;
+    private float gravityStress;
 
     #region Input system lifecycle
     private void OnEnable()
@@ -100,14 +103,36 @@ public class Player_Spaceship : MonoBehaviour
         // Ostatnie paliwo można więc spalić na boost i "wystrzelić się" np. w stronę stacji.
         // Niski opór tylko przy pustym baku, bo przy niskim oporze zawsze opłacałoby się "pyknąć" ciąg i lecieć
         // za darmo – paliwo przestałoby być budżetem dystansu.
+        // Wyjątek: wewnątrz anomalii grawitacyjnej i przez kilka sekund po wylocie (Slingshot) opór spada do poziomu
+        // pustego baku. Dzięki temu spadanie ku jądru rozpędza statek, a prędkość zdobyta w przelocie zamienia się
+        // w dystans, zamiast wygasnąć po ok. 2 s (patrz GravityAnomaly).
         #endregion
         // Applied every step so drag can be tuned on the config asset during Play Mode.
-        rb.linearDamping = fuelSystem.HasFuel ? config.linearDrag : config.emptyTankDrag;
+        rb.linearDamping = fuelSystem.HasFuel && !InSlingshot && !InGravityField ? config.linearDrag : config.emptyTankDrag;
         rb.angularDamping = config.angularDrag;
 
         HandlePlayerSpeed();
         if (fuelSystem.HasFuel)
+        {
             MovePlayer();
+            if (InGravityField || InSlingshot) AssistTowardNose();
+        }
+    }
+
+    private void AssistTowardNose()
+    {
+        #region EDUCATION NOTE asysta lotu w anomalii
+        // DO PRACY INŻ. - w anomalii statek nie ma oporu, więc przy dużej prędkości sam ciąg prawie nie zmienia
+        // kierunku lotu (przy 80 m/s ciąg 12 m/s² skręca tor o mniej niż 10°/s) i statek "wyślizguje się".
+        // Asysta obraca wektor prędkości w stronę nosa statku, ale nie zmienia jego długości: proca i efekt Obertha
+        // zostają nietknięte. Działa tylko przy ciągu do przodu, więc bez ciągu tor wynika z czystej fizyki orbity.
+        #endregion
+        float forwardInput = MoveInput.y;
+        Vector3 velocity = rb.linearVelocity;
+        if (forwardInput <= 0f || velocity.sqrMagnitude < 1f) return;
+
+        float maxRadians = config.gravityAssistTurnRate * Mathf.Deg2Rad * forwardInput * Time.fixedDeltaTime;
+        rb.linearVelocity = Vector3.RotateTowards(velocity, transform.forward * velocity.magnitude, maxRadians, 0f);
     }
 
     private void Update()
@@ -247,6 +272,38 @@ public class Player_Spaceship : MonoBehaviour
 
     /// <summary>False while pilot input is locked (end of run, Warp Gate capture).</summary>
     public bool ControlsEnabled => controlsEnabled;
+
+    /// <summary>Raised by Slingshot; the argument is the launch strength from 0 to 1.</summary>
+    public event System.Action<float> OnSlingshot;
+
+    /// <summary>True while a slingshot keeps drag at the empty-tank level after leaving a gravity anomaly.</summary>
+    public bool InSlingshot => Time.time < slingshotEndTime;
+
+    /// <summary>True while a gravity anomaly holds the ship (it must refresh this every physics step).</summary>
+    public bool InGravityField => Time.time < gravityFieldEndTime;
+
+    /// <summary>How deep the ship is in a gravity anomaly's inner ring, from 0 to 1; drives camera rumble and vignette.</summary>
+    public float GravityStress => InGravityField ? gravityStress : 0f;
+
+    /// <summary>
+    /// Called by a gravity anomaly every physics step while the ship is inside it: drag drops to the empty-tank
+    /// level, so falling toward the core speeds the ship up.
+    /// </summary>
+    public void HoldInGravityField(float stress)
+    {
+        gravityFieldEndTime = Time.time + Time.fixedDeltaTime * 2f;
+        gravityStress = stress;
+    }
+
+    /// <summary>
+    /// Called when the ship leaves a gravity anomaly: keeps drag low for a while, so the speed gained in the flyby
+    /// turns into distance. Strength (0–1) scales the camera kick.
+    /// </summary>
+    public void Slingshot(float lowDragSeconds, float strength)
+    {
+        slingshotEndTime = Time.time + lowDragSeconds;
+        if (strength > 0f) OnSlingshot?.Invoke(strength);
+    }
 
     public Vector2 MoveInput { get; private set; }
     public PlayerState CurrentState => playerCurrentState;

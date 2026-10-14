@@ -37,6 +37,10 @@ public class ShipFlightConfigSO : ScriptableObject
     [Tooltip("Roll torque.")]
     public float rollTorque = 1f;
 
+    [Header("Gravity anomaly flight assist")]
+    [Tooltip("While thrusting forward inside a gravity anomaly (and in its slingshot window), velocity turns toward the nose at this rate (deg/s) without losing speed.")]
+    public float gravityAssistTurnRate = 60f;
+
     [Header("Fuel")]
     public float maxFuel = 280f;
 
@@ -57,5 +61,6 @@ public class ShipFlightConfigSO : ScriptableObject
         maxFuel = Mathf.Max(1f, maxFuel);
         fuelBurnRate = Mathf.Max(0f, fuelBurnRate);
         boostFuelMultiplier = Mathf.Max(1f, boostFuelMultiplier);
+        gravityAssistTurnRate = Mathf.Max(0f, gravityAssistTurnRate);
     }
 }
