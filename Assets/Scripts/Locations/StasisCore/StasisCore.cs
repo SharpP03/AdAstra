@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// Collectible Stasis Core lying inside a hazard zone. Flying through it adds a core to the ship
@@ -20,6 +21,15 @@ public class StasisCore : MonoBehaviour
     [Tooltip("Relative change of the visual's scale at the peak of the pulse.")]
     [SerializeField] private float scalePulseAmount = 0.12f;
     [SerializeField] private float spinSpeed = 30f;
+    [Header("Star flare")]
+    [Tooltip("Optional camera-facing star flare that breathes with the pulse and now and then twinkles bigger.")]
+    [SerializeField] private Transform flare;
+    [SerializeField] private float flarePulseAmount = 0.15f;
+    [Tooltip("Flare scale at the peak of a twinkle.")]
+    [SerializeField] private float twinkleScale = 2f;
+    [SerializeField] private float twinkleDuration = 0.35f;
+    [Tooltip("Random pause between twinkles (seconds).")]
+    [SerializeField] private Vector2 twinkleInterval = new Vector2(3f, 6f);
 
     /// <summary>Current pulse value from -1 to 1, in sync with the light and the visual.</summary>
     public float Pulse { get; private set; }
@@ -29,6 +39,8 @@ public class StasisCore : MonoBehaviour
 
     private float baseIntensity;
     private Vector3 baseScale;
+    private Vector3 baseFlareScale;
+    private float nextTwinkleTime;
     private bool collected;
 
     private void Awake()
@@ -36,6 +48,8 @@ public class StasisCore : MonoBehaviour
         GetComponent<Collider>().isTrigger = true;
         if (pulseLight != null) baseIntensity = pulseLight.intensity;
         if (visual != null) baseScale = visual.localScale;
+        if (flare != null) baseFlareScale = flare.localScale;
+        nextTwinkleTime = Time.time + Random.Range(twinkleInterval.x, twinkleInterval.y);
     }
 
     private void Update()
@@ -47,6 +61,20 @@ public class StasisCore : MonoBehaviour
             visual.localScale = baseScale * (1f + Pulse * scalePulseAmount);
             visual.Rotate(Vector3.up, spinSpeed * Time.deltaTime, Space.Self);
         }
+        if (flare != null) flare.localScale = baseFlareScale * ((1f + Pulse * flarePulseAmount) * Twinkle());
+    }
+
+    // 1 most of the time; a short swell up to twinkleScale at random intervals, so the core catches the eye from afar.
+    private float Twinkle()
+    {
+        float sinceStart = Time.time - nextTwinkleTime;
+        if (sinceStart < 0f) return 1f;
+        if (sinceStart > twinkleDuration)
+        {
+            nextTwinkleTime = Time.time + Random.Range(twinkleInterval.x, twinkleInterval.y);
+            return 1f;
+        }
+        return 1f + (twinkleScale - 1f) * Mathf.Sin(sinceStart / twinkleDuration * Mathf.PI);
     }
 
     private void OnTriggerEnter(Collider other)
