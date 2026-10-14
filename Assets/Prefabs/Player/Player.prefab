@@ -20678,13 +20678,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player_Spaceship
   realisticMovementOn: 1
-  moveSpeed: 23
-  sprintMultiplier: 2
-  accelerationRate: 4
-  speedMultAngle: 0.5
-  speedRollAngle: 1
-  mouseSensX: 0.1
-  mouseSensY: 0.1
+  config: {fileID: 11400000, guid: 250b756e9592ea64a9dfa1509c5415db, type: 2}
 --- !u!114 &2179961292634713657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20740,9 +20734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb74226be503a8d47862efe2d59482da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelSystem
-  maxFuel: 280
-  fuelUsage: 2.2
-  sprintFuelMultiplier: 3.2
+  config: {fileID: 11400000, guid: 250b756e9592ea64a9dfa1509c5415db, type: 2}
 --- !u!114 &8984824206888303891
 MonoBehaviour:
   m_ObjectHideFlags: 0
