@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StasisCoreConfigSO
   requiredCores: 2
   hullRepairFraction: 0.2
-  stasisDuration: 6
+  stasisDuration: 25
   keyBurnHoldTime: 1

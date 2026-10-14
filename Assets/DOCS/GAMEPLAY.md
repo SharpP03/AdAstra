@@ -7,7 +7,7 @@ Gra łączy precyzyjny pilotaż arcade/6DoF z napięciem wynikającym z zarządz
 
 **Spoiwo runu:** w strefach zagrożeń powstają **Rdzenie Stazy** – kapsuły skrystalizowanej energii fali. Rdzeń jest jednocześnie **kluczem** (brama wymaga 2 rdzeni do skoku), **ratunkiem** (można go spalić, by na chwilę zatrzymać Front Anihilacji) i **inwestycją** (nadmiar dowieziony przez bramę idzie na ulepszenia między runami). Gracz musi wejść w strefy zagrożeń, ale sam wybiera, które – a w każdym kryzysie staje przed dylematem: spalić rdzeń i przeżyć teraz, czy zachować go jako klucz albo ulepszenie.
 
-Długość runu wynika z układu sektora (sekcja 2.5); orientacyjny cel to ok. 2–3 minuty, mierzone podczas blockoutu.
+Długość runu wynika z układu sektora (sekcja 2.5) i nie ma sztywnego celu – run zostawia czas na eksplorację i interakcje z lokacjami, a presję trzyma fala.
 
 **Fikcja i kierunek:** docelowo gracz zmierza do centrum galaktyki, a każdy skok przez Warp Gate to kolejny krok w jego stronę. W MVP run to jeden sektor; centrum galaktyki istnieje tylko w fikcji i w kierunku pętli makro (2.3).
 
@@ -71,7 +71,7 @@ flowchart TD
 * Pilotaż statkiem w przestrzeni 3D oparty na fizyce.
 * Czasowniki gracza w MVP: **steruj, boostuj, hamuj/dokuj, zbieraj, tnij (laser), aktywuj Stazę, wpisuj**. Walka i wrogie AI nie wchodzą do MVP; nowe systemy są dopuszczalne, jeśli wyraźnie spajają istniejące mechaniki.
 * Każda strefa zagrożeń testuje inną umiejętność (4.5): precyzję przy prędkości (pole asteroid), czytanie zapowiedzi i timing (burza jonowa), zarządzanie pędem (anomalia grawitacyjna).
-* Balansowanie użyciem boostu (prędkość ucieczki vs ponad dwukrotnie szybsze spalanie paliwa).
+* Balansowanie użyciem boostu: ok. 2× szybszy lot za ok. 3× większe spalanie paliwa – boost jest droższy na metr, więc to wydatek na ucieczkę, a nie domyślny sposób lotu.
 * **Między lokacjami głównymi:** przerwy to krótkie okna decyzji. Treść dają im **moduły samodzielne** (4.8), np. **wrak** (4.6) – zboczyć i rozciąć laserem skrzynie z ładunkiem kosztem czasu wobec fali, czy lecieć dalej. Rozmieszczenie wynika z zasad z 2.5.
 
 ### 2.2. Pętla Rdzenna (Minuty / Pojedynczy Run)
@@ -128,7 +128,7 @@ Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki, od s
 2. **Brama osiągalna:** run z wymaganymi rdzeniami kończy się przed falą z czasem na terminal. Też sprawdza się przelotem.
 3. **Napięcie rośnie ku bramie:** najprostsza lokacja główna leży wcześnie (uczy), najtrudniejsza bliżej końca.
 4. **Lokacje główne się nie zlewają**, chyba że celowo – każda ma swoje „wejście na scenę”.
-5. **Moduły opcjonalne** stoją w przerwach, przy lokacjach głównych, a nawet w ich wnętrzu – tam, gdzie spełniają kontrakt lokacji (1.1).
+5. **Moduły opcjonalne** stoją w przerwach, przy lokacjach głównych, a nawet w ich wnętrzu – tam, gdzie spełniają kontrakt lokacji (1.1). Przerwa między lokacjami to seam: można w niej postawić istniejące moduły lub lokacje albo nowe elementy, gdy powstaną.
 6. **Z każdego miejsca trasy widać co najmniej jedną rzecz, do której warto skręcić.**
 7. Pozostałe odległości i liczby ustawia się orientacyjnie, „na oko” – playtest koryguje, balans przychodzi na końcu.
 
@@ -145,8 +145,8 @@ Sektor to jedna linia krytyczna wzdłuż osi Z ze swobodą manewru na boki, od s
 Poprzednia tabela beatów i odcinków tranzytowych jest zarchiwizowana w `Assets/DOCS/raports/design_decisions.md`.
 
 **Reguły strojenia modułów:**
-* Suma paliwa ze wszystkich modułów na trasie jest mniejsza niż deficyt, który wymusza postój na stacji (2.2.3) – moduły nie zastępują stacji.
-* Cały salvage w sektorze (wraki i samotne skrzynie) naprawia łącznie mniej niż zebranie jednego Rdzenia Stazy (20%) – nie konkuruje z kluczem.
+* Paliwo z modułów to dodatek – stacja zostaje główną i w praktyce konieczną dostawą paliwa (2.2.3). To szacunek do sprawdzenia w playteście, nie twardy limit: gracz zwykle nie zbiera wszystkiego, bo każda skrzynia kosztuje czas.
+* Salvage (wraki i samotne skrzynie) to dodatek, nie konkurencja dla klucza – orientacyjnie cały salvage w sektorze nie powinien wyraźnie przebijać naprawy z Rdzeni Stazy. To szacunek do sprawdzenia w playteście, nie twardy limit.
 
 **Dystans do fali jako miara:** postój lub lot poza postępem na Z kosztuje tyle, ile fala przejdzie w tym czasie, a Staza ten dystans oddaje. To sposób myślenia o kosztach, nie budżet do wyliczania – liczby ustala playtest.
 
@@ -184,7 +184,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 2. **Front Niszczący:**
    - Zadaje gwałtowne obrażenia kadłubowi co sekundę.
    - Pozwala na dramatyczną ucieczkę "w ostatniej chwili", jeśli gracz posiada resztki paliwa na boost.
-3. **Staza:** Spalenie Rdzenia Stazy (4.3) zatrzymuje front na ~6 s. Fala zamiera, jej kolor przechodzi w chłodny, dźwięk cichnie, a HUD pokazuje odliczanie nad wskaźnikiem dystansu do fali.
+3. **Staza:** Spalenie Rdzenia Stazy (4.3) zatrzymuje front na ~25 s – mniej więcej tyle, ile kosztuje jedno zboczenie po rdzeń. Fala zamiera, jej kolor przechodzi w chłodny, dźwięk cichnie, a HUD pokazuje odliczanie nad wskaźnikiem dystansu do fali.
 
 ### 4.2. Stacja Pośrednia (Tankowanie na Postoju)
 * **Moduł usługowy:** stacja nie jest lokacją główną, tylko obowiązkowym modułem (4.8). W MVP sektor ma jedną stację, położoną na linii krytycznej tam, gdzie wynika to z budżetu paliwa (2.5, zasada 1). HUD wskazuje jej położenie.
@@ -201,7 +201,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 * **Potrójna rola:** rdzeń jest **kluczem** do bramy (wymagane 2, patrz 4.4), **ratunkiem** – można go spalić jako Stazę – i **inwestycją**: nadmiar dowieziony przez bramę idzie na ulepszenia (2.3). Spalony rdzeń przestaje być kluczem i ulepszeniem.
 * **Zebranie:** dodaje 1 rdzeń do licznika oraz natychmiast naprawia 20% kadłuba – wejście w strefę częściowo „zwraca” obrażenia w niej odniesione.
 * **Licznik:** gracz zaczyna run z 0 i nie ma limitu noszenia. HUD pokazuje cel „Rdzenie X/2”. Wymagana liczba (domyślnie 2) jest parametrem konfiguracji.
-* **Staza:** jeden klawisz (akcja w `playerInput.inputactions`) spala rdzeń, działa w locie, na stacji i w terminalu bramy. Efekt: Front Anihilacji zatrzymuje się na ~6 s (4.1).
+* **Staza:** jeden klawisz (akcja w `playerInput.inputactions`) spala rdzeń, działa w locie, na stacji i w terminalu bramy. Efekt: Front Anihilacji zatrzymuje się na ~25 s (4.1).
 * **Zabezpieczenie:** spalenie rdzenia, który jest potrzebny jako klucz (licznik ≤ 2), wymaga przytrzymania klawisza, a HUD ostrzega, że gracz traci klucz. Zapasowy rdzeń spala się zwykłym wciśnięciem.
 * **Prowadzenie (stan roboczy, do doprecyzowania osobnym grillem):** strefy zagrożeń są zawsze oznaczone w HUD (ikona i dystans); rdzeń dostaje własny znacznik dopiero w zasięgu wykrycia (~250 m).
 * **Przeważnie z zagrożeń:** rdzenie krystalizują się wewnątrz zagrożeń, więc domyślnie każdy rdzeń kosztuje wejście w niebezpieczne miejsce – rdzeń łatwo dostępny byłby darmową Stazą albo darmowym ulepszeniem. Inne źródło jest dopuszczalne, jeśli uzasadnia je game design (np. nagroda z losowego eventu, 4.8). Więcej rdzeni w sektorze oznacza zwykle więcej zagrożeń albo kolejny rdzeń głębiej w tym samym.
@@ -214,7 +214,7 @@ Brama skokowa na końcu korytarza sektora. Finał runu łączy pilotaż z krótk
 **Dotarcie:** Brama jest punktem orientacyjnym widocznym z daleka (świecący beacon), a HUD pokazuje dystans do niej oraz liczbę zebranych kluczy (Rdzenie X/2). Napięcie końcówki wynika z układu sektora – po tankowaniu gracz ściga się z falą o resztki paliwa, mając cel przed sobą. Brama nie wprowadza dodatkowych mechanik utrudniających podejście.
 
 **Procedura skoku:**
-1. **Przechwycenie:** Wlot w strefę bramy z co najmniej 2 Rdzeniami Stazy blokuje sterowanie statkiem, a brama pobiera 2 rdzenie jako klucz. Brama płynnie dociąga statek do punktu dokowania w swoim centrum i wygasza jego prędkość. Procedury nie można przerwać ani opuścić bramy. Bez wymaganych rdzeni brama się nie otwiera (2.2).
+1. **Przechwycenie:** Wlot w strefę bramy z co najmniej 2 Rdzeniami Stazy blokuje sterowanie statkiem, a brama pobiera 2 rdzenie jako klucz. Brama płynnie dociąga statek do punktu dokowania w swoim centrum i wygasza jego prędkość. Procedury nie można przerwać ani opuścić bramy. Bez wymaganych rdzeni brama się nie otwiera (2.2). **Do rozstrzygnięcia (#74):** czy brama twardo wymaga rdzeni, czy brak rdzenia wydłuża run (np. dłuższe ładowanie bramy lub dodatkowe działania pod presją fali).
 2. **Autoryzacja w terminalu:** Na ekranie pojawia się terminal z krótkim słowem wylosowanym z puli tematycznych słów. Długość słowa jest stała – presję tworzy fala, a jedyną ulgą jest zapasowy rdzeń (ponad wymagane), który gracz może spalić jako Stazę w trakcie procedury – kosztem ulepszenia. Gracz musi wpisać je z klawiatury; wielkość liter nie ma znaczenia.
    - Poprawne litery są wyraźnie potwierdzane.
    - Błędny znak jest odrzucany z czytelnym sygnałem błędu, a dotychczasowy postęp zostaje zachowany. Karą za pomyłkę jest stracony czas.
@@ -251,11 +251,11 @@ Wrak to krótki, aktywny moment zręcznościowy w tranzycie. Gracz decyduje, czy
 * **Laser-multitool:** nowy czasownik „tnij” – trzymanie LPM (akcja w `playerInput.inputactions`). Laser jest zawsze dostępny, ale tnie wyłącznie skrzynie: nie rani asteroid ani innych obiektów i nie działa na nie fizycznie, więc nie jest bronią. Nie działa, gdy sterowanie jest zablokowane (brama, terminal, koniec runu, pauza); poza tym działa także bez paliwa i podczas Stazy.
 * **Naprowadzanie:** niewidzialny, wąski prostopadłościan przed dziobem (~6 × 6 × 40 m). Skrzynia w jego wnętrzu przyciąga wiązkę, nawet jeśli nie leży na osi statku – kamera za statkiem nie wymaga idealnego celowania. Bez celu w strefie LPM rysuje krótką, słabą wiązkę prosto z dziobu, bez efektu.
 * **Cięcie:** skrzynia musi być w strefie łącznie ~1,5 s; postęp zostaje, gdy wypadnie ze strefy. Przelot obok z wciśniętym LPM nie wystarcza – trzeba zwolnić i trzymać cel, a skrzynie się przesuwają. Postęp widać na skrzyni: rozgrzewa się od zimnego koloru do bieli, w punkcie styku sypią się iskry, narasta dźwięk. Bez paska na HUD.
-* **Nagroda:** przecięta skrzynia pęka i od razu naprawia ~4% kadłuba (16% za cały wrak – mniej niż Rdzeń Stazy), z błyskiem i wartością „+X” przy pasku kadłuba. Kolor skrzyń oznacza typ zawartości. Zebranie części skrzyń to legalny kompromis.
+* **Nagroda:** przecięta skrzynia pęka i od razu oddaje zasób, z błyskiem i wartością „+X” przy pasku. Kolor skrzyń oznacza typ zawartości: **kadłub** (~4%) albo **paliwo** (~10% baku). Wraki mają autorski miks typów, z przewagą paliwa. Zebranie części skrzyń to legalny kompromis.
 * **Ryzyko:** wrak i skrzynie są przeszkodami z obrażeniami od zderzeń. Skrzynie są kinematyczne – po zderzeniu wracają na orbitę. Gracz ryzykuje kadłub, żeby zyskać kadłub.
 * **Otwarte:** koszt lasera (przegrzanie, paliwo albo brak kosztu) – decyzja po playteście. Znacznik HUD wraku przyjdzie ze wspólnym systemem znaczników celów.
-* **Na później:** paliwo jako drugi typ skrzyń (wtedy obowiązuje reguła „moduły nie zastępują stacji”, 2.5), losowanie pozycji i typu wraku. W wersji roguelite skrzynie mają dawać ulepszenia statku zamiast zasobów zastępczych.
-* **Warianty:** ten sam prefab służy jako mały wrak (mniej skrzyń na orbitach), a pojedyncza skrzynia działa także samodzielnie, bez wraku – stoi w miejscu i daje się ciąć (4.8).
+* **Na później:** losowanie pozycji wraku i typu skrzyń (paliwo podlega szacunkowi „moduły nie zastępują stacji”, 2.5). W wersji roguelite skrzynie mają dawać ulepszenia statku zamiast zasobów zastępczych.
+* **Warianty:** warianty prefabu wraku – mały wrak (`SalvageWreck_Small`, 2 skrzynie) i pole szczątków bez kadłuba (`SalvageDebris`, 2 skrzynie), a pojedyncza skrzynia działa także samodzielnie, bez wraku – stoi w miejscu i daje się ciąć (4.8).
 
 ---
 

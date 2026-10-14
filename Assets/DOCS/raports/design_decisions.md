@@ -78,3 +78,24 @@ Odcinki tranzytowe (sprzed zmiany): Hub → pole, pole → stacja, stacja → od
 * Boki sektora bez granicy – fala sama karze lot w bok (#58 zostaje w Ideas).
 * Rozbudowa lokacji dopiero po playteście; pytanie „która lokacja jest najuboższa” w #76.
 * MVP to jeden sektor; centrum galaktyki jako fikcja i kierunek (#91 – run z wielu skoków).
+
+## Pierwszy przelot sektora: długość runu, Staza, paliwo z modułów, feat/sector-world-build, 2026-10-14
+* **Problem / kontekst:** pierwszy przelot przebudowanego sektora (`playtests/2026-10-14-sector-blockout.md`) pokazał:
+  * run jest za krótki;
+  * nadmiarowy rdzeń się nie opłaca: Staza 6 s oddawała ~100 m, a zboczenie po rdzeń kosztuje kilkaset metrów;
+  * skrzynie dają mało, a paliwa nie daje nic poza stacją;
+  * boost opłacał się zawsze.
+* **Decyzja / podejście:**
+  * dłuższy sektor (brama ~3200 m) zamiast wolniejszego statku;
+  * Staza ~25 s, czyli mniej więcej koszt jednego zboczenia; prędkość fali bez zmian, żeby nie ruszać dwóch dźwigni naraz;
+  * boost droższy na metr (×2 prędkości za ×3,2 paliwa);
+  * skrzynie paliwa (10% baku) z autorskim miksem typów w wrakach;
+  * twarde reguły „salvage < 1 rdzeń” i „paliwo z modułów < deficyt” zamienione na szacunki;
+  * z GAMEPLAY usunięty cel 2–3 min: długość runu wynika z układu i zostawia czas na eksplorację.
+* **Dlaczego:**
+  * odrzucona Staza 60 s: ~1 km, czyli połowa sektora; jeden rdzeń kasowałby presję fali;
+  * wolniejszy statek psuje frajdę z lotu (filar 2);
+  * twarde limity przy prototypie blokowały strojenie na wyczucie;
+  * losowanie typu skrzyń odłożone do losowania sektora;
+  * sprawdzone zostało, że propozycja ×2 prędkości za ×2,3 paliwa obniżyłaby koszt boostu na metr (1,22 → 1,15), czyli pogłębiłaby problem.
+* **Powiązane:** #73, #74 (wymóg rdzeni na bramie do rozstrzygnięcia), #95 (skala i wypełnienie pustki), #96 (przegląd modelu lotu), GAMEPLAY.md 1, 2.1, 2.5, 4.1, 4.3, 4.6.

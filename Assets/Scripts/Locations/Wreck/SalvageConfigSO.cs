@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Balance settings for wreck salvage: the reach and aim assist of the ship's salvage laser,
-/// how long a cargo crate takes to cut and what it gives back.
+/// Balance settings for the ship's salvage laser: its reach and aim assist.
+/// Crate settings (cut time, reward) live in <see cref="SalvageCrateConfigSO"/>, one asset per crate type.
 /// </summary>
 [CreateAssetMenu(fileName = "Salvage_Config", menuName = "AdAstra/Locations/Salvage Config", order = 50)]
 public class SalvageConfigSO : ScriptableObject
@@ -23,16 +23,4 @@ public class SalvageConfigSO : ScriptableObject
     [Tooltip("Beam width without a target, relative to the beam cutting a crate.")]
     [Range(0.05f, 1f)]
     public float idleBeamWidthScale = 0.4f;
-
-    [Header("Crates")]
-    [Tooltip("Seconds of beam time needed to cut a crate open. Progress is kept when the beam leaves the crate.")]
-    [Range(0.1f, 10f)]
-    public float cutTime = 1.5f;
-
-    [Tooltip("Resource a cut crate refills.")]
-    public ResourceKind crateResource = ResourceKind.Health;
-
-    [Tooltip("Fraction of the resource's maximum refilled by one crate.")]
-    [Range(0f, 1f)]
-    public float rewardFraction = 0.04f;
 }

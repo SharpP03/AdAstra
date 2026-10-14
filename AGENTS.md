@@ -17,7 +17,7 @@ Unity 6 (`6000.2.6f2`, URP) MVP of a 6DoF space exploration game: fly a ship, ma
 - Input goes through `Assets/playerInput.inputactions`. `Assets/InputSystem_Actions.*` is Unity's unused default template.
 - Discrete state changes are C# `event`s; listeners subscribe in `OnEnable()` and unsubscribe in `OnDisable()`.
 - ScriptableObjects hold balance and configuration data (thrust, fuel burn, max hull).
-- Core components live on the prefab (`Player.prefab`), not as unapplied scene overrides. Modular scene objects (`StartingHub`, `IonStorm`) stay connected prefab instances.
+- Core components live on the prefab (`Player.prefab`), not as unapplied scene overrides. Modular scene objects (locations and modules such as `IonStorm`, `SalvageWreck`) stay connected prefab instances.
 
 ## Definition of Done
 - The project compiles with 0 errors and no new console warnings.

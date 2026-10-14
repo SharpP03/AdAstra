@@ -8,7 +8,7 @@ using UnityEngine;
 [SelectionBase]
 public class SalvageCrate : MonoBehaviour
 {
-    [SerializeField] private SalvageConfigSO config;
+    [SerializeField] private SalvageCrateConfigSO config;
 
     /// <summary>Cutting progress from 0 to 1. It is kept when the beam leaves the crate.</summary>
     public float CutProgress { get; private set; }
@@ -49,7 +49,7 @@ public class SalvageCrate : MonoBehaviour
         float refilled = 0f;
         foreach (IRefillable refillable in cutter.GetComponents<IRefillable>())
         {
-            if (refillable.Kind == config.crateResource)
+            if (refillable.Kind == config.resource)
                 refilled += refillable.Add(refillable.Max * config.rewardFraction);
         }
 
