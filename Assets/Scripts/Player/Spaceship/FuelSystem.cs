@@ -2,27 +2,35 @@ using UnityEngine;
 
 public class FuelSystem : MonoBehaviour
 {
-    [SerializeField]
-    private float maxFuel = 100f;
-    public float MaxFuel => maxFuel; // export maxFuel readonly
+#if UNITY_EDITOR
+    [ContextMenu("Debug: take 50 fuel")]
+    private void DebugConsumeFuel() => ConsumeFuel(50f);
+
+    [ContextMenu("Debug: empty fuel tank")]
+    private void DebugEmptyTank() => ConsumeFuel(currentFuel);
+#endif
+
+    [Tooltip("Same asset as on Player_Spaceship: max fuel and burn rates.")]
+    [SerializeField] private ShipFlightConfigSO config;
+
+    public float MaxFuel => config.maxFuel; // export maxFuel readonly
     public float currentFuel { get; private set; }
-    [SerializeField]
-    private float fuelUsage;
-    [Tooltip("Boost burn as a multiple of fuelUsage. Keep it above the boost speed multiplier so boosting costs more per meter.")]
-    [SerializeField]
-    private float sprintFuelMultiplier = 3.2f;
-    private float fuelSprintUsage;
 
     public bool HasFuel => currentFuel > 0f;
-    public float FuelPercent => currentFuel / maxFuel;
+    public float FuelPercent => currentFuel / config.maxFuel;
 
     private Player_Spaceship player;
 
     private void Awake()
     {
         player = GetComponent<Player_Spaceship>();
-        currentFuel = maxFuel;
-        fuelSprintUsage = fuelUsage * sprintFuelMultiplier;
+        if (config == null)
+        {
+            Debug.LogError("FuelSystem: missing ShipFlightConfigSO.", this);
+            enabled = false;
+            return;
+        }
+        currentFuel = config.maxFuel;
     }
 
     private void Update()
@@ -39,18 +47,24 @@ public class FuelSystem : MonoBehaviour
         switch (player.CurrentState)
         {
             case PlayerState.Moving:
-                currentFuel = Mathf.Max(0, currentFuel - fuelUsage * Time.deltaTime);
+                ConsumeFuel(config.fuelBurnRate * Time.deltaTime);
                 break;
             case PlayerState.Sprinting:
-                currentFuel = Mathf.Max(0, currentFuel - fuelSprintUsage * Time.deltaTime);
+                ConsumeFuel(config.fuelBurnRate * config.boostFuelMultiplier * Time.deltaTime);
                 break;
             default: break;
-
         }
     }
 
+    public void ConsumeFuel(float amount)
+    {
+        currentFuel = Mathf.Max(0f, currentFuel - amount);
+    }
+
+    public void TakeFuel(float amount) => ConsumeFuel(amount);
+
     public void AddFuel(float amount)
     {
-        currentFuel = Mathf.Min(maxFuel, currentFuel + amount);
+        currentFuel = Mathf.Min(config.maxFuel, currentFuel + amount);
     }
 }

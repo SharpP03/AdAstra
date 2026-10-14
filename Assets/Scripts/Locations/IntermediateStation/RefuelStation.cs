@@ -5,6 +5,7 @@ using UnityEngine;
 /// Refuels the player gradually while the ship stands nearly still inside the station's trigger zone.
 /// The player decides when to leave: fuel flows only as long as the ship stays docked
 /// and the station still has fuel left in its limited reserve.
+/// A ship that drifts in with an empty tank is braked to a stop inside the zone.
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class RefuelStation : MonoBehaviour
@@ -58,10 +59,15 @@ public class RefuelStation : MonoBehaviour
 
         // A ship with several colliders reports OnTriggerStay once per collider; refuel once per physics step.
         if (Time.fixedTime == lastStayTime) return;
+        lastStayTime = Time.fixedTime;
+
+        // An empty ship cannot brake, so the station catches it: exponential braking stops even a boost-speed
+        // drift inside the zone. Ships with fuel fly through untouched and dock on their own.
+        if (body.TryGetComponent(out FuelSystem tank) && !tank.HasFuel)
+            body.AddForce(-body.linearVelocity * config.catchDrag, ForceMode.Acceleration);
+
         if (body.linearVelocity.magnitude > config.maxDockSpeed) return;
         if (!body.TryGetComponent(out FuelRefillable fuel)) return;
-
-        lastStayTime = Time.fixedTime;
 
         // Only fuel the ship actually accepted leaves the reserve, so a full tank does not drain the station.
         float offered = Mathf.Min(config.fuelPerSecond * Time.fixedDeltaTime, remainingFuel);

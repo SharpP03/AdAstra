@@ -26,16 +26,9 @@ public class Player_Spaceship : MonoBehaviour
     private InputAction sprintAction;
     #endregion
 
-    #region movement multipliers
     [SerializeField] private bool realisticMovementOn = false;
-    [SerializeField] private float moveSpeed = 1f;
-    [SerializeField] private float sprintMultiplier = 1.5f;
-    [SerializeField] private float accelerationRate = 5f; // Jak szybko zmienia si? pr?dko??
-    [SerializeField] private float speedMultAngle = .5f;
-    [SerializeField] private float speedRollAngle = .05f;
-    [SerializeField] private float mouseSensX = 100f;
-    [SerializeField] private float mouseSensY = 100f;
-    #endregion
+    [Tooltip("Thrust, drag, rotation and fuel balance values.")]
+    [SerializeField] private ShipFlightConfigSO config;
 
     private Rigidbody rb;
     private FuelSystem fuelSystem;
@@ -80,8 +73,15 @@ public class Player_Spaceship : MonoBehaviour
         fuelSystem = GetComponent<FuelSystem>();
         GameManager.Instance.RegisterPlayer(this);
 
+        if (config == null)
+        {
+            Debug.LogError("Player_Spaceship: missing ShipFlightConfigSO.", this);
+            enabled = false;
+            return;
+        }
+
         currentSpeed = 0f;
-        targetSpeed = moveSpeed;
+        targetSpeed = config.thrustAcceleration;
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -93,6 +93,18 @@ public class Player_Spaceship : MonoBehaviour
 
     private void FixedUpdate()
     {
+        #region EDUCATION NOTE dryf bez paliwa
+        // DO PRACY INŻ. - dwa poziomy oporu liniowego. Przy działających silnikach opór ogranicza prędkość
+        // maksymalną (ok. ciąg / opór), więc gracz nie przyspiesza w nieskończoność. Po wyczerpaniu paliwa opór
+        // spada prawie do zera: statek dryfuje na resztce pędu (droga ok. v / opór) i dopiero powoli staje.
+        // Ostatnie paliwo można więc spalić na boost i "wystrzelić się" np. w stronę stacji.
+        // Niski opór tylko przy pustym baku, bo przy niskim oporze zawsze opłacałoby się "pyknąć" ciąg i lecieć
+        // za darmo – paliwo przestałoby być budżetem dystansu.
+        #endregion
+        // Applied every step so drag can be tuned on the config asset during Play Mode.
+        rb.linearDamping = fuelSystem.HasFuel ? config.linearDrag : config.emptyTankDrag;
+        rb.angularDamping = config.angularDrag;
+
         HandlePlayerSpeed();
         if (fuelSystem.HasFuel)
             MovePlayer();
@@ -122,8 +134,8 @@ public class Player_Spaceship : MonoBehaviour
 
         MoveInput = Vector2.ClampMagnitude(moveAction.ReadValue<Vector2>(), 1f);
         bufferedRollInput = rollAction.ReadValue<float>();
-        bufferedMouseDelta.x += mouseX.ReadValue<float>() * mouseSensX;
-        bufferedMouseDelta.y += mouseY.ReadValue<float>() * mouseSensY;
+        bufferedMouseDelta.x += mouseX.ReadValue<float>() * config.mouseSensitivity;
+        bufferedMouseDelta.y += mouseY.ReadValue<float>() * config.mouseSensitivity;
         isSprintingInput = sprintAction.IsPressed();
     }
 
@@ -135,18 +147,25 @@ public class Player_Spaceship : MonoBehaviour
             // switch expression VS switch control flow (basic switch)
             // wyra?enie switch dost?pne od wersji C# 8.0 - nie pozwala na fallthrough, pokrywa stany, zwraca warto??
             #endregion
-            PlayerState.Sprinting => moveSpeed * sprintMultiplier,
-            PlayerState.Moving => moveSpeed,
+            PlayerState.Sprinting => config.thrustAcceleration * config.boostMultiplier,
+            PlayerState.Moving => config.thrustAcceleration,
             _ => 0f
         };
 
         // P?ynna zmiana pr?dko?ci
         targetSpeed = baseSpeed;
-        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.fixedDeltaTime * accelerationRate);
+        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.fixedDeltaTime * config.throttleResponse);
     }
 
     private void HandleState()
     {
+        // Dead engines: no thrust state, so fuel, thruster FX and the boost camera all see an idle ship.
+        if (!fuelSystem.HasFuel)
+        {
+            playerCurrentState = PlayerState.Standstill;
+            return;
+        }
+
         Vector2 moveInput = MoveInput;
         bool isSprinting = isSprintingInput;
         bool isMoving = moveInput.sqrMagnitude > 0.0001f;
@@ -188,11 +207,11 @@ public class Player_Spaceship : MonoBehaviour
             MovePlayer_Arcade();
 
         // Obr?t myszk?
-        rb.AddTorque(rb.transform.right * -mouseDelta.y * speedMultAngle, ForceMode.Acceleration);
-        rb.AddTorque(rb.transform.up * mouseDelta.x * speedMultAngle, ForceMode.Acceleration);
+        rb.AddTorque(rb.transform.right * -mouseDelta.y * config.pitchYawTorque, ForceMode.Acceleration);
+        rb.AddTorque(rb.transform.up * mouseDelta.x * config.pitchYawTorque, ForceMode.Acceleration);
 
         // Roll
-        rb.AddTorque(rb.transform.forward * rollInput * speedRollAngle, ForceMode.Acceleration);
+        rb.AddTorque(rb.transform.forward * rollInput * config.rollTorque, ForceMode.Acceleration);
     }
 
     private void MovePlayer_Arcade()
