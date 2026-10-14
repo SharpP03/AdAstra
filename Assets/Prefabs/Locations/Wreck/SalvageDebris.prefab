@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &3348116510733202431
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1294499353953498002, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_Name
+      value: SalvageDebris
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025823041897385337, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9216272053296523415, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: orbits.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9216272053296523415, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: orbits.Array.data[1].crate
+      value: 
+      objectReference: {fileID: 7112647743807256166}
+    - target: {fileID: 9216272053296523415, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: orbits.Array.data[1].axis.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9216272053296523415, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: orbits.Array.data[1].tumbleSpeed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 9216272053296523415, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+      propertyPath: orbits.Array.data[1].angularSpeed
+      value: -5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 3343563332625008146, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+    - {fileID: 6432542601373750130, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+    - {fileID: 7132119441666272240, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+--- !u!114 &7112647743807256166 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5531499283272041881, guid: e845bc8fae1707644a806bfa1eb49123, type: 3}
+  m_PrefabInstance: {fileID: 3348116510733202431}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab238de371c5973488dc718931626495, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SalvageCrate

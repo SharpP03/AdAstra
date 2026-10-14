@@ -146,7 +146,7 @@ Poprzednia tabela beatów i odcinków tranzytowych jest zarchiwizowana w `Assets
 
 **Reguły strojenia modułów:**
 * Suma paliwa ze wszystkich modułów na trasie jest mniejsza niż deficyt, który wymusza postój na stacji (2.2.3) – moduły nie zastępują stacji.
-* Cały salvage w sektorze (wraki i samotne skrzynie) naprawia łącznie mniej niż zebranie jednego Rdzenia Stazy (20%) – nie konkuruje z kluczem.
+* Salvage (wraki i samotne skrzynie) to dodatek, nie konkurencja dla klucza – orientacyjnie cały salvage w sektorze nie powinien wyraźnie przebijać naprawy z Rdzeni Stazy. To szacunek do sprawdzenia w playteście, nie twardy limit.
 
 **Dystans do fali jako miara:** postój lub lot poza postępem na Z kosztuje tyle, ile fala przejdzie w tym czasie, a Staza ten dystans oddaje. To sposób myślenia o kosztach, nie budżet do wyliczania – liczby ustala playtest.
 
@@ -251,11 +251,11 @@ Wrak to krótki, aktywny moment zręcznościowy w tranzycie. Gracz decyduje, czy
 * **Laser-multitool:** nowy czasownik „tnij” – trzymanie LPM (akcja w `playerInput.inputactions`). Laser jest zawsze dostępny, ale tnie wyłącznie skrzynie: nie rani asteroid ani innych obiektów i nie działa na nie fizycznie, więc nie jest bronią. Nie działa, gdy sterowanie jest zablokowane (brama, terminal, koniec runu, pauza); poza tym działa także bez paliwa i podczas Stazy.
 * **Naprowadzanie:** niewidzialny, wąski prostopadłościan przed dziobem (~6 × 6 × 40 m). Skrzynia w jego wnętrzu przyciąga wiązkę, nawet jeśli nie leży na osi statku – kamera za statkiem nie wymaga idealnego celowania. Bez celu w strefie LPM rysuje krótką, słabą wiązkę prosto z dziobu, bez efektu.
 * **Cięcie:** skrzynia musi być w strefie łącznie ~1,5 s; postęp zostaje, gdy wypadnie ze strefy. Przelot obok z wciśniętym LPM nie wystarcza – trzeba zwolnić i trzymać cel, a skrzynie się przesuwają. Postęp widać na skrzyni: rozgrzewa się od zimnego koloru do bieli, w punkcie styku sypią się iskry, narasta dźwięk. Bez paska na HUD.
-* **Nagroda:** przecięta skrzynia pęka i od razu naprawia ~4% kadłuba (16% za cały wrak – mniej niż Rdzeń Stazy), z błyskiem i wartością „+X” przy pasku kadłuba. Kolor skrzyń oznacza typ zawartości. Zebranie części skrzyń to legalny kompromis.
+* **Nagroda:** przecięta skrzynia pęka i od razu naprawia ~4% kadłuba (16% za cały wrak), z błyskiem i wartością „+X” przy pasku kadłuba. Kolor skrzyń oznacza typ zawartości. Zebranie części skrzyń to legalny kompromis.
 * **Ryzyko:** wrak i skrzynie są przeszkodami z obrażeniami od zderzeń. Skrzynie są kinematyczne – po zderzeniu wracają na orbitę. Gracz ryzykuje kadłub, żeby zyskać kadłub.
 * **Otwarte:** koszt lasera (przegrzanie, paliwo albo brak kosztu) – decyzja po playteście. Znacznik HUD wraku przyjdzie ze wspólnym systemem znaczników celów.
 * **Na później:** paliwo jako drugi typ skrzyń (wtedy obowiązuje reguła „moduły nie zastępują stacji”, 2.5), losowanie pozycji i typu wraku. W wersji roguelite skrzynie mają dawać ulepszenia statku zamiast zasobów zastępczych.
-* **Warianty:** ten sam prefab służy jako mały wrak (mniej skrzyń na orbitach), a pojedyncza skrzynia działa także samodzielnie, bez wraku – stoi w miejscu i daje się ciąć (4.8).
+* **Warianty:** warianty prefabu wraku – mały wrak (`SalvageWreck_Small`, 2 skrzynie) i pole szczątków bez kadłuba (`SalvageDebris`, 2 skrzynie), a pojedyncza skrzynia działa także samodzielnie, bez wraku – stoi w miejscu i daje się ciąć (4.8).
 
 ---
 
