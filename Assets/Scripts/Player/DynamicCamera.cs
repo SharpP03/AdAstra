@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class DynamicCamera : MonoBehaviour
 {
@@ -22,6 +24,13 @@ public class DynamicCamera : MonoBehaviour
     [SerializeField] private float slingshotFOVKick = 25f;
     [SerializeField] private float slingshotTrauma = 0.5f;
 
+    [Header("Gravity anomaly depth")]
+    [Tooltip("Continuous shake at the core border of a gravity anomaly (same scale as trauma²).")]
+    [SerializeField] private float gravityRumble = 0.15f;
+    [Tooltip("Volume whose vignette darkens the screen edges deep in a gravity anomaly (its profile is copied at runtime).")]
+    [SerializeField] private Volume postVolume;
+    [SerializeField] private float gravityVignette = 0.55f;
+
     [Header("Warp jump effect")]
     [SerializeField] private float warpFOVIncrease = 45f;
 
@@ -43,6 +52,9 @@ public class DynamicCamera : MonoBehaviour
     private float warpDuration;
     private float warpElapsed;
     private float trauma;
+    private Vignette vignette;
+    private bool slingshotLook;
+    private float baseVignette;
 
     private void Awake()
     {
@@ -74,6 +86,15 @@ public class DynamicCamera : MonoBehaviour
         if (cam) baseFOV = cam.fieldOfView;
 
         currentOffset = baseOffset;
+
+        if (postVolume != null)
+        {
+            // Reading .profile gives a runtime copy, so the profile asset is never changed in the editor.
+            VolumeProfile profile = postVolume.profile;
+            if (!profile.TryGet(out vignette)) vignette = profile.Add<Vignette>(true);
+            baseVignette = vignette.intensity.overrideState ? vignette.intensity.value : 0f;
+            vignette.intensity.overrideState = true;
+        }
     }
 
     private void OnValidate()
@@ -101,6 +122,13 @@ public class DynamicCamera : MonoBehaviour
         UpdateCameraRotation();
         UpdateSprintEffects();
         UpdateImpactShake();
+        UpdateGravityVignette();
+    }
+
+    private void UpdateGravityVignette()
+    {
+        if (vignette == null) return;
+        vignette.intensity.value = Mathf.Lerp(baseVignette, gravityVignette, player.GravityStress);
     }
 
     private void HandleImpact(float strength, Vector3 point, Vector3 normal)
@@ -114,6 +142,7 @@ public class DynamicCamera : MonoBehaviour
         // Kick the FOV at once; the boost look below then holds it until the slingshot ends.
         if (cam) cam.fieldOfView = Mathf.Max(cam.fieldOfView, baseFOV + sprintFOVIncrease + slingshotFOVKick * strength);
         trauma = Mathf.Clamp01(trauma + slingshotTrauma * strength);
+        slingshotLook = true;
     }
 
     private void UpdateImpactShake()
@@ -129,7 +158,8 @@ public class DynamicCamera : MonoBehaviour
         // ani fizyki statku.
         #endregion
         trauma = Mathf.Max(0f, trauma - traumaDecay * Time.deltaTime);
-        float shake = trauma * trauma;
+        // Deep in a gravity anomaly the camera rumbles steadily; hits on top of it still shake harder.
+        float shake = Mathf.Max(trauma * trauma, player.GravityStress * gravityRumble);
         float t = Time.time * shakeFrequency;
 
         cam.transform.localRotation = Quaternion.Euler(
@@ -175,8 +205,9 @@ public class DynamicCamera : MonoBehaviour
             return;
         }
 
-        // A slingshot looks like a boost for as long as it keeps the ship fast.
-        bool isSprinting = player.CurrentState == PlayerState.Sprinting || player.InSlingshot;
+        // A fast slingshot exit looks like a boost for as long as its low drag lasts.
+        if (!player.InSlingshot) slingshotLook = false;
+        bool isSprinting = player.CurrentState == PlayerState.Sprinting || slingshotLook;
 
         Vector3 targetOffset = baseOffset + (isSprinting ? new Vector3(0, 0, -sprintZoomOut) : Vector3.zero);
         currentOffset = Vector3.Lerp(currentOffset, targetOffset, Time.deltaTime * sprintTransitionSpeed);

@@ -3,9 +3,9 @@ using UnityEngine;
 
 /// <summary>
 /// Gravity anomaly with readable rings. The pull is purely radial and constant within a ring:
-/// the edge can be escaped with normal thrust, the inner ring only with boost, and the core is a point
-/// of no return that spits bodies back toward the Annihilation Wave. A ship leaving the inner ring
-/// is launched along its flight direction (slingshot), the deeper it went, the harder.
+/// at the edge normal thrust can stop the ship, in the inner ring only boost can, and the core is a point
+/// of no return that spits bodies back toward the Annihilation Wave. Inside the zone the ship has no engine drag,
+/// so a tangential flyby speeds it up (slingshot) and a boost at the lowest point pays off most.
 /// A Stasis Core orbits in the middle of the inner ring.
 /// </summary>
 [SelectionBase]
@@ -15,24 +15,32 @@ public class GravityAnomaly : MonoBehaviour
     [SerializeField] private float edgeRadius = 300f;
     [SerializeField] private float innerRadius = 180f;
     [SerializeField] private float coreRadius = 50f;
-    [Tooltip("Pull at the edge (m/s²); must stay below the ship's thrust so normal flight escapes.")]
+    [Tooltip("Pull at the edge (m/s²); below the ship's thrust, so normal flight can stop and back out.")]
     [SerializeField] private float edgePull = 6f;
-    [Tooltip("Pull in the inner ring (m/s²); between thrust and boost, so only boost escapes.")]
+    [Tooltip("Pull in the inner ring (m/s²); between thrust and boost, so only boost can stop or climb.")]
     [SerializeField] private float innerPull = 18f;
     [SerializeField] private LayerMask affectedLayers = ~0;
 
-    [Header("Exit slingshot (ship only)")]
-    [Tooltip("Speed added when leaving the inner ring right at its border.")]
-    [SerializeField] private float minSlingshotSpeed = 10f;
-    [Tooltip("Speed added when leaving the inner ring after touching the core border.")]
-    [SerializeField] private float maxSlingshotSpeed = 40f;
+    [Header("Slingshot exit (ship only)")]
+    [Tooltip("Low drag kept after leaving the zone, so the speed gained in the flyby turns into distance.")]
     [SerializeField] private float slingshotLowDragSeconds = 3f;
+    [Tooltip("Exit speed that starts the camera kick and exit FX.")]
+    [SerializeField] private float fastExitSpeed = 30f;
+    [Tooltip("Exit speed that gives the full camera kick.")]
+    [SerializeField] private float fullKickExitSpeed = 90f;
+    [Tooltip("Optional FX attached to the ship on a fast exit.")]
+    [SerializeField] private GameObject fastExitFx;
 
     [Header("Core spit")]
     [Tooltip("World direction of the spit: back along the sector axis, toward the wave.")]
     [SerializeField] private Vector3 spitDirection = Vector3.back;
+    [Tooltip("Spit direction is randomised up to this angle around spitDirection.")]
+    [SerializeField] [Range(0f, 90f)] private float spitConeAngle = 30f;
     [SerializeField] private float spitSpeed = 60f;
     [SerializeField] [Range(0f, 1f)] private float spitHullDamage = 0.3f;
+    [Tooltip("Optional FX spawned at the core when it spits a body out.")]
+    [SerializeField] private GameObject spitFx;
+    [SerializeField] private float fxLifetime = 4f;
 
     [Header("Orbiting Stasis Core")]
     [Tooltip("Optional child moved along a horizontal orbit; it may be destroyed once collected.")]
@@ -40,17 +48,17 @@ public class GravityAnomaly : MonoBehaviour
     [SerializeField] private float orbitRadius = 115f;
     [SerializeField] private float orbitPeriod = 60f;
 
-    // Deepest point reached in the inner ring (0 = its border, 1 = core border), per body inside it.
-    private readonly Dictionary<Rigidbody, float> innerRingDepth = new();
-    // Bodies spat out by the core; ignored until they leave the zone.
+    // Bodies inside the zone in the previous step, to notice when one leaves.
+    private readonly HashSet<Rigidbody> inside = new();
+    // Bodies spat out by the core; not pulled until they leave the zone.
     private readonly HashSet<Rigidbody> spatOut = new();
     private readonly HashSet<Rigidbody> seenThisStep = new();
-    private readonly List<Rigidbody> stale = new();
+    private readonly List<Rigidbody> left = new();
     private readonly Collider[] overlapBuffer = new Collider[64];
 
     private void OnDisable()
     {
-        innerRingDepth.Clear();
+        inside.Clear();
         spatOut.Clear();
     }
 
@@ -73,69 +81,86 @@ public class GravityAnomaly : MonoBehaviour
             Rigidbody body = overlapBuffer[i].attachedRigidbody;
             // A ship has several colliders; handle each body once per step.
             if (body == null || body.isKinematic || !seenThisStep.Add(body)) continue;
-            if (spatOut.Contains(body)) continue;
+            body.TryGetComponent(out Player_Spaceship ship);
+
+            if (spatOut.Contains(body))
+            {
+                // Low drag carries a spat ship out of the zone instead of stranding it inside.
+                if (ship != null) ship.HoldInGravityField(0f);
+                continue;
+            }
 
             Vector3 toCenter = center - body.position;
             float distance = toCenter.magnitude;
 
             if (distance < coreRadius)
             {
-                SpitOut(body);
+                SpitOut(body, ship);
                 continue;
             }
 
-            Vector3 pullDirection = toCenter / distance;
-            if (distance < innerRadius)
+            bool inInnerRing = distance < innerRadius;
+            body.AddForce(toCenter / distance * (inInnerRing ? innerPull : edgePull), ForceMode.Acceleration);
+
+            if (ship != null)
             {
-                body.AddForce(pullDirection * innerPull, ForceMode.Acceleration);
-                float depth = Mathf.InverseLerp(innerRadius, coreRadius, distance);
-                innerRingDepth[body] = innerRingDepth.TryGetValue(body, out float deepest) ? Mathf.Max(deepest, depth) : depth;
-            }
-            else
-            {
-                body.AddForce(pullDirection * edgePull, ForceMode.Acceleration);
-                if (innerRingDepth.Remove(body, out float deepest)) LeaveInnerRing(body, deepest);
+                // Depth signal: a noticeable step at the inner ring border, growing toward the core.
+                float stress = inInnerRing ? Mathf.Lerp(0.3f, 1f, Mathf.InverseLerp(innerRadius, coreRadius, distance)) : 0f;
+                ship.HoldInGravityField(stress);
             }
         }
 
-        ForgetBodiesOutside();
+        HandleBodiesThatLeft();
     }
 
-    private void LeaveInnerRing(Rigidbody body, float deepest)
+    private void HandleBodiesThatLeft()
     {
-        #region EDUCATION NOTE wyrzut z anomalii
-        // DO PRACY INŻ. - pole grawitacyjne jest zachowawcze: ciało, które wyleci z pierścienia, odzyskuje
-        // dokładnie tyle energii, ile straciło przy wlocie, więc "darmowy" dystans nie powstaje sam z siebie.
-        // Wyrzut to efekt zaprojektowany: nagroda za ryzyko rośnie z głębokością zejścia. Sam impuls prędkości
-        // wygasłby przy oporze silników po ok. 2 s, dlatego statek dostaje też kilka sekund niskiego oporu.
+        left.Clear();
+        foreach (Rigidbody body in inside)
+            if (!seenThisStep.Contains(body)) left.Add(body);
+
+        foreach (Rigidbody body in left)
+        {
+            inside.Remove(body);
+            bool wasSpat = spatOut.Remove(body);
+            if (!wasSpat && body != null && body.TryGetComponent(out Player_Spaceship ship)) LaunchSlingshot(ship, body);
+        }
+
+        foreach (Rigidbody body in seenThisStep) inside.Add(body);
+    }
+
+    private void LaunchSlingshot(Player_Spaceship ship, Rigidbody body)
+    {
+        #region EDUCATION NOTE proca i efekt Obertha
+        // DO PRACY INŻ. - pole grawitacyjne jest zachowawcze: ciało, które wyleci ze strefy, odzyskuje dokładnie tyle
+        // energii, ile straciło przy wlocie. Wewnątrz strefy statek nie ma oporu silników, więc spadając po stycznej
+        // rozpędza się przy jądrze i zakręca. Zysk daje efekt Obertha: praca ciągu to F·v, więc boost odpalony
+        // w najniższym punkcie przelotu (przy największej prędkości) dodaje więcej energii niż w pustej przestrzeni.
+        // Po wylocie statek ma jeszcze kilka sekund niskiego oporu, żeby nadwyżka prędkości zamieniła się w dystans.
         #endregion
-        if (!body.TryGetComponent(out Player_Spaceship ship)) return;
-        ship.Slingshot(Mathf.Lerp(minSlingshotSpeed, maxSlingshotSpeed, deepest), slingshotLowDragSeconds, deepest);
+        float strength = Mathf.InverseLerp(fastExitSpeed, fullKickExitSpeed, body.linearVelocity.magnitude);
+        ship.Slingshot(slingshotLowDragSeconds, strength);
+        if (strength > 0f && fastExitFx != null)
+        {
+            GameObject fx = Instantiate(fastExitFx, body.position, Quaternion.LookRotation(body.linearVelocity), body.transform);
+            Destroy(fx, fxLifetime);
+        }
     }
 
-    private void SpitOut(Rigidbody body)
+    private void SpitOut(Rigidbody body, Player_Spaceship ship)
     {
-        innerRingDepth.Remove(body);
         spatOut.Add(body);
-        body.linearVelocity = spitDirection.normalized * spitSpeed;
+
+        Vector3 axis = spitDirection.normalized;
+        Vector3 tiltAxis = Vector3.Cross(axis, Random.onUnitSphere);
+        Vector3 direction = Quaternion.AngleAxis(Random.Range(0f, spitConeAngle), tiltAxis) * axis;
+        body.linearVelocity = direction * spitSpeed;
 
         if (body.TryGetComponent(out HealthSystem hull))
             hull.TakeDamage(hull.MaxHealth * spitHullDamage);
-    }
+        if (ship != null) ship.HoldInGravityField(0f);
 
-    private void ForgetBodiesOutside()
-    {
-        stale.Clear();
-        foreach (Rigidbody body in spatOut)
-            if (body == null || !seenThisStep.Contains(body)) stale.Add(body);
-        foreach (Rigidbody body in innerRingDepth.Keys)
-            if (body == null || !seenThisStep.Contains(body)) stale.Add(body);
-
-        foreach (Rigidbody body in stale)
-        {
-            spatOut.Remove(body);
-            innerRingDepth.Remove(body);
-        }
+        if (spitFx != null) Destroy(Instantiate(spitFx, transform.position, Quaternion.LookRotation(direction)), fxLifetime);
     }
 
     private void OnDrawGizmosSelected()

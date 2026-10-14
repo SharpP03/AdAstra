@@ -291,7 +291,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8046892933280438908, guid: 83c84ebc78d30fa44b97eb68d504f4db, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1099524535}
   m_SourcePrefab: {fileID: 100100000, guid: 83c84ebc78d30fa44b97eb68d504f4db, type: 3}
 --- !u!1 &281116078
 GameObject:
@@ -676,6 +679,9 @@ MonoBehaviour:
   sprintTransitionSpeed: 3
   slingshotFOVKick: 25
   slingshotTrauma: 0.5
+  gravityRumble: 0.15
+  postVolume: {fileID: 832575518}
+  gravityVignette: 0.55
   warpFOVIncrease: 45
   hullImpacts: {fileID: 1951155960}
   minImpactTrauma: 0.25
@@ -1123,6 +1129,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc09372d8da9af4459e6c64683ba0ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WarpGate
+--- !u!1 &1099524532 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8046892933280438908, guid: 83c84ebc78d30fa44b97eb68d504f4db, type: 3}
+  m_PrefabInstance: {fileID: 215696527}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1099524535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099524532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1001 &1132645631
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1653,6 +1693,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41705862e06bd22478c4ae7ade7cc020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HullCollisionDamage
+--- !u!1 &1952510952 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1784120202096881504, guid: 9a01dc49d5b996945a5d89aa936e525a, type: 3}
+  m_PrefabInstance: {fileID: 2029026482}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1952510955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952510952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &1965581391 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8046892933280438908, guid: 83c84ebc78d30fa44b97eb68d504f4db, type: 3}
@@ -1879,7 +1953,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1784120202096881504, guid: 9a01dc49d5b996945a5d89aa936e525a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1952510955}
   m_SourcePrefab: {fileID: 100100000, guid: 9a01dc49d5b996945a5d89aa936e525a, type: 3}
 --- !u!4 &2109003560 stripped
 Transform:

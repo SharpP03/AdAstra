@@ -242,14 +242,16 @@ Każda strefa leży obok linii krytycznej, ma w środku Rdzeń Stazy i testuje i
 **Burza jonowa:** uderzenie celuje tam, gdzie statek *będzie* za ~1 s (przewidywanie z wektora prędkości). Przez tę sekundę widać świecący znacznik i słychać narastający ładunek. Unik wymaga zmiany kursu lub prędkości; lot prosto ze stałą prędkością kończy się trafieniem. W centrum burzy uderzenia są częstsze. Trafienie zabiera kadłub i na chwilę zakłóca HUD/sterowanie.
 
 **Anomalia grawitacyjna:**
-* Przyciąganie jest czysto radialne (bez wirów i tłumienia), więc pęd zależy wyłącznie od gracza – można np. zrobić procę obok jądra. Siła jest stała w obrębie pierścienia i skacze na jego granicy, dzięki czemu strefy są czytelne. Pierścienie widać jako półprzezroczyste powłoki:
-  - **krawędź:** ok. 6 m/s², zwykły ciąg (12) wystarcza do ucieczki;
-  - **pierścień wewnętrzny:** ok. 18 m/s², ucieczka wymaga boostu (24);
+* Przyciąganie jest czysto radialne (bez wirów i tłumienia) i stałe w obrębie pierścienia. Wewnątrz całej strefy statek traci opór silników (opór jak przy pustym baku) – anomalia zakrzywia przestrzeń, więc pęd zależy wyłącznie od gracza. Pierścienie mówią, gdzie da się **zatrzymać**:
+  - **krawędź:** ok. 6 m/s², zwykły ciąg (12) wystarcza, żeby się zatrzymać i wycofać;
+  - **pierścień wewnętrzny:** ok. 18 m/s², bez boostu (24) nie da się zatrzymać ani wspiąć – ucieka się pędem albo boostem;
   - **jądro:** punkt bez powrotu.
 * Anomalia przyciąga każde dynamiczne ciało w strefie, nie tylko statek.
-* Rdzeń Stazy krąży po orbicie w środku pierścienia wewnętrznego, wolniej niż statek (ok. minuty na okrążenie) – trzeba go dogonić albo wyjść mu na spotkanie, a każda sekunda w pierścieniu kosztuje paliwo na boost.
-* **Wyrzut:** wyjście statku z pierścienia wewnętrznego daje impuls wzdłuż kierunku lotu (ok. 10–40 m/s, im głębiej statek zszedł, tym mocniej) oraz kilka sekund oporu jak przy pustym baku, z kopnięciem kamery. Sam impuls przy normalnym oporze wygasłby po ok. 2 s i dałby znikomy dystans, dlatego wyrzut to impuls razem z oknem niskiego oporu. Działa także bez zebrania rdzenia – nagradza samo ryzyko. To jedyny „darmowy” dystans w grze; w fizyce nie zachodzi naturalnie (pole jest zachowawcze), więc jest efektem zaprojektowanym.
-* **Wplucie:** każde ciało, które wpadnie w jądro, zostaje wystrzelone wzdłuż osi sektora do tyłu, w stronę Frontu Anihilacji, a anomalia ignoruje je, dopóki nie opuści strefy. Statek traci przy tym 30% kadłuba. Run trwa dalej, ale gracz traci dystans i czas.
+* Rdzeń Stazy krąży po orbicie w środku pierścienia wewnętrznego, w płaszczyźnie dysku akrecyjnego, wolniej niż statek (ok. minuty na okrążenie).
+* **Proca (wyrzut):** nagrodą jest przelot, a nie granica pierścienia. Statek, który wleci po stycznej, rozpędza się, spadając ku jądru, zakręca wokół niego i wylatuje. Boost odpalony w najniższym punkcie przelotu daje więcej prędkości niż ten sam boost w pustej przestrzeni (efekt Obertha) – to jedyny „darmowy” dystans w grze i wynika z umiejętności. Po wylocie ze strefy statek ma jeszcze ok. 3 s niskiego oporu, żeby zdobyta prędkość zamieniła się w dystans; kamera kopie proporcjonalnie do prędkości wylotu.
+* **Sygnał głębokości:** w pierścieniu wewnętrznym kamera lekko wibruje, a krawędzie ekranu ciemnieją – im bliżej jądra, tym mocniej.
+* **Wplucie:** każde ciało, które wpadnie w jądro, zostaje wystrzelone do tyłu, w stronę Frontu Anihilacji, pod losowym kątem (stożek ok. 30° wokół osi sektora), a anomalia ignoruje je, dopóki nie opuści strefy. Statek traci przy tym 30% kadłuba. Run trwa dalej, ale gracz traci dystans i czas.
+* **Wygląd:** czarne jądro z jasnym obrysem, obracający się dysk akrecyjny (jasny i gęsty w pierścieniu wewnętrznym, rzadki na krawędzi) i pył spływający ku jądru, który pokazuje kierunek przyciągania.
 * Poprzednia wersja (najsilniejsze przyciąganie przy krawędzi, pułapka bez wyjścia) jest zachowana jako `BlackHoleDeathTrap` poza sektorem. Przed ponownym użyciem potrzebuje własnej roli i wyglądu, który z daleka zdradza, że to pułapka.
 
 ### 4.6. Wraki
