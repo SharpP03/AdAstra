@@ -88,7 +88,6 @@ crashlytics-build.properties
 /.claude/skills/*
 # Project-owned skills (not from skills-lock.json)
 !/.claude/skills/github-task/
-!/.claude/skills/handoff/
 
 # Agent handoff plans (local only)
 /Assets/DOCS/agent_plans/

@@ -67,6 +67,12 @@
       "skillPath": "skills/disciplines/game-ui-ux/SKILL.md",
       "computedHash": "4aeb677be89029728154d40bb1d98e07d809f019ff8cd0e9188fb4a1f9d51255"
     },
+    "handoff": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/handoff/SKILL.md",
+      "computedHash": "00e2d31992d62490083ed2fa2fc2a4418362f765875a59e7a3dc52836f826ab2"
+    },
     "input-systems": {
       "source": "gamedev-skills/awesome-gamedev-agent-skills",
       "sourceType": "github",
@@ -222,6 +228,12 @@
       "sourceType": "github",
       "skillPath": "skills/genres/visual-novel/SKILL.md",
       "computedHash": "bb8754218eb08c0ce077351855754887d45e3734fb1b281d6ee672e0c1ce3c4d"
+    },
+    "writing-for-agents": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/writing-for-agents/SKILL.md",
+      "computedHash": "831e996c177c6c5233eb3bb472a33edee2b3ce1ee5a6d7e8b696c1c3fb4eda3d"
     }
   }
 }

@@ -7,4 +7,3 @@
 - While editing C#: use LSP diagnostics (csharp-lsp) as the fast check. After adding, renaming or deleting a `.cs` file, run `refresh_unity` first — the generated `.csproj` lists files explicitly, so LSP doesn't see new files until Unity regenerates it.
 - Before reporting a step as compiling: `refresh_unity` → wait for compilation → `read_console`. Unity's compiler is authoritative (warnings, serialization); LSP doesn't replace it.
 - Play Mode check: `manage_editor` play on `SampleScene`, `read_console` for exceptions, then stop. This smoke check is the default verification; gameplay scenarios are tested by the user (end each step report with 2–4 "how to test" points). Run scripted Play Mode scenarios only when the user asks or when a change cannot be verified otherwise — keep them short and say why.
-- Work across conversations: use the `handoff` skill to write the end-of-session handoff and to resume from one.
