@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2c04c198c59c3a4a87b6d321ceecb9f, type: 3}
   m_Name: ShipFlight_Config
   m_EditorClassIdentifier: Assembly-CSharp::ShipFlightConfigSO
-  thrustAcceleration: 23
+  thrustAcceleration: 12
   boostMultiplier: 2
   throttleResponse: 4
-  linearDrag: 1
+  linearDrag: 0.5
   angularDrag: 1
   mouseSensitivity: 0.1
   pitchYawTorque: 0.5
   rollTorque: 1
   maxFuel: 280
   fuelBurnRate: 2.2
-  boostFuelMultiplier: 3.2
+  boostFuelMultiplier: 4
