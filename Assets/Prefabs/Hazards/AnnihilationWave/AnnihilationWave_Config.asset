@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3a9106f52f2f4348bda0d998bda4374, type: 3}
   m_Name: AnnihilationWave_Config
   m_EditorClassIdentifier: Assembly-CSharp::AnnihilationWaveConfigSO
-  speed: 16
+  speed: 12
   warningDistance: 100
   criticalDistance: 30
   damagePerSecond: 50

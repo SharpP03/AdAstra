@@ -20740,7 +20740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb74226be503a8d47862efe2d59482da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelSystem
-  maxFuel: 200
+  maxFuel: 280
   fuelUsage: 2.2
   sprintFuelMultiplier: 3.2
 --- !u!114 &8984824206888303891
