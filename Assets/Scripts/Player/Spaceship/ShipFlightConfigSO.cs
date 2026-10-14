@@ -21,6 +21,9 @@ public class ShipFlightConfigSO : ScriptableObject
     [Tooltip("Rigidbody linear damping. Lower = the ship coasts longer after releasing thrust.")]
     public float linearDrag = 1f;
 
+    [Tooltip("Linear damping with an empty tank. Low = the ship drifts far on its leftover momentum (roughly speed / drag meters).")]
+    public float emptyTankDrag = 0.05f;
+
     [Tooltip("Rigidbody angular damping. Lower = rotation keeps spinning longer.")]
     public float angularDrag = 1f;
 
@@ -49,6 +52,7 @@ public class ShipFlightConfigSO : ScriptableObject
         boostMultiplier = Mathf.Max(1f, boostMultiplier);
         throttleResponse = Mathf.Max(0f, throttleResponse);
         linearDrag = Mathf.Max(0f, linearDrag);
+        emptyTankDrag = Mathf.Max(0f, emptyTankDrag);
         angularDrag = Mathf.Max(0f, angularDrag);
         maxFuel = Mathf.Max(1f, maxFuel);
         fuelBurnRate = Mathf.Max(0f, fuelBurnRate);

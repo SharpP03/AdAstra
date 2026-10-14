@@ -16,10 +16,11 @@ MonoBehaviour:
   boostMultiplier: 2
   throttleResponse: 4
   linearDrag: 0.5
+  emptyTankDrag: 0.05
   angularDrag: 1
   mouseSensitivity: 0.1
   pitchYawTorque: 0.5
   rollTorque: 1
   maxFuel: 280
   fuelBurnRate: 2.2
-  boostFuelMultiplier: 4
+  boostFuelMultiplier: 2.5

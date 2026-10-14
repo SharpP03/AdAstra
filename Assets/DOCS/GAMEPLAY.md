@@ -71,7 +71,7 @@ flowchart TD
 * Pilotaż statkiem w przestrzeni 3D oparty na fizyce.
 * Czasowniki gracza w MVP: **steruj, boostuj, hamuj/dokuj, zbieraj, tnij (laser), aktywuj Stazę, wpisuj**. Walka i wrogie AI nie wchodzą do MVP; nowe systemy są dopuszczalne, jeśli wyraźnie spajają istniejące mechaniki.
 * Każda strefa zagrożeń testuje inną umiejętność (4.5): precyzję przy prędkości (pole asteroid), czytanie zapowiedzi i timing (burza jonowa), zarządzanie pędem (anomalia grawitacyjna).
-* Balansowanie użyciem boostu: ok. 2× szybszy lot za ok. 3× większe spalanie paliwa – boost jest droższy na metr, więc to wydatek na ucieczkę, a nie domyślny sposób lotu.
+* Balansowanie użyciem boostu: ok. 2× szybszy lot za ok. 2,5× większe spalanie paliwa (zwykły lot = 1×) – boost jest droższy na metr, więc to wydatek na ucieczkę, a nie domyślny sposób lotu.
 * **Między lokacjami głównymi:** przerwy to krótkie okna decyzji. Treść dają im **moduły samodzielne** (4.8), np. **wrak** (4.6) – zboczyć i rozciąć laserem skrzynie z ładunkiem kosztem czasu wobec fali, czy lecieć dalej. Rozmieszczenie wynika z zasad z 2.5.
 
 ### 2.2. Pętla Rdzenna (Minuty / Pojedynczy Run)
@@ -165,8 +165,9 @@ Mechaniki i lokacje na tym etapie powstają z prymitywów; docelowe assety przyc
 * **Destrukcja Kadłuba:** Zderzenia z asteroidami przy dużej prędkości, uderzenia piorunów w burzy jonowej, wplucie z jądra anomalii lub obrażenia od Frontu Anihilacji.
 * **Pochłonięcie przez Front Anihilacji:** Wpadnięcie w strefę niszczącej energii (gwałtowne obrażenia redukujące kadłub do zera).
 * **Wytracenie Ciągu (Brak Paliwa - Stan Dead-Stick):**
-  - Gdy paliwo się kończy, silniki główne oraz silniki manewrowe gasną. Gracz traci kontrolę nad lotem i rotacją, a statek wytraca prędkość i zatrzymuje się.
-  - Sam brak paliwa **nie wywołuje natychmiastowego Game Over** – porażka następuje, gdy unieruchomiony statek dogoni Front Anihilacji. Przy obecnym modelu lotu ratunkiem jest praktycznie tylko wyczerpanie paliwa już wewnątrz strefy stacji pośredniej lub bramy Warp Gate.
+  - Gdy paliwo się kończy, silniki główne oraz silniki manewrowe gasną. Gracz traci kontrolę nad lotem i rotacją, a statek **dryfuje** na resztce pędu w ostatnim kierunku lotu: opór spada prawie do zera, więc statek leci jeszcze daleko (z boosta dalej), ale skończenie – w końcu staje.
+  - Z silnikami opór jest wyraźny: ogranicza prędkość maksymalną, a po puszczeniu ciągu statek hamuje. Dzięki temu nie da się „pyknąć” ciągu i lecieć za darmo – dryf jest tylko ostatnim ratunkiem.
+  - Sam brak paliwa **nie wywołuje natychmiastowego Game Over** – porażka następuje, gdy unieruchomiony statek dogoni Front Anihilacji. Ratunkiem jest dryf do strefy stacji pośredniej lub bramy Warp Gate: ostatnie paliwo można spalić na boost i „wystrzelić się” w ich stronę, celując przed wygaśnięciem silników.
   - Paliwo działa więc jak budżet dystansu: lot je zużywa, postój nie.
 
 ### 3.3. Koniec Runu
@@ -189,6 +190,7 @@ Liniowa ściana energii przesuwająca się ze stałą prędkością wzdłuż osi
 ### 4.2. Stacja Pośrednia (Tankowanie na Postoju)
 * **Moduł usługowy:** stacja nie jest lokacją główną, tylko obowiązkowym modułem (4.8). W MVP sektor ma jedną stację, położoną na linii krytycznej tam, gdzie wynika to z budżetu paliwa (2.5, zasada 1). HUD wskazuje jej położenie.
 * Paliwo napływa stopniowo tylko wtedy, gdy statek praktycznie stoi wewnątrz strefy stacji.
+* Statek bez paliwa, który wdryfuje w strefę stacji, zostaje przez nią wyhamowany i może zatankować. Statek z paliwem przelatuje przez strefę bez hamowania i dokuje sam.
 * **Minigra „wiązka” (hipoteza do weryfikacji w playteście):** stacja trzyma statek wiązką, a przepływ paliwa zależy od tego, jak blisko środka wiązki gracz utrzymuje statek. Turbulencje od nadciągającej fali spychają statek coraz mocniej, więc gracz koryguje pozycję zwykłym sterowaniem. Tankowanie robi się trudniejsze właśnie wtedy, gdy decyzja „odlecieć teraz czy jeszcze chwilę” jest najostrzejsza.
 * **Presja na postoju:** kamera lekko drży, a HUD miga ostrzeżeniem „fala za X s”, nasilającym się w miarę zbliżania frontu.
 * Gracz może odlecieć w każdej chwili – czas spędzony na tankowaniu to czas, w którym zbliża się Front Anihilacji (chyba że spali Rdzeń Stazy).

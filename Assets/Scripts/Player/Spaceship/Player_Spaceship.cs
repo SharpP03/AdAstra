@@ -93,8 +93,16 @@ public class Player_Spaceship : MonoBehaviour
 
     private void FixedUpdate()
     {
+        #region EDUCATION NOTE dryf bez paliwa
+        // DO PRACY INŻ. - dwa poziomy oporu liniowego. Przy działających silnikach opór ogranicza prędkość
+        // maksymalną (ok. ciąg / opór), więc gracz nie przyspiesza w nieskończoność. Po wyczerpaniu paliwa opór
+        // spada prawie do zera: statek dryfuje na resztce pędu (droga ok. v / opór) i dopiero powoli staje.
+        // Ostatnie paliwo można więc spalić na boost i "wystrzelić się" np. w stronę stacji.
+        // Niski opór tylko przy pustym baku, bo przy niskim oporze zawsze opłacałoby się "pyknąć" ciąg i lecieć
+        // za darmo – paliwo przestałoby być budżetem dystansu.
+        #endregion
         // Applied every step so drag can be tuned on the config asset during Play Mode.
-        rb.linearDamping = config.linearDrag;
+        rb.linearDamping = fuelSystem.HasFuel ? config.linearDrag : config.emptyTankDrag;
         rb.angularDamping = config.angularDrag;
 
         HandlePlayerSpeed();
@@ -151,6 +159,13 @@ public class Player_Spaceship : MonoBehaviour
 
     private void HandleState()
     {
+        // Dead engines: no thrust state, so fuel, thruster FX and the boost camera all see an idle ship.
+        if (!fuelSystem.HasFuel)
+        {
+            playerCurrentState = PlayerState.Standstill;
+            return;
+        }
+
         Vector2 moveInput = MoveInput;
         bool isSprinting = isSprintingInput;
         bool isMoving = moveInput.sqrMagnitude > 0.0001f;

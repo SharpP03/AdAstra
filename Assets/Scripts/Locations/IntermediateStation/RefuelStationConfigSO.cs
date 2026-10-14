@@ -14,6 +14,10 @@ public class RefuelStationConfigSO : ScriptableObject
     [Range(0.1f, 10f)]
     public float maxDockSpeed = 2f;
 
+    [Tooltip("Braking (1/s) applied to a ship with an empty tank inside the zone, so a drifting ship gets caught. Higher = stops in a shorter distance (roughly speed / catchDrag meters).")]
+    [Range(0f, 20f)]
+    public float catchDrag = 5f;
+
     [Tooltip("Total fuel the station can hand out during one run. Once empty, it stops refueling.")]
     [Range(0f, 1000f)]
     public float fuelCapacity = 150f;
@@ -23,5 +27,6 @@ public class RefuelStationConfigSO : ScriptableObject
         fuelPerSecond = Mathf.Max(0f, fuelPerSecond);
         maxDockSpeed = Mathf.Max(0.1f, maxDockSpeed);
         fuelCapacity = Mathf.Max(0f, fuelCapacity);
+        catchDrag = Mathf.Max(0f, catchDrag);
     }
 }
